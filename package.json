@@ -1,0 +1,14 @@
+{
+  "name": "investor-landing",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "sass:build": "sass src/styles/main.scss public/css/main.css --no-source-map --style=compressed",
+    "sass:watch": "sass --watch src/styles/main.scss public/css/main.css",
+    "serve": "http-server . -p 5173 -c-1"
+  },
+  "devDependencies": {
+    "sass": "^1.77.0",
+    "http-server": "^14.1.1"
+  }
+}
