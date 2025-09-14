@@ -30,7 +30,11 @@
         앱 다운로드
       </button>
       <!-- 제안서 PDF 다운로드 -->
-      <a href="/SaveUp/assets/SaveUp_test.pdf" download="SaveUp_test.pdf" type="application/pdf" class="px-5 py-3 rounded-lg border hover:bg-slate-50">
+      <a
+        id="pdfDownload"
+        href="/SaveUp/assets/SaveUp_test.pdf"
+        class="px-5 py-3 rounded-lg border hover:bg-slate-50"
+      >
         제안서 다운로드
       </a>
     </div>
@@ -92,6 +96,50 @@
     document.getElementById('downloadBtn').addEventListener('click', ()=> downloadModal.classList.remove('hidden'));
     document.getElementById('closeDownload').addEventListener('click', ()=> downloadModal.classList.add('hidden'));
     downloadModal.addEventListener('click', e => { if(e.target === downloadModal) downloadModal.classList.add('hidden') });
+
+    // PDF 강제 다운로드 (크롬/사파리/엣지 모두 대응)
+    (function () {
+      const link = document.getElementById('pdfDownload');
+      if (!link) return;
+
+      const FILE_URL = link.getAttribute('href');
+      const FILE_NAME = 'SaveUp_test.pdf';
+
+      function saveBlobCrossBrowser(blob, filename) {
+        if (window.navigator && typeof window.navigator.msSaveOrOpenBlob === 'function') {
+          window.navigator.msSaveOrOpenBlob(blob, filename);
+          return true;
+        }
+        return false;
+      }
+
+      async function forceDownload(e) {
+        e.preventDefault();
+        try {
+          const cacheBusted = FILE_URL + (FILE_URL.includes('?') ? '&' : '?') + 'v=' + Date.now();
+          const res = await fetch(cacheBusted, { cache: 'no-store', credentials: 'same-origin' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const blob = await res.blob();
+
+          if (saveBlobCrossBrowser(blob, FILE_NAME)) return;
+
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = FILE_NAME;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          console.error('[PDF download fallback]', err);
+          window.location.href = FILE_URL; // 최후 폴백
+        }
+      }
+
+      link.addEventListener('click', forceDownload);
+    })();
   </script>
 </body>
 </html>
