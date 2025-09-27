@@ -13,33 +13,6 @@
 
   <!-- 이 페이지 전용 CSS -->
   <style>
-    /* Top 버튼 하단 고정 + 푸터 가림 방지용 lift 상태 정의 */
-    :root{ --bt-desktop:16px; --bt-mobile:28px; }
-    #backTop{
-      position:fixed;
-      right:1rem;
-      top:auto; /* 상단 배치 방지 */
-      bottom:calc(env(safe-area-inset-bottom,0px) + var(--bt-desktop));
-      transition: bottom .2s ease;
-      z-index:40;
-    }
-    @media (min-width:768px){ #backTop{ right:1.5rem; } }
-    @media (max-width:767px){
-      #backTop{
-        bottom:calc(env(safe-area-inset-bottom,0px) + var(--bt-mobile));
-        right:1rem;
-      }
-    }
-    /* 푸터가 보일 때 버튼을 더 위로 올림(개인정보지침과 겹침 방지) */
-    #backTop.lift{
-      bottom:calc(env(safe-area-inset-bottom,0px) + var(--bt-desktop) + 72px);
-    }
-    @media (max-width:767px){
-      #backTop.lift{
-        bottom:calc(env(safe-area-inset-bottom,0px) + var(--bt-mobile) + 96px);
-      }
-    }
-
     /* 키보드 탭용 스킵 링크 */
     .skip-link{
       position:fixed; top:.75rem; left:.75rem; z-index:60;
@@ -47,6 +20,25 @@
       transform:translateY(-160%); transition:transform .18s ease;
     }
     .skip-link:focus{ transform:translateY(0); }
+
+    /* 사이드 레일 Top 버튼 */
+    .rail-wrap{ position:relative; }               /* 레일 기준 컨테이너 */
+    .rail-top{
+      position:absolute; top:-.25rem; right:-3.25rem; /* 데스크톱: 컨텐츠 바깥 오른쪽 여백 */
+      display:flex; align-items:center; justify-content:center;
+      height:2.25rem; padding:0 .75rem; border-radius:9999px;
+      background:#5b8cff; color:#fff; font-weight:600; font-size:.8rem;
+      box-shadow:0 8px 24px rgba(16,24,40,.12);
+      transition:opacity .2s ease, transform .2s ease;
+      white-space:nowrap; z-index:40;
+    }
+    /* 처음엔 숨김(스크롤 내려가면 보여줌) */
+    .rail-top.is-hidden{ opacity:0; pointer-events:none; transform:translateY(-6px); }
+
+    /* 모바일: 컨텐츠 내부 오른쪽 끝으로 붙임(바깥 여백이 거의 없어서) */
+    @media (max-width:767px){
+      .rail-top{ right:0; top:-.25rem; }
+    }
   </style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
@@ -94,9 +86,13 @@
       </p>
     </section>
 
-    <!-- 본문 -->
-    <section id="intro" class="max-w-4xl mx-auto px-5 py-8 md:py-10">
+    <!-- 회사 소개 -->
+    <section id="intro" class="rail-wrap max-w-4xl mx-auto px-5 py-8 md:py-10">
       <h2 class="text-xl md:text-2xl font-bold text-slate-900 mb-2 md:mb-3">회사 소개</h2>
+
+      <!-- 사이드 레일 Top 버튼(회사소개 시작 지점) -->
+      <button class="js-rail-top rail-top is-hidden" aria-label="맨위로">Top</button>
+
       <div class="space-y-4 text-slate-700 text-sm md:text-base leading-relaxed reveal">
         <p>(회사) 는  소비가 곧 절약으로 이어지는 새로운 금융 문화를 만드는 것을 목표로 설립되었습니다. 우리는 누구나 일상 속에서 자연스럽게 혜택을 누리고, 생활비를 관리할 수 있도록 돕는 것을 핵심 가치로 삼고 있습니다. 복잡한 금융 지식이나 어려운 계산이 없어도, 단순히 카드를 올바르게 사용하는 것만으로 절약 효과를 극대화할 수 있다는 믿음에서 출발했습니다. OO는 쇼핑, 여행, 편의점, 음식점, 술집, 공과금 등 한국인의 주요 소비 영역에 최적화된 솔루션을 제공하여, 사용자가 체감할 수 있는 실질적 변화를 만들어 갑니다.</p>
         <p>우리의 비전은 단순히 카드 혜택을 안내하는 것을 넘어, 소비 습관 자체를 더 스마트하게 변화시키는 데 있습니다. 이를 통해 개인의 재정적 여유를 확대하고, 더 나아가 사회 전반에 합리적이고 지속 가능한 소비 문화를 확산시키고자 합니다. OO는 데이터 기반 분석과 직관적인 사용자 경험을 결합하여, 누구나 쉽게 금융 혜택을 활용하고 절약의 가치를 실현할 수 있도록 합니다.</p>
@@ -105,8 +101,12 @@
     </section>
 
     <!-- 비전 -->
-    <section id="vision" class="max-w-4xl mx-auto px-5 py-6 md:py-8">
+    <section id="vision" class="rail-wrap max-w-4xl mx-auto px-5 py-6 md:py-8">
       <h2 class="text-xl md:text-2xl font-bold text-slate-900 mb-2 md:mb-3">비전</h2>
+
+      <!-- 사이드 레일 Top 버튼(비전 시작 지점) -->
+      <button class="js-rail-top rail-top is-hidden" aria-label="맨위로">Top</button>
+
       <p class="text-slate-700 leading-relaxed text-sm md:text-base reveal">
         회사명은 데이터 기반 소비 분석을 통해 모든 사용자가 <b>혜택 손실 없는 소비</b>를 하도록 돕습니다.
         더 나아가 금융 생활의 <b>효율성</b>과 <b>투명성</b>을 높이는 것을 목표로 합니다.
@@ -123,11 +123,6 @@
       </div>
     </div>
   </footer>
-
-  <!-- Back-to-top -->
-  <button id="backTop"
-    class="hidden bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center hover:bg-brand-dark"
-    aria-label="맨위로">Top</button>
 
   <!-- 개인정보지침 모달 -->
   <div id="privacyModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -146,10 +141,12 @@
 
     // 현재 페이지 하이라이트
     (function(){ const cur=(location.pathname.split('/').pop()||'about.html');
-      document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{ if(a.getAttribute('href')===cur){ a.classList.add('text-brand','underline','underline-offset-4'); a.setAttribute('aria-current','page'); } });
+      document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{
+        if(a.getAttribute('href')===cur){ a.classList.add('text-brand','underline','underline-offset-4'); a.setAttribute('aria-current','page'); }
+      });
     })();
 
-    // 드로어/모달/Top 버튼
+    // 드로어 & 개인정보 모달
     (function(){
       const btn=document.getElementById('drawerBtn'), root=document.getElementById('drawerRoot');
       const panel=document.getElementById('drawerPanel'), overlay=document.getElementById('drawerOverlay');
@@ -164,23 +161,6 @@
       document.getElementById('privacyBtn').addEventListener('click',()=>m.classList.remove('hidden'));
       document.getElementById('closeModal')?.addEventListener('click',()=>m.classList.add('hidden'));
       m.addEventListener('click',e=>{ if(e.target===m) m.classList.add('hidden'); });
-
-      const b=document.getElementById('backTop');
-      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const onScroll=()=>{ if(window.scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
-      window.addEventListener('scroll',onScroll,{passive:true});
-      b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'}));
-      onScroll();
-
-      // *** 푸터가 보이면 Top 버튼을 위로 띄워서 가림 방지 ***
-      const footer = document.getElementById('siteFooter');
-      if(footer && b){
-        const io = new IntersectionObserver((entries)=>{
-          const visible = entries[0]?.isIntersecting;
-          b.classList.toggle('lift', !!visible);
-        }, {threshold: 0.01});
-        io.observe(footer);
-      }
     })();
 
     // jQuery 스크롤 리빌
@@ -194,6 +174,26 @@
       }
       function check(){ $els.each(function(){ const $el=$(this); if($el.hasClass('opacity-0') && inView($el)){ $el.removeClass('opacity-0 translate-y-2'); } }); }
       $(window).on('scroll resize',check); setTimeout(check,30);
+    })();
+
+    // 사이드 레일 Top 버튼: 스크롤시 나타남 + 클릭시 맨위로
+    (function(){
+      const railButtons = Array.from(document.querySelectorAll('.js-rail-top'));
+      if(!railButtons.length) return;
+      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      railButtons.forEach(b=>{
+        b.addEventListener('click', ()=>{
+          reduce ? window.scrollTo(0,0) : window.scrollTo({top:0, behavior:'smooth'});
+        });
+      });
+
+      const onScroll=()=>{
+        const show = window.scrollY > 160; // 조금만 내려가면 표시
+        railButtons.forEach(b=> b.classList.toggle('is-hidden', !show));
+      };
+      window.addEventListener('scroll', onScroll, {passive:true});
+      onScroll();
     })();
   </script>
 </body>
