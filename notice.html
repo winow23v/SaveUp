@@ -86,7 +86,10 @@
   <!-- 헤더(글래스 + 스크롤 쉐도우) -->
   <header id="siteHeader" class="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b sticky top-0 z-40 transition-shadow">
     <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
-      <a href="index.html" class="text-lg font-extrabold text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 rounded">회사명</a>
+      <a href="index.html" class="inline-flex items-center gap-2" aria-label="홈">
+        <img src="assets/saveup-logo.svg" alt="SaveUp 로고" class="h-7 w-auto" />
+        <span class="sr-only">홈으로</span>
+      </a>
       <nav class="hidden md:flex items-center gap-6">
         <a href="about.html"   class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">About</a>
         <a href="service.html" class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">Service</a>
