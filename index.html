@@ -108,8 +108,8 @@
         소비 패턴 분석으로 월간 혜택·포인트 손실을 최소화하는 <b>서비스</b>.
       </p>
       <div class="mt-5 sm:mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
-        <button id="downloadBtn" class="btn-brand px-5 py-3 rounded-lg font-semibold">앱 다운로드</button>
-        <button id="pdfPreviewBtn" class="btn-ghost px-5 py-3 rounded-lg border font-semibold">제안서 미리보기</button>
+        <button id="downloadBtn" class="btn-brand px-5 py-3 rounded-lg font-semibold" type="button">앱 다운로드</button>
+        <button id="pdfPreviewBtn" class="btn-ghost px-5 py-3 rounded-lg border font-semibold" type="button">제안서 미리보기</button>
       </div>
     </section>
 
@@ -130,7 +130,7 @@
   </footer>
 
   <!-- Back-to-top -->
-  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center hover:bg-brand-dark" aria-label="맨위로">Top</button>
+  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center hover:bg-brand-dark" aria-label="맨위로" type="button">Top</button>
 
   <!-- PDF 미리보기 모달 -->
   <div id="pdfModal" class="pdf-modal hidden fixed flex items-center justify-center z-50 p-3">
@@ -140,11 +140,10 @@
           <span class="toolbar-title">제안서 미리보기</span>
         </div>
         <div class="toolbar-right">
-          <!-- 다운로드/프린트 버튼 고의 미표시 -->
-          <button id="zoomOut" class="px-3 btn-sm border hover:bg-slate-50" aria-label="축소">-</button>
-          <button id="zoomIn"  class="px-3 btn-sm border hover:bg-slate-50" aria-label="확대">+</button>
-          <button id="openInNew" class="px-3 btn-sm border hover:bg-slate-50">새 탭에서 열기</button>
-          <button id="closePdf" class="px-3 btn-sm btn-brand text-white">닫기</button>
+          <button id="zoomOut"  type="button" class="px-3 btn-sm border hover:bg-slate-50" aria-label="축소">-</button>
+          <button id="zoomIn"   type="button" class="px-3 btn-sm border hover:bg-slate-50" aria-label="확대">+</button>
+          <button id="openInNew" type="button" class="px-3 btn-sm border hover:bg-slate-50">새 탭에서 열기</button>
+          <button id="closePdf" type="button" class="px-3 btn-sm btn-brand text-white">닫기</button>
         </div>
       </div>
       <div class="pdf-main" id="pdfScroll">
@@ -159,7 +158,7 @@
     <div class="bg-white max-w-sm w-full p-6 rounded-xl shadow-lg text-center">
       <h3 class="text-xl font-bold mb-3">서비스 준비중</h3>
       <p class="text-slate-600 mb-6">앱 다운로드 서비스는 곧 제공될 예정입니다.</p>
-      <button id="closeDownload" class="w-full px-6 py-3 btn-brand rounded-lg">닫기</button>
+      <button id="closeDownload" class="w-full px-6 py-3 btn-brand rounded-lg" type="button">닫기</button>
     </div>
   </div>
 
@@ -249,14 +248,15 @@
       el.addEventListener('click', ()=> copy(el.textContent.trim()).then(ok=> ok&&show()));
     })();
   </script>
-<!-- PDF.js 뷰어 (기존 <script type="module"> 교체) -->
+
+  <!-- PDF.js 기반 뷰어 (모듈) -->
   <script type="module">
-    // ✅ 상대경로 기본. 프로젝트 사이트( /<repo>/ )에서도 안전.
+    // ✅ 상대경로 기본(프로젝트 사이트에서도 안전)
     const PDF_FILE = 'assets/SaveUp_test.pdf';
-  
+
     import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
-  
+
     const BTN=document.getElementById('pdfPreviewBtn');
     const MODAL=document.getElementById('pdfModal');
     const CLOSE=document.getElementById('closePdf');
@@ -266,30 +266,29 @@
     const SCROLL=document.getElementById('pdfScroll');
     const ZIN=document.getElementById('zoomIn');
     const ZOUT=document.getElementById('zoomOut');
-  
+
     let pdf=null, pages=[], scale=1.0, baseScale=1.0;
     let renderAbort=new AbortController();
     let blobUrl=null, resolvedUrl=null;
-  
-    // 🔒 로드 전엔 '새 탭' 비활성화(404 혼동 방지)
+
+    // 로드 전: 새 탭 버튼 잠금
     OPENNEW.disabled = true;
     OPENNEW.classList.add('opacity-50','cursor-not-allowed');
-  
+
     function candidateUrls(file){
       const here = new URL(location.href);
       const origin = here.origin;
       const dir = here.pathname.endsWith('/') ? here.pathname : here.pathname.replace(/[^/]+$/, '');
       const list = [
-        new URL(file, origin + dir).href,     // ./assets/SaveUp_test.pdf
+        new URL(file, origin + dir).href,
         new URL('./'+file, origin + dir).href,
-        // 주의: 절대경로는 프로젝트 사이트에서 깨질 수 있으므로 뒤로 배치
         new URL('/'+file.replace(/^\/+/,'')).href
       ];
       const base = document.querySelector('base')?.href;
       if(base) list.unshift(new URL(file, base).href);
       return [...new Set(list)];
     }
-  
+
     async function tryResolvePdfUrl(){
       const tried = [];
       for(const url of candidateUrls(PDF_FILE)){
@@ -306,7 +305,7 @@
       }
       return { ok:false, tried };
     }
-  
+
     function openModal(){
       MODAL.classList.remove('hidden');
       document.body.classList.add('overflow-hidden');
@@ -321,8 +320,7 @@
       LOADER.style.display='flex';
       if(blobUrl){ URL.revokeObjectURL(blobUrl); blobUrl=null; }
       pdf=null; pages.length=0; scale=1.0; baseScale=1.0;
-  
-      // 닫으면 새 탭 버튼 다시 잠금(다음 오픈 대비)
+
       OPENNEW.disabled = true;
       OPENNEW.classList.add('opacity-50','cursor-not-allowed');
     }
@@ -331,26 +329,26 @@
       HOST.innerHTML = `<div class="pdf-empty">미리보기 오류가 발생했습니다. PDF 파일 경로/배포를 확인해주세요.</div>`;
       LOADER.style.display='none';
     }
-  
+
     async function mountPdf(){
       LOADER.style.display='flex';
       HOST.innerHTML="";
-  
+
       const { ok, tried } = await tryResolvePdfUrl();
       if(!ok){
         HOST.innerHTML = `
           <div class="pdf-empty">
             PDF 파일을 찾지 못했습니다(404/경로 오류).<br/>
-            시도한 경로 목록:<br/>
+            시도한 경로:<br/>
             <div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\n')}</div>
           </div>`;
         LOADER.style.display='none';
         return;
       }
-  
+
       const loadingTask = pdfjsLib.getDocument({ url: blobUrl, withCredentials: false });
       pdf = await loadingTask.promise;
-  
+
       const frag = document.createDocumentFragment();
       for(let i=1;i<=pdf.numPages;i++){
         const c=document.createElement('canvas');
@@ -360,21 +358,21 @@
         pages.push(c);
       }
       HOST.appendChild(frag);
-  
+
       await renderAll(true);
       LOADER.style.display='none';
-  
-      // ✅ 로드 성공 → 새 탭 버튼 활성화 (blob URL로 열기 → 404 방지)
+
+      // 로드 성공 → 새 탭 버튼 활성화
       OPENNEW.disabled = false;
       OPENNEW.classList.remove('opacity-50','cursor-not-allowed');
     }
-  
+
     function containerWidth(){
       const max = 900;
       const w = Math.min(SCROLL.clientWidth - 24, max);
       return Math.max(320, w);
     }
-  
+
     async function renderPage(pageIndex, initial=false){
       const pageNum = pageIndex + 1;
       const page = await pdf.getPage(pageNum);
@@ -383,17 +381,18 @@
       const viewport = page.getViewport({ scale });
       const canvas = pages[pageIndex];
       const ctx = canvas.getContext('2d', { alpha:false });
-  
+
       canvas.width = Math.floor(viewport.width);
       canvas.height = Math.floor(viewport.height);
       canvas.style.width = Math.floor(viewport.width)+'px';
       canvas.style.height = Math.floor(viewport.height)+'px';
-  
+
       await page.render({ canvasContext: ctx, viewport, signal: renderAbort.signal }).promise;
     }
     async function renderAll(initial=false){
       for(let i=0;i<pages.length;i++){ await renderPage(i, initial && i===0); }
     }
+
     const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
     async function zoom(delta){
       const next = clamp(scale * delta, baseScale*0.6, baseScale*2.5);
@@ -401,7 +400,7 @@
       scale = next; LOADER.style.display='flex';
       await renderAll(false); LOADER.style.display='none';
     }
-  
+
     let rid=null;
     window.addEventListener('resize', ()=>{
       if(!pdf) return;
@@ -412,22 +411,43 @@
         await renderAll(false); LOADER.style.display='none';
       },160);
     });
-  
-    // 바인딩
-    BTN.addEventListener('click', openModal);
-    CLOSE.addEventListener('click', closeModal);
-    MODAL.addEventListener('click', e=>{ if(e.target===MODAL) closeModal(); });
-    document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) closeModal(); });
-  
-    // ‘새 탭’은 로드 완료 후 blob URL로만 오픈 (서버 경로 404 회피)
-    OPENNEW.addEventListener('click', ()=>{
+
+    // 팝업 차단/사파리 우회: 강인한 오프너
+    function openUrlRobust(url){
+      let w=null;
+      try{ w = window.open(url, '_blank'); }catch(e){}
+      if(!w){
+        const a=document.createElement('a');
+        a.href=url; a.target='_blank'; a.rel='noopener';
+        a.style.position='absolute'; a.style.left='-9999px';
+        document.body.appendChild(a); a.click(); setTimeout(()=>a.remove(),0);
+      }
+      if(!w){
+        const id='pdfOpenFallbackNotice';
+        if(!document.getElementById(id)){
+          const div=document.createElement('div');
+          div.id=id; div.className='pdf-empty';
+          div.innerHTML=`새 탭 열기가 차단되었어요.<br/>아래 링크를 길게 눌러 열거나 복사해 열어주세요.<br/>
+                         <a href="${url}" target="_blank" class="underline break-all">${url}</a>`;
+          HOST.appendChild(div);
+        }
+      }
+    }
+
+    // 이벤트 바인딩
+    document.getElementById('zoomIn').addEventListener('click', ()=> zoom(1.2));
+    document.getElementById('zoomOut').addEventListener('click', ()=> zoom(1/1.2));
+    document.getElementById('pdfPreviewBtn').addEventListener('click', openModal);
+    document.getElementById('closePdf').addEventListener('click', closeModal);
+    document.getElementById('pdfModal').addEventListener('click', e=>{ if(e.target===document.getElementById('pdfModal')) closeModal(); });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !document.getElementById('pdfModal').classList.contains('hidden')) closeModal(); });
+
+    // 새 탭 오픈
+    document.getElementById('openInNew').addEventListener('click', ()=>{
       if(OPENNEW.disabled) return;
-      if(blobUrl){ window.open(blobUrl, '_blank', 'noopener,noreferrer'); }
+      if(blobUrl){ openUrlRobust(blobUrl); }
+      else if(resolvedUrl){ openUrlRobust(resolvedUrl); }
     });
-  
-    // 확대/축소
-    ZIN.addEventListener('click', ()=> zoom(1.2));
-    ZOUT.addEventListener('click', ()=> zoom(1/1.2));
-  </script> 
+  </script>
 </body>
 </html>
