@@ -28,9 +28,3 @@
     white-space: nowrap;
     border: 0;
   }
-  /* 혹시 기존에 .skip-link:focus가 있다면 무력화 */
-  .skip-link:focus { transform: none !important; }
-  
-  /* 필요 시 다른 공통 유틸을 여기에 추가하세요 */
-  /* DEBUG: CSS 적용 확인용(잠깐만 사용) */
-body { outline: 2px solid magenta !important; }
