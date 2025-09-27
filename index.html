@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>회사명 | 랜딩 페이지</title>
 
+  <!-- ★ 프로젝트 사이트 서브패스 기준점 -->
+  <base href="/SaveUp/">
+
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -74,7 +77,7 @@
         <a href="notice.html"  class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10">Notice</a>
       </nav>
       <!-- 모바일 드로어 버튼 -->
-      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawerRoot">
+      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawerRoot" type="button">
         <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
     </div>
@@ -85,7 +88,7 @@
     <div id="drawerOverlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
     <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
       <div class="flex items-center justify-end px-5 py-4 border-b">
-        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100" aria-label="닫기">
+        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100" aria-label="닫기" type="button">
           <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
@@ -251,7 +254,7 @@
 
   <!-- PDF.js 기반 뷰어 (모듈) -->
   <script type="module">
-    // ✅ 상대경로 기본(프로젝트 사이트에서도 안전)
+    // ✅ 상대경로 (base가 /SaveUp/ 로 보정)
     const PDF_FILE = 'assets/SaveUp_test.pdf';
 
     import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
@@ -276,16 +279,16 @@
     OPENNEW.classList.add('opacity-50','cursor-not-allowed');
 
     function candidateUrls(file){
-      const here = new URL(location.href);
-      const origin = here.origin;
-      const dir = here.pathname.endsWith('/') ? here.pathname : here.pathname.replace(/[^/]+$/, '');
+      // base가 있기 때문에 상대경로만으로 충분하지만, 안전하게 여러 후보를 시도
       const list = [
-        new URL(file, origin + dir).href,
-        new URL('./'+file, origin + dir).href,
-        new URL('/'+file.replace(/^\/+/,'')).href
+        file,
+        './'+file,
+        '/'+file.replace(/^\/+/,'')
       ];
       const base = document.querySelector('base')?.href;
-      if(base) list.unshift(new URL(file, base).href);
+      if(base){
+        try{ list.unshift(new URL(file, base).href); }catch{}
+      }
       return [...new Set(list)];
     }
 
@@ -298,7 +301,7 @@
           if(res.ok){
             const blob = await res.blob();
             blobUrl = URL.createObjectURL(blob);
-            resolvedUrl = url;
+            resolvedUrl = (typeof url === 'string') ? url : String(url);
             return { ok:true, tried };
           }
         }catch(e){ /* continue */ }
@@ -435,15 +438,15 @@
     }
 
     // 이벤트 바인딩
-    document.getElementById('zoomIn').addEventListener('click', ()=> zoom(1.2));
-    document.getElementById('zoomOut').addEventListener('click', ()=> zoom(1/1.2));
-    document.getElementById('pdfPreviewBtn').addEventListener('click', openModal);
-    document.getElementById('closePdf').addEventListener('click', closeModal);
-    document.getElementById('pdfModal').addEventListener('click', e=>{ if(e.target===document.getElementById('pdfModal')) closeModal(); });
-    document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !document.getElementById('pdfModal').classList.contains('hidden')) closeModal(); });
+    ZIN.addEventListener('click', ()=> zoom(1.2));
+    ZOUT.addEventListener('click', ()=> zoom(1/1.2));
+    BTN.addEventListener('click', openModal);
+    CLOSE.addEventListener('click', closeModal);
+    MODAL.addEventListener('click', e=>{ if(e.target===MODAL) closeModal(); });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) closeModal(); });
 
     // 새 탭 오픈
-    document.getElementById('openInNew').addEventListener('click', ()=>{
+    OPENNEW.addEventListener('click', ()=>{
       if(OPENNEW.disabled) return;
       if(blobUrl){ openUrlRobust(blobUrl); }
       else if(resolvedUrl){ openUrlRobust(resolvedUrl); }
