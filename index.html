@@ -22,9 +22,9 @@
     .skip-link{ position:fixed; top:.75rem; left:.75rem; z-index:60; background:#5b8cff; color:#fff; padding:.5rem .75rem; border-radius:.5rem; transform:translateY(-160%); transition:.18s }
     .skip-link:focus{ transform:translateY(0); }
 
-    /* Glass header + hero tone */
     .hdr{ background:rgba(255,255,255,.8); backdrop-filter:blur(8px) }
     @supports not (backdrop-filter: blur(8px)){ .hdr{ background:#fff } }
+
     .hero-wrap{
       position:relative; isolation:isolate;
       background:
@@ -48,25 +48,13 @@
     .btn-top{ backdrop-filter: blur(8px); background: rgba(91,140,255,.92); transition: opacity .2s, transform .2s, box-shadow .2s, background .2s; }
     .btn-top:hover{ box-shadow: 0 12px 36px rgba(91,140,255,.35); }
 
-    /* PDF 뷰어 모달 */
+    /* PDF 미리보기 모달 */
     .pdf-modal{ inset:0; background:rgba(0,0,0,.5); }
-    .pdf-panel{ width:min(100% - 24px, 1024px); height:min(90vh, 920px); display:flex; flex-direction:column; border-radius:1rem; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.25); }
-    .pdf-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:.75rem 1rem; background:#fff; border-bottom:1px solid rgba(15,23,42,.08); }
-    .pdf-tools{ display:flex; align-items:center; gap:.5rem; }
-    .pdf-btn{ display:inline-flex; align-items:center; justify-content:center; height:34px; padding:0 .75rem; border-radius:.5rem; border:1px solid rgba(15,23,42,.12); background:#fff; }
-    .pdf-btn:hover{ background:#f8fafc; }
-    .pdf-main{ position:relative; flex:1; background:#0b1220; display:flex; align-items:center; justify-content:center; overflow:auto; }
-    .pdf-canvas{ background:#fff; box-shadow:0 6px 24px rgba(0,0,0,.25); border-radius:.5rem; }
-    .pdf-loader{ position:absolute; top:12px; left:50%; transform:translateX(-50%); color:#cbd5e1; font-size:.9rem; pointer-events:none; }
-    .pdf-msg{ position:absolute; inset:0; display:none; align-items:center; justify-content:center; color:#cbd5e1; font-size:.9rem; padding:1rem; text-align:center; }
-    .pdf-msg.show{ display:flex; }
+    .pdf-panel{ width:calc(100% - 24px); max-width: 960px; height: min(88vh, 900px); display:flex; flex-direction:column; border-radius:1rem; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+    .pdf-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; padding:.75rem 1rem; background:#fff; border-bottom:1px solid rgba(15,23,42,.08); }
+    .pdf-main{ position:relative; flex:1; background:#0b1220; border-radius:.75rem; overflow:hidden; }
+    .pdf-loader{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#cbd5e1; font-size:.9rem; }
   </style>
-
-  <!-- PDF.js (CDN) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-  </script>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
   <a href="#main" class="skip-link">본문으로 건너뛰기</a>
@@ -118,27 +106,20 @@
   <!-- Back-to-top -->
   <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg btn-top text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center" aria-label="맨위로">Top</button>
 
-  <!-- PDF 뷰어 모달 (다운로드 관련 텍스트/버튼 없음) -->
+  <!-- PDF 미리보기 모달 -->
   <div id="pdfModal" class="pdf-modal hidden fixed flex items-center justify-center z-50 p-3">
     <div class="pdf-panel bg-white">
       <div class="pdf-toolbar">
-        <div class="font-bold text-slate-800">제안서 미리보기</div>
-        <div class="pdf-tools">
-          <button id="btnPrev" class="pdf-btn" title="이전 페이지">←</button>
-          <div id="pageInfo" class="text-sm text-slate-600 min-w-[88px] text-center">1 / 1</div>
-          <button id="btnNext" class="pdf-btn" title="다음 페이지">→</button>
-          <div class="w-px h-6 bg-slate-200 mx-1"></div>
-          <button id="btnZoomOut" class="pdf-btn" title="축소">－</button>
-          <button id="btnFit" class="pdf-btn" title="너비 맞춤">맞춤</button>
-          <button id="btnZoomIn" class="pdf-btn" title="확대">＋</button>
-          <div class="w-px h-6 bg-slate-200 mx-1"></div>
-          <button id="closePdf" class="pdf-btn btn-brand text-white border-0" title="닫기">닫기</button>
+        <div class="font-semibold">제안서 미리보기</div>
+        <div class="flex items-center gap-2">
+          <button id="openInNew" class="px-3 py-1.5 rounded-md border text-sm hover:bg-slate-50">새 탭에서 열기</button>
+          <button id="closePdf" class="px-3 py-1.5 rounded-md btn-brand text-sm">닫기</button>
         </div>
       </div>
-      <div class="pdf-main" id="pdfMain">
+      <div class="pdf-main">
         <div id="pdfLoader" class="pdf-loader">불러오는 중…</div>
-        <div id="pdfMsg" class="pdf-msg"></div>
-        <canvas id="pdfCanvas" class="pdf-canvas"></canvas>
+        <!-- 뷰어 호스트: 브라우저별로 iframe/object 주입 -->
+        <div id="pdfViewerHost" class="w-full h-full"></div>
       </div>
     </div>
   </div>
@@ -155,18 +136,15 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 이메일 복사 (HTTPS 외 폴백 포함)
+    // 이메일 복사 (보안 컨텍스트 아님에도 폴백 동작)
     (function(){
-      const el=document.getElementById('copyEmail'), toast=document.getElementById('copyToast');
+      const el=document.getElementById('copyEmail'); const toast=document.getElementById('copyToast');
       if(!el||!toast) return;
-      async function copy(t){
-        if(window.isSecureContext && navigator.clipboard?.writeText){
-          try{ await navigator.clipboard.writeText(t); return true; }catch{}
-        }
-        try{ const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.top='-9999px'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); return true; }catch{ return false; }
-      }
+      async function copyModern(t){ await navigator.clipboard.writeText(t); }
+      function copyFallback(t){ const ta=document.createElement('textarea'); ta.value=t; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.top='-9999px'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); } finally{ ta.remove(); } }
+      async function copy(t){ const secure=window.isSecureContext===true; if(secure && navigator.clipboard?.writeText){ try{ await copyModern(t); return true;}catch{} } try{ copyFallback(t); return true;}catch{ return false; } }
       const show=()=>{ toast.classList.remove('hidden'); clearTimeout(show._t); show._t=setTimeout(()=>toast.classList.add('hidden'),1600); };
-      el.addEventListener('click', ()=> copy(el.textContent.trim()).then(ok=> ok&&show()));
+      el.addEventListener('click', ()=> copy(el.textContent.trim()).then(ok=>{ if(ok) show(); }));
     })();
 
     // Back-to-top
@@ -185,117 +163,75 @@
       const openBtn=document.getElementById('downloadBtn');
       const closeBtn=document.getElementById('closeDownload');
       if(!m||!openBtn||!closeBtn) return;
-      const open=()=>{ m.classList.remove('hidden'); };
-      const close=()=>{ m.classList.add('hidden'); };
+      const open=()=>{ m.classList.remove('hidden'); document.body.classList.add('overflow-hidden'); };
+      const close=()=>{ m.classList.add('hidden'); document.body.classList.remove('overflow-hidden'); };
       openBtn.addEventListener('click', open);
       closeBtn.addEventListener('click', close);
       m.addEventListener('click', e=>{ if(e.target===m) close(); });
       document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !m.classList.contains('hidden')) close(); });
     })();
 
-    // ===== PDF 뷰어 (다운로드 UI/문구 없음) =====
+    // ▶ PDF 미리보기 (브라우저별 안전한 임베드: Safari=object / 그외=iframe)
     (function(){
-      // 실제 PDF 경로로 바꿔 주세요
-      const PDF_URL = "/assets/SaveUp_test.pdf"; // 배포된 경로 기준
+      const BTN = document.getElementById('pdfPreviewBtn');
+      const MODAL = document.getElementById('pdfModal');
+      const CLOSE = document.getElementById('closePdf');
+      const OPENNEW = document.getElementById('openInNew');
+      const HOST = document.getElementById('pdfViewerHost');
+      const LOADER = document.getElementById('pdfLoader');
+      if(!BTN || !MODAL || !CLOSE || !OPENNEW || !HOST || !LOADER) return;
 
-      const modal = document.getElementById('pdfModal');
-      const openBtn = document.getElementById('pdfPreviewBtn');
-      const closeBtn = document.getElementById('closePdf');
-      const canvas = document.getElementById('pdfCanvas');
-      const ctx = canvas.getContext('2d');
-      const pageInfo = document.getElementById('pageInfo');
-      const btnPrev = document.getElementById('btnPrev');
-      const btnNext = document.getElementById('btnNext');
-      const btnZoomIn = document.getElementById('btnZoomIn');
-      const btnZoomOut = document.getElementById('btnZoomOut');
-      const btnFit = document.getElementById('btnFit');
-      const loader = document.getElementById('pdfLoader');
-      const msg = document.getElementById('pdfMsg');
-      const main = document.getElementById('pdfMain');
+      // 실제 파일 경로(배포 환경 기준으로 맞춰주세요)
+      const PDF_URL = "/assets/SaveUp_test.pdf";
 
-      let pdfDoc=null, currentPage=1, totalPages=1, scale=1.0, fitToWidth=true, rendering=false;
+      // Safari/ iOS(WebKit) 감지
+      const ua = navigator.userAgent;
+      const isIOS = /iPad|iPhone|iPod/.test(ua);
+      const isSafari = /^((?!chrome|crios|fxios|edgios|android).)*safari/i.test(ua) || isIOS;
 
-      function showMsg(text){ msg.textContent=text; msg.classList.add('show'); }
-      function hideMsg(){ msg.classList.remove('show'); msg.textContent=""; }
-      function showLoader(v){ loader.style.display = v ? 'block' : 'none'; }
-
-      function fitWidth(page){
-        const containerW = main.clientWidth - 32;
-        const viewport = page.getViewport({scale:1});
-        return Math.min(2.5, containerW / viewport.width);
-      }
-
-      async function renderPage(num){
-        if(!pdfDoc) return;
-        rendering = true; showLoader(true); hideMsg();
-        const page = await pdfDoc.getPage(num);
-        if(fitToWidth){ scale = fitWidth(page); }
-        const viewport = page.getViewport({scale});
-        canvas.width = viewport.width; canvas.height = viewport.height;
-        const task = page.render({canvasContext: ctx, viewport});
-        await task.promise;
-        pageInfo.textContent = `${currentPage} / ${totalPages}`;
-        rendering = false; showLoader(false);
-      }
-
-      async function openModal(){
-        modal.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-        showLoader(true); hideMsg();
-
-        try{
-          const res = await fetch(PDF_URL, {cache:'no-store', credentials:'same-origin'});
-          if(!res.ok) throw new Error('HTTP '+res.status);
-          const buf = await res.arrayBuffer();
-          pdfDoc = await pdfjsLib.getDocument({data:buf}).promise;
-          totalPages = pdfDoc.numPages;
-          currentPage = 1; fitToWidth = true; scale = 1.0;
-          await renderPage(currentPage);
-        }catch(e){
-          showMsg('미리보기를 표시할 수 없습니다.');
-          console.error(e);
-          showLoader(false);
+      function mountViewer(){
+        HOST.innerHTML = "";
+        if(isSafari){
+          // ✅ Safari: <object type="application/pdf"> (sandbox 없이)
+          const obj = document.createElement('object');
+          obj.type = 'application/pdf';
+          obj.data = PDF_URL;
+          obj.className = 'w-full h-full bg-white';
+          HOST.appendChild(obj);
+        } else {
+          // ✅ Chromium/Firefox: sandbox iframe (툴바 숨김 파라미터)
+          const frame = document.createElement('iframe');
+          frame.className = 'w-full h-full';
+          frame.title = '제안서 미리보기';
+          frame.loading = 'lazy';
+          frame.sandbox = 'allow-same-origin allow-scripts';
+          frame.referrerPolicy = 'no-referrer';
+          frame.src = PDF_URL + '#toolbar=0&navpanes=0&scrollbar=1';
+          HOST.appendChild(frame);
         }
       }
 
+      function openModal(){
+        LOADER.style.display='flex';
+        mountViewer();
+        MODAL.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        // 약간의 지연 후 로더 숨김(간단한 UX)
+        setTimeout(()=>{ LOADER.style.display='none'; }, 400);
+      }
       function closeModal(){
-        modal.classList.add('hidden');
+        MODAL.classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
-        ctx && ctx.clearRect(0,0,canvas.width,canvas.height);
-        pdfDoc = null;
+        setTimeout(()=>{ HOST.innerHTML = ""; }, 120);
       }
 
-      openBtn.addEventListener('click', openModal);
-      closeBtn.addEventListener('click', closeModal);
-      modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
-      document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !modal.classList.contains('hidden')) closeModal(); });
+      BTN.addEventListener('click', openModal);
+      CLOSE.addEventListener('click', closeModal);
+      MODAL.addEventListener('click', e=>{ if(e.target===MODAL) closeModal(); });
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) closeModal(); });
 
-      btnPrev.addEventListener('click', async ()=>{
-        if(rendering || !pdfDoc) return;
-        if(currentPage<=1) return;
-        currentPage--; await renderPage(currentPage);
-      });
-      btnNext.addEventListener('click', async ()=>{
-        if(rendering || !pdfDoc) return;
-        if(currentPage>=totalPages) return;
-        currentPage++; await renderPage(currentPage);
-      });
-      btnZoomIn.addEventListener('click', async ()=>{
-        if(rendering || !pdfDoc) return;
-        fitToWidth=false; scale=Math.min(3, scale+0.2); await renderPage(currentPage);
-      });
-      btnZoomOut.addEventListener('click', async ()=>{
-        if(rendering || !pdfDoc) return;
-        fitToWidth=false; scale=Math.max(0.4, scale-0.2); await renderPage(currentPage);
-      });
-      btnFit.addEventListener('click', async ()=>{
-        if(rendering || !pdfDoc) return;
-        fitToWidth=true; await renderPage(currentPage);
-      });
-      window.addEventListener('resize', ()=>{
-        if(!pdfDoc || !fitToWidth || modal.classList.contains('hidden')) return;
-        renderPage(currentPage);
-      });
+      // 새 탭 열기
+      OPENNEW.addEventListener('click', ()=> window.open(PDF_URL, '_blank', 'noopener,noreferrer'));
     })();
   </script>
 </body>
