@@ -22,9 +22,9 @@
     .skip-link{ position:fixed; top:.75rem; left:.75rem; z-index:60; background:#5b8cff; color:#fff; padding:.5rem .75rem; border-radius:.5rem; transform:translateY(-160%); transition:.18s }
     .skip-link:focus{ transform:translateY(0); }
 
+    /* Glass header + hero tone (다른 페이지와 톤 일치) */
     .hdr{ background:rgba(255,255,255,.8); backdrop-filter:blur(8px) }
     @supports not (backdrop-filter: blur(8px)){ .hdr{ background:#fff } }
-
     .hero-wrap{
       position:relative; isolation:isolate;
       background:
@@ -45,17 +45,29 @@
     .btn-brand{ background:#5b8cff; color:#fff; transition:box-shadow .2s, transform .2s, background .2s }
     .btn-brand:hover{ background:#0a46c7; box-shadow:0 10px 30px rgba(91,140,255,.35) }
     .btn-ghost:hover{ background:#f8fafc; }
-
     .btn-top{ backdrop-filter: blur(8px); background: rgba(91,140,255,.92); transition: opacity .2s, transform .2s, box-shadow .2s, background .2s; }
     .btn-top:hover{ box-shadow: 0 12px 36px rgba(91,140,255,.35); }
 
-    /* PDF 미리보기 모달 */
-    .pdf-modal-panel{ width:calc(100% - 24px); max-width: 960px; height: min(88vh, 900px); display:flex; flex-direction:column; }
-    .pdf-frame-wrap{ position:relative; flex:1; border-radius:0.75rem; overflow:hidden; background:#0b1220; }
-    .pdf-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:.5rem }
-    .pdf-toolbar .hint{ font-size:.75rem; color:#64748b }
-    .pdf-loader{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#cbd5e1; font-size:.9rem; }
+    /* PDF 뷰어 모달 */
+    .pdf-modal{ inset:0; background:rgba(0,0,0,.5); }
+    .pdf-panel{ width:min(100% - 24px, 1024px); height:min(90vh, 920px); display:flex; flex-direction:column; border-radius:1rem; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+    .pdf-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:.75rem 1rem; background:#fff; border-bottom:1px solid rgba(15,23,42,.08); }
+    .pdf-tools{ display:flex; align-items:center; gap:.5rem; }
+    .pdf-btn{ display:inline-flex; align-items:center; justify-content:center; height:34px; padding:0 .75rem; border-radius:.5rem; border:1px solid rgba(15,23,42,.12); background:#fff; }
+    .pdf-btn:hover{ background:#f8fafc; }
+    .pdf-main{ position:relative; flex:1; background:#0b1220; display:flex; align-items:center; justify-content:center; overflow:auto; }
+    .pdf-canvas{ background:#fff; box-shadow:0 6px 24px rgba(0,0,0,.25); border-radius:.5rem; }
+    .pdf-loader{ position:absolute; top:12px; left:50%; transform:translateX(-50%); color:#cbd5e1; font-size:.9rem; pointer-events:none; }
+    .pdf-msg{ position:absolute; inset:0; display:none; align-items:center; justify-content:center; color:#cbd5e1; font-size:.9rem; padding:1rem; text-align:center; }
+    .pdf-msg.show{ display:flex; }
   </style>
+
+  <!-- PDF.js (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha512-+s0y5c0y6JQb2lWw7G3Gq3i2l0SijvS2S3l7k4nq5s8X2vM8vGqgH8cLxY9V8Q6kQ8KZzH+1q5dWcX3QjQf24g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    // 워커 설정 (동일 버전)
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  </script>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
   <a href="#main" class="skip-link">본문으로 건너뛰기</a>
@@ -84,7 +96,6 @@
       </p>
       <div class="mt-5 sm:mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
         <button id="downloadBtn" class="btn-brand px-5 py-3 rounded-lg font-semibold">앱 다운로드</button>
-        <!-- ▶ 미리보기 버튼 -->
         <button id="pdfPreviewBtn" class="btn-ghost px-5 py-3 rounded-lg border font-semibold">제안서 미리보기</button>
       </div>
     </section>
@@ -108,20 +119,28 @@
   <!-- Back-to-top -->
   <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg btn-top text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center" aria-label="맨위로">Top</button>
 
-  <!-- PDF 미리보기 모달 -->
-  <div id="pdfModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3">
-    <div class="bg-white rounded-xl shadow-xl pdf-modal-panel">
-      <div class="p-3 border-b pdf-toolbar">
-        <div class="font-semibold">제안서 미리보기</div>
-        <div class="flex items-center gap-2">
-          <span class="hint">미리보기 전용. 다운로드 UI는 숨김 처리됩니다.</span>
-          <button id="openInNew" class="px-3 py-1.5 rounded-md border text-sm hover:bg-slate-50">새 탭에서 열기</button>
-          <button id="closePdf" class="px-3 py-1.5 rounded-md btn-brand text-sm">닫기</button>
+  <!-- PDF 뷰어 모달 -->
+  <div id="pdfModal" class="pdf-modal hidden fixed flex items-center justify-center z-50 p-3">
+    <div class="pdf-panel bg-white">
+      <div class="pdf-toolbar">
+        <div class="font-bold text-slate-800">제안서 미리보기</div>
+        <div class="pdf-tools">
+          <button id="btnPrev" class="pdf-btn" title="이전 페이지">←</button>
+          <div id="pageInfo" class="text-sm text-slate-600 min-w-[88px] text-center">1 / 1</div>
+          <button id="btnNext" class="pdf-btn" title="다음 페이지">→</button>
+          <div class="w-px h-6 bg-slate-200 mx-1"></div>
+          <button id="btnZoomOut" class="pdf-btn" title="축소">－</button>
+          <button id="btnFit" class="pdf-btn" title="너비 맞춤">맞춤</button>
+          <button id="btnZoomIn" class="pdf-btn" title="확대">＋</button>
+          <div class="w-px h-6 bg-slate-200 mx-1"></div>
+          <button id="openInNew" class="pdf-btn" title="새 탭에서 열기">새 탭에서 열기</button>
+          <button id="closePdf" class="pdf-btn btn-brand text-white border-0" title="닫기">닫기</button>
         </div>
       </div>
-      <div class="pdf-frame-wrap">
+      <div class="pdf-main" id="pdfMain">
         <div id="pdfLoader" class="pdf-loader">불러오는 중…</div>
-        <div id="pdfViewerHost" class="w-full h-full"></div>
+        <div id="pdfMsg" class="pdf-msg"></div>
+        <canvas id="pdfCanvas" class="pdf-canvas"></canvas>
       </div>
     </div>
   </div>
@@ -129,7 +148,7 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 이메일 복사 (폴백 포함)
+    // 이메일 복사 (HTTPS 외 환경 폴백 포함)
     (function(){
       const el=document.getElementById('copyEmail'), toast=document.getElementById('copyToast');
       if(!el||!toast) return;
@@ -137,15 +156,10 @@
         if(window.isSecureContext && navigator.clipboard?.writeText){
           try{ await navigator.clipboard.writeText(t); return true; }catch{}
         }
-        // fallback
-        try{
-          const ta=document.createElement('textarea');
-          ta.value=t; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.top='-9999px';
-          document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); return true;
-        }catch{ return false; }
+        try{ const ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.top='-9999px'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); return true; }catch{ return false; }
       }
-      const showToast=()=>{ toast.classList.remove('hidden'); clearTimeout(showToast._t); showToast._t=setTimeout(()=>toast.classList.add('hidden'),1600); };
-      el.addEventListener('click', ()=> copy(el.textContent.trim()).then(ok=> ok&&showToast()));
+      const show=()=>{ toast.classList.remove('hidden'); clearTimeout(show._t); show._t=setTimeout(()=>toast.classList.add('hidden'),1600); };
+      el.addEventListener('click', ()=> copy(el.textContent.trim()).then(ok=> ok&&show()));
     })();
 
     // Back-to-top
@@ -158,82 +172,127 @@
       onScroll();
     })();
 
-    // ▶ PDF 미리보기 (Blob URL 임베드 + 폴백)
+    // ===== PDF 뷰어 =====
     (function(){
-      const BTN = document.getElementById('pdfPreviewBtn');
-      const MODAL = document.getElementById('pdfModal');
-      const CLOSE = document.getElementById('closePdf');
-      const OPENNEW = document.getElementById('openInNew');
-      const HOST = document.getElementById('pdfViewerHost');
-      const LOADER = document.getElementById('pdfLoader');
+      // ① 경로 설정: 실제 위치에 맞추어 수정 (웹에선 절대/상대 모두 OK)
+      const PDF_URL = "/assets/SaveUp_test.pdf"; // ← 필요 시 경로 조정
 
-      // 실제 파일 경로(동일 출처 권장)
-      const PDF_URL = "/SaveUp/assets/SaveUp_test.pdf";
+      // ② 요소 참조
+      const modal = document.getElementById('pdfModal');
+      const openBtn = document.getElementById('pdfPreviewBtn');
+      const closeBtn = document.getElementById('closePdf');
+      const openNewBtn = document.getElementById('openInNew');
+      const canvas = document.getElementById('pdfCanvas');
+      const ctx = canvas.getContext('2d');
+      const pageInfo = document.getElementById('pageInfo');
+      const btnPrev = document.getElementById('btnPrev');
+      const btnNext = document.getElementById('btnNext');
+      const btnZoomIn = document.getElementById('btnZoomIn');
+      const btnZoomOut = document.getElementById('btnZoomOut');
+      const btnFit = document.getElementById('btnFit');
+      const loader = document.getElementById('pdfLoader');
+      const msg = document.getElementById('pdfMsg');
+      const main = document.getElementById('pdfMain');
 
-      function sameOrigin(url){
-        try{ return new URL(url, location.href).origin === location.origin; }catch{ return false; }
+      // ③ 상태
+      let pdfDoc=null, currentPage=1, totalPages=1, scale=1.0, fitToWidth=true, rendering=false;
+
+      // ④ 유틸
+      function showMsg(text){ msg.textContent=text; msg.classList.add('show'); }
+      function hideMsg(){ msg.classList.remove('show'); msg.textContent=""; }
+      function showLoader(v){ loader.style.display = v ? 'block' : 'none'; }
+
+      function fitWidth(page){
+        const containerW = main.clientWidth - 32; // 좌우 여백 여지
+        const viewport = page.getViewport({scale:1});
+        return Math.min(2.5, containerW / viewport.width); // 과도한 확대 방지
       }
 
-      async function openPreview(){
-        MODAL.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-        LOADER.style.display='flex';
-        HOST.innerHTML='';
+      async function renderPage(num){
+        if(!pdfDoc) return;
+        rendering = true; showLoader(true); hideMsg();
 
-        // 교차 출처면 fetch로 못 가져오니 → 새 탭 폴백
-        if(!sameOrigin(PDF_URL)){
-          LOADER.style.display='none';
-          HOST.innerHTML = fallbackHTML();
-          return;
-        }
+        const page = await pdfDoc.getPage(num);
+        if(fitToWidth){ scale = fitWidth(page); }
+
+        const viewport = page.getViewport({scale});
+        canvas.width = viewport.width; canvas.height = viewport.height;
+
+        const task = page.render({canvasContext: ctx, viewport});
+        await task.promise;
+
+        pageInfo.textContent = `${currentPage} / ${totalPages}`;
+        rendering = false; showLoader(false);
+      }
+
+      async function openModal(){
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        showLoader(true); hideMsg();
 
         try{
-          // PDF를 blob으로 가져와 blob: URL 생성 (X-Frame-Options 무의미)
+          // fetch → ArrayBuffer → PDF.js 문서
           const res = await fetch(PDF_URL, {cache:'no-store', credentials:'same-origin'});
           if(!res.ok) throw new Error('HTTP '+res.status);
+          const buf = await res.arrayBuffer();
 
-          const ct = res.headers.get('Content-Type')||'';
-          // PDF가 아닌 경우도 대비
-          if(!ct.toLowerCase().includes('pdf')) console.warn('Warning: Content-Type=', ct);
+          pdfDoc = await pdfjsLib.getDocument({data:buf}).promise;
+          totalPages = pdfDoc.numPages;
+          currentPage = 1; fitToWidth = true; scale = 1.0;
 
-          const blob = await res.blob();
-          const blobUrl = URL.createObjectURL(blob);
-
-          // 브라우저 호환 임베드: <embed type="application/pdf">
-          const emb = document.createElement('embed');
-          emb.type = 'application/pdf';
-          emb.src = blobUrl + '#toolbar=0&navpanes=0&scrollbar=1';
-          emb.className = 'w-full h-full';
-          HOST.appendChild(emb);
+          await renderPage(currentPage);
         }catch(e){
-          // 실패 시 안내 + 새 탭 버튼 유도
-          HOST.innerHTML = fallbackHTML();
-        }finally{
-          LOADER.style.display='none';
+          showMsg('미리보기를 표시할 수 없습니다. "새 탭에서 열기"를 눌러 확인해 주세요.');
+          console.error(e);
+          showLoader(false);
         }
       }
 
-      function fallbackHTML(){
-        return '<div class="w-full h-full flex items-center justify-center text-slate-300 text-sm px-4 text-center">미리보기를 표시할 수 없습니다. &nbsp;<b>새 탭에서 열기</b> 버튼을 눌러 확인해 주세요.</div>';
-      }
-
-      function closePreview(){
-        MODAL.classList.add('hidden');
+      function closeModal(){
+        modal.classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
-        // 메모리 해제
-        HOST.querySelectorAll('embed').forEach(em=>{
-          try{ URL.revokeObjectURL(em.src); }catch{}
-        });
-        HOST.innerHTML='';
+        // 간단한 정리
+        ctx && ctx.clearRect(0,0,canvas.width,canvas.height);
+        pdfDoc = null;
       }
 
-      BTN.addEventListener('click', openPreview);
-      CLOSE.addEventListener('click', closePreview);
-      MODAL.addEventListener('click', e=>{ if(e.target===MODAL) closePreview(); });
-      document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) closePreview(); });
+      // ⑤ 이벤트
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', e=>{ if(e.target===modal) closeModal(); });
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !modal.classList.contains('hidden')) closeModal(); });
 
-      // 최종 폴백: 새 탭 열기
-      OPENNEW.addEventListener('click', ()=> window.open(PDF_URL, '_blank', 'noopener,noreferrer'));
+      openNewBtn.addEventListener('click', ()=> window.open(PDF_URL, '_blank', 'noopener,noreferrer'));
+
+      btnPrev.addEventListener('click', async ()=>{
+        if(rendering || !pdfDoc) return;
+        if(currentPage<=1) return;
+        currentPage--; await renderPage(currentPage);
+      });
+      btnNext.addEventListener('click', async ()=>{
+        if(rendering || !pdfDoc) return;
+        if(currentPage>=totalPages) return;
+        currentPage++; await renderPage(currentPage);
+      });
+
+      btnZoomIn.addEventListener('click', async ()=>{
+        if(rendering || !pdfDoc) return;
+        fitToWidth=false; scale=Math.min(3, scale+0.2); await renderPage(currentPage);
+      });
+      btnZoomOut.addEventListener('click', async ()=>{
+        if(rendering || !pdfDoc) return;
+        fitToWidth=false; scale=Math.max(0.4, scale-0.2); await renderPage(currentPage);
+      });
+      btnFit.addEventListener('click', async ()=>{
+        if(rendering || !pdfDoc) return;
+        fitToWidth=true; await renderPage(currentPage);
+      });
+
+      // 창 사이즈 변경 시 너비맞춤 재렌더
+      window.addEventListener('resize', ()=>{
+        if(!pdfDoc || !fitToWidth || modal.classList.contains('hidden')) return;
+        renderPage(currentPage);
+      });
     })();
   </script>
 </body>
