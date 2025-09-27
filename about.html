@@ -8,79 +8,116 @@
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}}}}}
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: { DEFAULT:"#5b8cff", dark:"#0a46c7" } },
+          boxShadow: {
+            soft: '0 8px 30px rgba(0,0,0,0.06)',
+            elev: '0 10px 40px rgba(0,0,0,0.10)'
+          }
+        }
+      }
+    }
   </script>
 
-  <!-- 이 페이지 전용 CSS -->
   <style>
-    /* ===== 튜닝 포인트(원하는 값으로 맞춰도 됨) ===== */
     :root{
-      /* 레일 버튼 수직 위치(더 위로/아래로) */
-      --rail-offset-desktop: -2rem;   /* 데스크톱에서 섹션 타이틀 기준 위로 2rem */
-      --rail-offset-mobile:  -1.25rem;/* 모바일에서 위로 1.25rem */
-      /* 버튼 불투명도(0.0~1.0) */
-      --rail-opacity: .85;
+      --rail-offset-desktop:-2rem;
+      --rail-offset-mobile:-1.25rem;
+      --bt-desktop:16px; --bt-mobile:88px;
     }
 
-    /* 키보드 탭용 스킵 링크 */
-    .skip-link{
-      position:fixed; top:.75rem; left:.75rem; z-index:60;
-      background:#5b8cff; color:#fff; padding:.5rem .75rem; border-radius:.5rem;
-      transform:translateY(-160%); transition:transform .18s ease;
-    }
-    .skip-link:focus{ transform:translateY(0); }
+    /* Skip link */
+    .skip-link{position:fixed;top:.75rem;left:.75rem;z-index:60;background:#5b8cff;color:#fff;padding:.5rem .75rem;border-radius:.5rem;transform:translateY(-160%);transition:.18s}
+    .skip-link:focus{transform:translateY(0)}
 
-    /* 사이드 레일 Top 버튼 */
-    .rail-wrap{ position:relative; }               /* 레일 기준 컨테이너 */
+    /* Glass header */
+    .hdr{background:rgba(255,255,255,.8);backdrop-filter:blur(8px)}
+    @supports not (backdrop-filter: blur(8px)){ .hdr{background:#fff} }
+
+    /* Hero (gradient + grid) */
+    .hero-wrap{
+      position:relative; isolation:isolate;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(91,140,255,.20), transparent 60%),
+        radial-gradient(1000px 500px at 90% -10%, rgba(10,70,199,.10), transparent 60%),
+        linear-gradient(90deg, rgba(91,140,255,.06), rgba(91,140,255,.03));
+    }
+    .hero-wrap::after{
+      content:""; position:absolute; inset:0; z-index:-1;
+      background-image:
+        linear-gradient(rgba(100,116,139,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100,116,139,.06) 1px, transparent 1px);
+      background-size:24px 24px;
+      mask-image:radial-gradient(80% 60% at 50% 10%, #000 55%, transparent 70%);
+    }
+    .gtext{
+      background:linear-gradient(90deg,#0a46c7,#5b8cff 45%,#7ea4ff);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      filter:drop-shadow(0 2px 6px rgba(91,140,255,.25));
+    }
+
+    /* Reveal */
+    .reveal{opacity:0; transform:translateY(10px)}
+    .reveal.is-in{opacity:1; transform:translateY(0); transition:opacity .5s ease, transform .6s cubic-bezier(.2,.65,.2,1)}
+    @media (prefers-reduced-motion: reduce){ .reveal{opacity:1; transform:none} }
+
+    /* Section title underline (페이지 톤 유지용) */
+    .title-ux{position:relative; display:inline-block}
+    .title-ux::after{
+      content:""; position:absolute; left:0; right:0; bottom:-6px; height:4px; border-radius:9999px;
+      background:linear-gradient(90deg, rgba(10,70,199,.25), rgba(91,140,255,.6), rgba(126,164,255,.25));
+      transform:scaleX(0); transform-origin:left; transition:transform .6s cubic-bezier(.2,.65,.2,1);
+    }
+    .section-in .title-ux::after{ transform:scaleX(1) }
+
+    /* Side rail Top */
+    .rail-wrap{position:relative}
     .rail-top{
-      position:absolute;
-      top:var(--rail-offset-desktop);
-      right:-3.25rem; /* 데스크톱: 컨텐츠 바깥 오른쪽 여백 */
+      position:absolute; top:var(--rail-offset-desktop); right:-3.25rem;
       display:flex; align-items:center; justify-content:center;
-      height:2.25rem; padding:0 .75rem; border-radius:9999px;
-      background:rgba(91,140,255,var(--rail-opacity)); /* 반투명 */
-      color:#fff; font-weight:600; font-size:.8rem;
-      box-shadow:0 8px 24px rgba(16,24,40,.12);
-      backdrop-filter:saturate(120%) blur(6px); /* 배경 살짝 블러 */
-      transition:opacity .2s ease, transform .2s ease, background-color .2s ease;
-      white-space:nowrap; z-index:40;
+      height:2.25rem; padding:0 .75rem; border-radius:9999px; white-space:nowrap; z-index:40;
+      background:rgba(91,140,255,.9); color:#fff; font-weight:600; font-size:.8rem;
+      box-shadow:0 8px 24px rgba(16,24,40,.12); backdrop-filter:saturate(120%) blur(6px);
+      transition:opacity .2s, transform .2s, box-shadow .2s, background .2s;
     }
-    /* 처음엔 숨김(스크롤 내려가면 나타남) */
-    .rail-top.is-hidden{ opacity:0; pointer-events:none; transform:translateY(-6px); }
-    /* 호버/포커스 시 또렷하게 */
-    .rail-top:hover, .rail-top:focus-visible{ background:rgba(91,140,255,1); outline:none; }
+    .rail-top.is-hidden{opacity:0; pointer-events:none; transform:translateY(-6px)}
+    .rail-top:hover, .rail-top:focus-visible{background:rgba(91,140,255,1); box-shadow:0 12px 36px rgba(91,140,255,.35); outline:none}
+    @media (max-width:767px){ .rail-top{ right:0; top:var(--rail-offset-mobile) } }
 
-    /* 모바일: 컨텐츠 내부 오른쪽 끝으로 붙임 */
-    @media (max-width:767px){
-      .rail-top{ right:0; top:var(--rail-offset-mobile); }
-    }
+    /* Global Top */
+    #backTop{bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-desktop))}
+    @media (max-width:767px){ #backTop{bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-mobile)); right:1rem} }
+    .btn-top{backdrop-filter:blur(8px); background:rgba(91,140,255,.92); transition:opacity .2s, transform .2s, box-shadow .2s, background .2s}
+    .btn-top:hover{box-shadow:0 12px 36px rgba(91,140,255,.35)}
   </style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
   <a href="#main" class="skip-link">본문으로 건너뛰기</a>
 
-  <!-- 헤더 -->
-  <header class="bg-white border-b sticky top-0 z-40">
+  <!-- Header -->
+  <header id="siteHeader" class="hdr border-b sticky top-0 z-40 transition-shadow">
     <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
-      <a href="index.html" class="text-lg font-extrabold text-brand">회사명</a>
+      <a href="index.html" class="text-lg font-extrabold text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 rounded">회사명</a>
       <nav class="hidden md:flex items-center gap-6">
-        <a href="about.html"   class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition">About</a>
-        <a href="service.html" class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition">Service</a>
-        <a href="notice.html"  class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition">Notice</a>
+        <a href="about.html"   class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">About</a>
+        <a href="service.html" class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">Service</a>
+        <a href="notice.html"  class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">Notice</a>
       </nav>
-      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100" aria-label="Open menu" aria-expanded="false" aria-controls="drawerRoot">
-        <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40" aria-label="Open menu" aria-expanded="false" aria-controls="drawerRoot">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
     </div>
   </header>
 
-  <!-- 모바일 드로어 -->
+  <!-- Drawer -->
   <div id="drawerRoot" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div id="drawerOverlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
     <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true">
       <div class="flex items-center justify-end px-5 py-4 border-b">
-        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100" aria-label="Close menu">
-          <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40" aria-label="Close menu">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
       <nav class="px-5 py-4 space-y-3">
@@ -91,55 +128,53 @@
     </aside>
   </div>
 
-  <!-- 메인 -->
   <main id="main" class="flex-1">
     <!-- Hero -->
-    <section class="px-5 py-12 md:py-16 text-center bg-gradient-to-r from-brand/10 to-brand/5">
-      <h1 class="text-2xl sm:text-3xl md:text-5xl font-extrabold text-slate-900">About</h1>
+    <section class="hero-wrap px-5 py-12 md:py-16 text-center">
+      <h1 class="text-2xl sm:text-3xl md:text-5xl font-extrabold"><span class="gtext">About</span></h1>
       <p class="mt-3 sm:mt-4 max-w-2xl mx-auto text-slate-600 text-sm sm:text-base">
-        회사명은 소비자의 <b>카드 혜택 최적화</b>를 돕는 혁신적인 금융 서비스 플랫폼입니다.
+        회사명은 소비자의 카드 혜택 최적화를 돕는 혁신적인 금융 서비스 플랫폼입니다.
       </p>
     </section>
 
-    <!-- 회사 소개 -->
-    <section id="intro" class="rail-wrap max-w-4xl mx-auto px-5 py-8 md:py-10">
-      <h2 class="text-xl md:text-2xl font-bold text-slate-900 mb-2 md:mb-3">회사 소개</h2>
-
-      <!-- 사이드 레일 Top 버튼(회사소개 시작 지점) -->
+    <!-- 회사 소개 (텍스트만: 이미지/플레이스홀더 제거) -->
+    <section id="intro" class="rail-wrap max-w-4xl mx-auto px-5 py-8 md:py-12 reveal">
+      <h2 class="title-ux text-xl md:text-2xl font-bold text-slate-900 mb-2 md:mb-4">회사 소개</h2>
       <button class="js-rail-top rail-top is-hidden" aria-label="맨위로">Top</button>
 
-      <div class="space-y-4 text-slate-700 text-sm md:text-base leading-relaxed reveal">
-        <p>(회사) 는  소비가 곧 절약으로 이어지는 새로운 금융 문화를 만드는 것을 목표로 설립되었습니다. 우리는 누구나 일상 속에서 자연스럽게 혜택을 누리고, 생활비를 관리할 수 있도록 돕는 것을 핵심 가치로 삼고 있습니다. 복잡한 금융 지식이나 어려운 계산이 없어도, 단순히 카드를 올바르게 사용하는 것만으로 절약 효과를 극대화할 수 있다는 믿음에서 출발했습니다. OO는 쇼핑, 여행, 편의점, 음식점, 술집, 공과금 등 한국인의 주요 소비 영역에 최적화된 솔루션을 제공하여, 사용자가 체감할 수 있는 실질적 변화를 만들어 갑니다.</p>
-        <p>우리의 비전은 단순히 카드 혜택을 안내하는 것을 넘어, 소비 습관 자체를 더 스마트하게 변화시키는 데 있습니다. 이를 통해 개인의 재정적 여유를 확대하고, 더 나아가 사회 전반에 합리적이고 지속 가능한 소비 문화를 확산시키고자 합니다. OO는 데이터 기반 분석과 직관적인 사용자 경험을 결합하여, 누구나 쉽게 금융 혜택을 활용하고 절약의 가치를 실현할 수 있도록 합니다.</p>
-        <p>우리는 신뢰, 투명성, 혁신을 바탕으로 서비스를 설계하며, 사용자에게 언제나 정확하고 최신의 정보를 제공하는 것을 최우선으로 합니다. 또한 금융 소비를 단순한 지출이 아닌 자산 관리의 출발점으로 재정의하여, 모든 사람이 경제적 자립을 향한 작은 발걸음을 내딛을 수 있게 돕는 것을 사명으로 삼고 있습니다. OO는 앞으로도 스마트한 소비의 표준을 만들어 가며, 금융을 더 쉽고, 더 친근하며, 더 가치 있게 만드는 기업으로 성장하겠습니다.</p>
+      <div class="space-y-4 text-slate-700 text-sm md:text-base leading-relaxed">
+        <p>(회사)는 소비가 곧 절약으로 이어지는 새로운 금융 문화를 만드는 것을 목표로 설립되었습니다. 누구나 일상 속에서 자연스럽게 혜택을 누리고 생활비를 관리할 수 있도록 돕는 것을 핵심 가치로 삼고 있습니다. 복잡한 금융 지식이나 어려운 계산이 없어도, 카드를 올바르게 사용하는 것만으로 절약 효과를 극대화할 수 있다는 믿음에서 출발했습니다.</p>
+        <p>OO는 쇼핑, 여행, 편의점, 음식점, 공과금 등 주요 소비 영역에 최적화된 솔루션을 제공하여, 사용자가 체감할 수 있는 실질적 변화를 만들어 갑니다. 우리의 비전은 단순히 카드 혜택 안내를 넘어, 소비 습관 자체를 더 스마트하게 변화시키는 데 있습니다.</p>
+        <p>우리는 신뢰, 투명성, 혁신을 바탕으로 서비스를 설계하며, 사용자에게 언제나 정확하고 최신의 정보를 제공하는 것을 최우선으로 합니다. 금융 소비를 단순한 지출이 아닌 자산 관리의 출발점으로 재정의해, 모두가 경제적 자립을 향한 작은 발걸음을 내딛을 수 있게 돕습니다.</p>
       </div>
     </section>
 
-    <!-- 비전 -->
-    <section id="vision" class="rail-wrap max-w-4xl mx-auto px-5 py-6 md:py-8">
-      <h2 class="text-xl md:text-2xl font-bold text-slate-900 mb-2 md:mb-3">비전</h2>
-
-      <!-- 사이드 레일 Top 버튼(비전 시작 지점) -->
+    <!-- 비전 (텍스트만, 하이라이트 제거) -->
+    <section id="vision" class="rail-wrap max-w-4xl mx-auto px-5 py-8 md:py-12 reveal">
+      <h2 class="title-ux text-xl md:text-2xl font-bold text-slate-900 mb-2 md:mb-4">비전</h2>
       <button class="js-rail-top rail-top is-hidden" aria-label="맨위로">Top</button>
 
-      <p class="text-slate-700 leading-relaxed text-sm md:text-base reveal">
-        회사명은 데이터 기반 소비 분석을 통해 모든 사용자가 <b>혜택 손실 없는 소비</b>를 하도록 돕습니다.
-        더 나아가 금융 생활의 <b>효율성</b>과 <b>투명성</b>을 높이는 것을 목표로 합니다.
+      <p class="text-slate-700 leading-relaxed text-sm md:text-base">
+        회사명은 데이터 기반 소비 분석을 통해 모든 사용자가 혜택 손실 없는 소비를 하도록 돕고,
+        더 나아가 금융 생활의 효율성과 투명성을 높이는 것을 목표로 합니다.
       </p>
     </section>
   </main>
 
-  <!-- 푸터 -->
-  <footer id="siteFooter" class="border-t py-6 text-sm text-slate-500 mt-auto">
+  <!-- Footer -->
+  <footer class="border-t py-6 text-sm text-slate-500 mt-auto">
     <div class="max-w-6xl mx-auto px-5">
       <div class="flex flex-wrap items-center justify-center gap-2">
         <span class="px-2 py-0.5">© <span id="year"></span> 회사명. All rights reserved.</span>
-        <button id="privacyBtn" class="px-2 py-0.5 rounded-md hover:bg-brand/15 hover:text-brand">개인정보지침</button>
+        <button id="privacyBtn" class="px-2 py-0.5 rounded-md hover:bg-brand/15 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">개인정보지침</button>
       </div>
     </div>
   </footer>
 
-  <!-- 개인정보지침 모달 -->
+  <!-- Global Top -->
+  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg btn-top text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center" aria-label="맨위로">Top</button>
+
+  <!-- Modal -->
   <div id="privacyModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div class="bg-white max-w-md w-full p-6 rounded-xl shadow-lg">
       <h3 class="text-xl font-bold mb-3">개인정보 처리방침</h3>
@@ -148,21 +183,27 @@
     </div>
   </div>
 
-  <!-- jQuery(리빌 효과) -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
   <script>
+    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 현재 페이지 하이라이트
-    (function(){ const cur=(location.pathname.split('/').pop()||'about.html');
+    // Active nav
+    (function(){
+      const cur=(location.pathname.split('/').pop()||'about.html');
       document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{
-        if(a.getAttribute('href')===cur){ a.classList.add('text-brand','underline','underline-offset-4'); a.setAttribute('aria-current','page'); }
+        if(a.getAttribute('href')===cur){
+          a.classList.add('text-brand','underline','underline-offset-4');
+          a.setAttribute('aria-current','page');
+        }
       });
     })();
 
-    // 드로어 & 개인정보 모달
+    // Header shadow + Drawer + Modal + Global Top
     (function(){
+      const header=document.getElementById('siteHeader');
+      const onScrollHeader=()=>{ if(window.scrollY>6) header?.classList.add('shadow'); else header?.classList.remove('shadow'); };
+      onScrollHeader(); window.addEventListener('scroll', onScrollHeader, {passive:true});
+
       const btn=document.getElementById('drawerBtn'), root=document.getElementById('drawerRoot');
       const panel=document.getElementById('drawerPanel'), overlay=document.getElementById('drawerOverlay');
       const closeBtn=document.getElementById('drawerClose');
@@ -170,45 +211,46 @@
       const close=()=>{ panel.classList.add('translate-x-full'); overlay.classList.add('opacity-0'); btn?.setAttribute('aria-expanded','false'); setTimeout(()=>root.classList.add('hidden'),300); document.body.classList.remove('overflow-hidden'); };
       btn?.addEventListener('click',open); overlay?.addEventListener('click',close); closeBtn?.addEventListener('click',close);
       document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !root.classList.contains('hidden')) close(); });
-      root.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+      root?.querySelectorAll('a')?.forEach(a=>a.addEventListener('click',close));
 
       const m=document.getElementById('privacyModal');
       document.getElementById('privacyBtn').addEventListener('click',()=>m.classList.remove('hidden'));
       document.getElementById('closeModal')?.addEventListener('click',()=>m.classList.add('hidden'));
       m.addEventListener('click',e=>{ if(e.target===m) m.classList.add('hidden'); });
+
+      const b=document.getElementById('backTop');
+      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const onScrollTop=()=>{ if(window.scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
+      window.addEventListener('scroll',onScrollTop,{passive:true});
+      b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'}));
+      onScrollTop();
     })();
 
-    // jQuery 스크롤 리빌
+    // Reveal + section title underline trigger
     (function(){
-      const $els=$('.reveal');
-      $els.addClass('opacity-0 translate-y-2 transition duration-500');
-      function inView($el){
-        const t=$(window).scrollTop(), b=t+$(window).height();
-        const et=$el.offset().top, eb=et+$el.outerHeight(true);
-        return eb>t+60 && et<b-60;
-      }
-      function check(){ $els.each(function(){ const $el=$(this); if($el.hasClass('opacity-0') && inView($el)){ $el.removeClass('opacity-0 translate-y-2'); } }); }
-      $(window).on('scroll resize',check); setTimeout(check,30);
+      const sections=[...document.querySelectorAll('#intro, #vision')];
+      const els=[...document.querySelectorAll('.reveal')];
+      if(!('IntersectionObserver' in window)){ sections.forEach(s=>s.classList.add('section-in')); els.forEach(e=>e.classList.add('is-in')); return; }
+
+      const io1=new IntersectionObserver(entries=>{
+        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('section-in'); io1.unobserve(e.target);} });
+      },{rootMargin:'-10% 0px -10% 0px', threshold:0.01});
+      sections.forEach(s=>io1.observe(s));
+
+      const io2=new IntersectionObserver(entries=>{
+        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('is-in'); io2.unobserve(e.target);} });
+      },{rootMargin:'-5% 0px -10% 0px', threshold:0.01});
+      els.forEach(el=>io2.observe(el));
     })();
 
-    // 사이드 레일 Top 버튼: 스크롤시 나타남 + 클릭시 맨위로
+    // Side rail Top show/hide + click
     (function(){
-      const railButtons = Array.from(document.querySelectorAll('.js-rail-top'));
+      const railButtons=[...document.querySelectorAll('.js-rail-top')];
       if(!railButtons.length) return;
       const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      railButtons.forEach(b=>{
-        b.addEventListener('click', ()=>{
-          reduce ? window.scrollTo(0,0) : window.scrollTo({top:0, behavior:'smooth'});
-        });
-      });
-
-      const onScroll=()=>{
-        const show = window.scrollY > 160; // 조금만 내려가면 표시
-        railButtons.forEach(b=> b.classList.toggle('is-hidden', !show));
-      };
-      window.addEventListener('scroll', onScroll, {passive:true});
-      onScroll();
+      railButtons.forEach(b=>b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'})));
+      const onScroll=()=>{ const show=window.scrollY>160; railButtons.forEach(b=>b.classList.toggle('is-hidden', !show)); };
+      window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
     })();
   </script>
 </body>
