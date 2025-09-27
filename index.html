@@ -248,11 +248,11 @@
       el.addEventListener('click', ()=> copy(el.textContent.trim()).then(ok=> ok&&show()));
     })();
   </script>
-<!-- PDF.js 기반 뷰어 (모듈, 경로 중복 제거판) -->
+<!-- PDF.js 기반 뷰어 (모듈, URL 파싱 이슈 완전 우회판) -->
 <script type="module">
-  // ✅ 레포 이름(프로젝트 사이트 서브패스)
+  // 레포 이름(프로젝트 사이트 서브패스가 SaveUp인 경우)
   const REPO = 'SaveUp';
-  const PDF_REL = 'assets/SaveUp_test.pdf'; // 파일은 레포 루트 아래 assets/에 존재
+  const PDF_REL = 'assets/SaveUp_test.pdf'; // 레포 루트 기준 경로
 
   // PDF.js (버전 고정)
   import * as pdfjsLib from 'https://unpkg.com/pdfjs-dist@4.6.82/build/pdf.mjs';
@@ -270,59 +270,55 @@
 
   let pdf=null, pages=[], scale=1.0, baseScale=1.0;
   let renderAbort=new AbortController();
-  let blobUrl=null, resolvedUrl=null;
+  let blobUrl=null;        // 새 탭 열기용
+  let resolvedHref=null;   // 진단용(성공한 절대 URL)
 
   // 로드 전: 새 탭 버튼 잠금
   OPENNEW.disabled = true;
   OPENNEW.classList.add('opacity-50','cursor-not-allowed');
 
-  // ── 경로 후보 생성(중복/이중 prefix 방지) ─────────────────────────────
+  // ── 경로 후보(항상 절대 URL로 변환) ───────────────────────────────
   function buildCandidates(fileRel){
     const origin = location.origin;
 
-    // 현재 디렉터리(예: /SaveUp/ 또는 /)
+    // 현재 디렉터리 절대경로(예: /SaveUp/ 또는 /)
     const dir = location.pathname.endsWith('/')
       ? location.pathname
       : location.pathname.replace(/[^/]+$/, '/');
 
-    // 현재가 /SaveUp/ 하위인지
-    const firstSeg = dir.split('/').filter(Boolean)[0] || '';
-    const atRepoRoot = firstSeg.toLowerCase() === REPO.toLowerCase();
+    // 1) /SaveUp/ 고정 절대 경로 (프로젝트 사이트 배포용)
+    const repoAbs = new URL(`/${REPO}/${fileRel.replace(/^\/+/, '')}`, origin).href;
 
-    // 1) 레포 절대 경로(프로젝트 사이트용): /SaveUp/assets/...
-    const repoAbs = `/${REPO}/${fileRel.replace(/^\/+/, '')}`;
-
-    // 2) 현재 디렉터리 기준 상대
-    const rel1 = new URL(fileRel, origin + dir).href;      // assets/...
+    // 2) 현재 디렉터리 기준 상대 → 절대 href
+    const rel1 = new URL(fileRel, origin + dir).href;
     const rel2 = new URL('./' + fileRel, origin + dir).href;
 
-    // 3) 사이트 루트 기준(사용자 사이트/로컬 서버 대비)
+    // 3) 사이트 루트 기준 절대
     const rootAbs = new URL('/' + fileRel.replace(/^\/+/, ''), origin).href;
 
-    // 중복 제거 & 올바른 우선순위: repoAbs → rel1 → rel2 → rootAbs
-    const list = [repoAbs, rel1, rel2, rootAbs];
-    return [...new Set(list)];
+    // 우선순위: repoAbs → rel1 → rel2 → rootAbs (중복 제거)
+    return [...new Set([repoAbs, rel1, rel2, rootAbs])];
   }
+  // ─────────────────────────────────────────────────────────────
 
-  async function tryResolvePdfUrl(){
+  async function resolveAndDownload(){
     const tried = [];
-    for(const url of buildCandidates(PDF_REL)){
-      tried.push(url);
+    for(const href of buildCandidates(PDF_REL)){
+      tried.push(href);
       try{
-        const res = await fetch(url, { method:'GET' });
-        if(res.ok){
-          const blob = await res.blob();
-          blobUrl = URL.createObjectURL(blob);
-          resolvedUrl = url;
-          return { ok:true, tried };
-        }
+        const res = await fetch(href, { method:'GET' });
+        if(!res.ok) continue;
+        const blob = await res.blob();
+        const ab = await blob.arrayBuffer();   // ← PDF.js엔 data(바이트)로 전달
+        blobUrl = URL.createObjectURL(blob);   // 새 탭 열기용은 blob URL 유지
+        resolvedHref = href;
+        return { ok:true, data: ab, tried };
       }catch(e){
-        tried.push('ERR:' + (e?.message || String(e)));
+        tried.push('ERR:'+(e?.message||String(e)));
       }
     }
     return { ok:false, tried };
   }
-  // ─────────────────────────────────────────────────────────────────────
 
   function openModal(){
     MODAL.classList.remove('hidden');
@@ -352,27 +348,31 @@
     LOADER.style.display='flex';
     HOST.innerHTML="";
 
-    const { ok, tried } = await tryResolvePdfUrl();
+    // 1) URL 해석 + 파일 다운로드(바이트/Blob 동시 확보)
+    const { ok, data, tried } = await resolveAndDownload();
     if(!ok){
       HOST.innerHTML = `
         <div class="pdf-empty">
           PDF 파일을 찾지 못했습니다(404/경로 오류).<br/>
-          시도한 경로:<br/>
+          시도한 절대 경로 목록:<br/>
           <div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\n')}</div>
         </div>`;
       LOADER.style.display='none';
       return;
     }
 
+    // 2) PDF.js에 'URL' 대신 'data'(ArrayBuffer)로 전달 → URL 파싱 이슈/워커 경로 이슈 회피
     try{
-      const loadingTask = pdfjsLib.getDocument({ url: blobUrl, withCredentials: false });
+      const loadingTask = pdfjsLib.getDocument({ data, withCredentials: false });
       pdf = await loadingTask.promise;
     }catch(e){
+      // 렌더는 실패하더라도 새 탭 열기는 가능하도록 버튼은 풀어둠
       OPENNEW.disabled = false;
       OPENNEW.classList.remove('opacity-50','cursor-not-allowed');
       throw e;
     }
 
+    // 3) 캔버스 생성 & 렌더
     const frag = document.createDocumentFragment();
     for(let i=1;i<=pdf.numPages;i++){
       const c=document.createElement('canvas');
@@ -386,6 +386,7 @@
     await renderAll(true);
     LOADER.style.display='none';
 
+    // 4) 로드 성공 → 새 탭 버튼 활성화
     OPENNEW.disabled = false;
     OPENNEW.classList.remove('opacity-50','cursor-not-allowed');
   }
@@ -468,8 +469,9 @@
   OPENNEW.addEventListener('click', ()=>{
     if(OPENNEW.disabled) return;
     if(blobUrl){ openUrlRobust(blobUrl); }
-    else if(resolvedUrl){ openUrlRobust(resolvedUrl); }
+    else if(resolvedHref){ openUrlRobust(resolvedHref); }
   });
 </script>
+
 </body>
 </html>
