@@ -1,0 +1,36 @@
+/* ====== site.css (공통 커스텀) ====== */
+
+/* 하단 안전영역/툴바 고려한 back-to-top 위치 변수 */
+:root{
+    --bt-offset-desktop: 16px;  /* 데스크톱/태블릿 하단 여백 */
+    --bt-offset-mobile: 88px;   /* 모바일 하단 여백 (겹침 방지) */
+  }
+  
+  /* Back-to-top 위치 조정: 인라인 style 없이 이 파일만 수정 */
+  #backTop{
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--bt-offset-desktop));
+  }
+  @media (max-width: 767px){
+    #backTop{
+      bottom: calc(env(safe-area-inset-bottom, 0px) + var(--bt-offset-mobile));
+      right: 1rem; /* 모바일에선 약간 안쪽으로 */
+    }
+  }
+  
+  /* Skip Link: 기본은 화면 밖, 포커스 시 나타남 */
+  .skip-link{
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 60;
+    background: #5b8cff; /* brand */
+    color: #fff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    transform: translateY(-160%);
+    transition: transform .18s ease;
+  }
+  .skip-link:focus{ transform: translateY(0); }
+  
+  /* 필요 시 다른 공통 유틸을 여기에 추가하세요 */
+  
