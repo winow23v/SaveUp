@@ -13,6 +13,15 @@
 
   <!-- 이 페이지 전용 CSS -->
   <style>
+    /* ===== 튜닝 포인트(원하는 값으로 맞춰도 됨) ===== */
+    :root{
+      /* 레일 버튼 수직 위치(더 위로/아래로) */
+      --rail-offset-desktop: -2rem;   /* 데스크톱에서 섹션 타이틀 기준 위로 2rem */
+      --rail-offset-mobile:  -1.25rem;/* 모바일에서 위로 1.25rem */
+      /* 버튼 불투명도(0.0~1.0) */
+      --rail-opacity: .85;
+    }
+
     /* 키보드 탭용 스킵 링크 */
     .skip-link{
       position:fixed; top:.75rem; left:.75rem; z-index:60;
@@ -24,20 +33,26 @@
     /* 사이드 레일 Top 버튼 */
     .rail-wrap{ position:relative; }               /* 레일 기준 컨테이너 */
     .rail-top{
-      position:absolute; top:-.25rem; right:-3.25rem; /* 데스크톱: 컨텐츠 바깥 오른쪽 여백 */
+      position:absolute;
+      top:var(--rail-offset-desktop);
+      right:-3.25rem; /* 데스크톱: 컨텐츠 바깥 오른쪽 여백 */
       display:flex; align-items:center; justify-content:center;
       height:2.25rem; padding:0 .75rem; border-radius:9999px;
-      background:#5b8cff; color:#fff; font-weight:600; font-size:.8rem;
+      background:rgba(91,140,255,var(--rail-opacity)); /* 반투명 */
+      color:#fff; font-weight:600; font-size:.8rem;
       box-shadow:0 8px 24px rgba(16,24,40,.12);
-      transition:opacity .2s ease, transform .2s ease;
+      backdrop-filter:saturate(120%) blur(6px); /* 배경 살짝 블러 */
+      transition:opacity .2s ease, transform .2s ease, background-color .2s ease;
       white-space:nowrap; z-index:40;
     }
-    /* 처음엔 숨김(스크롤 내려가면 보여줌) */
+    /* 처음엔 숨김(스크롤 내려가면 나타남) */
     .rail-top.is-hidden{ opacity:0; pointer-events:none; transform:translateY(-6px); }
+    /* 호버/포커스 시 또렷하게 */
+    .rail-top:hover, .rail-top:focus-visible{ background:rgba(91,140,255,1); outline:none; }
 
-    /* 모바일: 컨텐츠 내부 오른쪽 끝으로 붙임(바깥 여백이 거의 없어서) */
+    /* 모바일: 컨텐츠 내부 오른쪽 끝으로 붙임 */
     @media (max-width:767px){
-      .rail-top{ right:0; top:-.25rem; }
+      .rail-top{ right:0; top:var(--rail-offset-mobile); }
     }
   </style>
 </head>
