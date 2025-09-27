@@ -248,221 +248,228 @@
       el.addEventListener('click', ()=> copy(el.textContent.trim()).then(ok=> ok&&show()));
     })();
   </script>
+<!-- PDF.js 기반 뷰어 (모듈, 경로 중복 제거판) -->
+<script type="module">
+  // ✅ 레포 이름(프로젝트 사이트 서브패스)
+  const REPO = 'SaveUp';
+  const PDF_REL = 'assets/SaveUp_test.pdf'; // 파일은 레포 루트 아래 assets/에 존재
 
-  <!-- PDF.js 기반 뷰어 (모듈, 경로 자동 계산 + 워커 안정화) -->
-  <script type="module">
-    // 1) 레포 서브패스 자동 계산: /SaveUp/ 이면 prefix 붙임
-    function resolvePdfPath(fileRel){
-      const segs = location.pathname.split('/').filter(Boolean);
-      const repoGuess = segs[0] || '';              // 예: 'SaveUp'
-      // 사용자 사이트(root)면 prefix 없음, 프로젝트 사이트면 prefix
-      const needsPrefix = repoGuess.toLowerCase() === 'saveup';
-      return needsPrefix ? `${repoGuess}/${fileRel.replace(/^\/+/,'')}` : fileRel.replace(/^\/+/,'');
+  // PDF.js (버전 고정)
+  import * as pdfjsLib from 'https://unpkg.com/pdfjs-dist@4.6.82/build/pdf.mjs';
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@4.6.82/build/pdf.worker.mjs';
+
+  const BTN=document.getElementById('pdfPreviewBtn');
+  const MODAL=document.getElementById('pdfModal');
+  const CLOSE=document.getElementById('closePdf');
+  const OPENNEW=document.getElementById('openInNew');
+  const HOST=document.getElementById('pdfViewerHost');
+  const LOADER=document.getElementById('pdfLoader');
+  const SCROLL=document.getElementById('pdfScroll');
+  const ZIN=document.getElementById('zoomIn');
+  const ZOUT=document.getElementById('zoomOut');
+
+  let pdf=null, pages=[], scale=1.0, baseScale=1.0;
+  let renderAbort=new AbortController();
+  let blobUrl=null, resolvedUrl=null;
+
+  // 로드 전: 새 탭 버튼 잠금
+  OPENNEW.disabled = true;
+  OPENNEW.classList.add('opacity-50','cursor-not-allowed');
+
+  // ── 경로 후보 생성(중복/이중 prefix 방지) ─────────────────────────────
+  function buildCandidates(fileRel){
+    const origin = location.origin;
+
+    // 현재 디렉터리(예: /SaveUp/ 또는 /)
+    const dir = location.pathname.endsWith('/')
+      ? location.pathname
+      : location.pathname.replace(/[^/]+$/, '/');
+
+    // 현재가 /SaveUp/ 하위인지
+    const firstSeg = dir.split('/').filter(Boolean)[0] || '';
+    const atRepoRoot = firstSeg.toLowerCase() === REPO.toLowerCase();
+
+    // 1) 레포 절대 경로(프로젝트 사이트용): /SaveUp/assets/...
+    const repoAbs = `/${REPO}/${fileRel.replace(/^\/+/, '')}`;
+
+    // 2) 현재 디렉터리 기준 상대
+    const rel1 = new URL(fileRel, origin + dir).href;      // assets/...
+    const rel2 = new URL('./' + fileRel, origin + dir).href;
+
+    // 3) 사이트 루트 기준(사용자 사이트/로컬 서버 대비)
+    const rootAbs = new URL('/' + fileRel.replace(/^\/+/, ''), origin).href;
+
+    // 중복 제거 & 올바른 우선순위: repoAbs → rel1 → rel2 → rootAbs
+    const list = [repoAbs, rel1, rel2, rootAbs];
+    return [...new Set(list)];
+  }
+
+  async function tryResolvePdfUrl(){
+    const tried = [];
+    for(const url of buildCandidates(PDF_REL)){
+      tried.push(url);
+      try{
+        const res = await fetch(url, { method:'GET' });
+        if(res.ok){
+          const blob = await res.blob();
+          blobUrl = URL.createObjectURL(blob);
+          resolvedUrl = url;
+          return { ok:true, tried };
+        }
+      }catch(e){
+        tried.push('ERR:' + (e?.message || String(e)));
+      }
     }
-    const PDF_FILE = resolvePdfPath('assets/SaveUp_test.pdf');
+    return { ok:false, tried };
+  }
+  // ─────────────────────────────────────────────────────────────────────
 
-    // 2) PDF.js (버전 고정)
-    import * as pdfjsLib from 'https://unpkg.com/pdfjs-dist@4.6.82/build/pdf.mjs';
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@4.6.82/build/pdf.worker.mjs';
+  function openModal(){
+    MODAL.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+    mountPdf().catch(showFallback);
+  }
+  function closeModal(){
+    MODAL.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+    renderAbort.abort();
+    renderAbort = new AbortController();
+    HOST.innerHTML="";
+    LOADER.style.display='flex';
+    if(blobUrl){ URL.revokeObjectURL(blobUrl); blobUrl=null; }
+    pdf=null; pages.length=0; scale=1.0; baseScale=1.0;
 
-    const BTN=document.getElementById('pdfPreviewBtn');
-    const MODAL=document.getElementById('pdfModal');
-    const CLOSE=document.getElementById('closePdf');
-    const OPENNEW=document.getElementById('openInNew');
-    const HOST=document.getElementById('pdfViewerHost');
-    const LOADER=document.getElementById('pdfLoader');
-    const SCROLL=document.getElementById('pdfScroll');
-    const ZIN=document.getElementById('zoomIn');
-    const ZOUT=document.getElementById('zoomOut');
-
-    let pdf=null, pages=[], scale=1.0, baseScale=1.0;
-    let renderAbort=new AbortController();
-    let blobUrl=null, resolvedUrl=null;
-
-    // 로드 전: 새 탭 버튼 잠금
     OPENNEW.disabled = true;
     OPENNEW.classList.add('opacity-50','cursor-not-allowed');
+  }
+  function showFallback(err){
+    console.error(err);
+    HOST.innerHTML = `<div class="pdf-empty">미리보기 오류가 발생했습니다. PDF 파일 경로/배포를 확인해주세요.<br/><span class="text-xs opacity-80">detail: ${String(err)}</span></div>`;
+    LOADER.style.display='none';
+  }
 
-    function candidateUrls(file){
-      const here = new URL(location.href);
-      const origin = here.origin;
-      const dir = here.pathname.endsWith('/') ? here.pathname : here.pathname.replace(/[^/]+$/, '');
-      const list = [
-        new URL(file, origin + dir).href,     // ./assets/...
-        new URL('./'+file, origin + dir).href,
-        new URL('/'+file.replace(/^\/+/,'')).href
-      ];
-      return [...new Set(list)];
-    }
+  async function mountPdf(){
+    LOADER.style.display='flex';
+    HOST.innerHTML="";
 
-    async function tryResolvePdfUrl(){
-      const tried = [];
-      for(const url of candidateUrls(PDF_FILE)){
-        tried.push(url);
-        try{
-          const res = await fetch(url, { method:'GET' });
-          if(res.ok){
-            const blob = await res.blob();
-            blobUrl = URL.createObjectURL(blob);
-            resolvedUrl = url;
-            return { ok:true, tried };
-          }
-        }catch(e){
-          tried.push('ERR:'+ (e?.message || e));
-        }
-      }
-      return { ok:false, tried };
-    }
-
-    function openModal(){
-      MODAL.classList.remove('hidden');
-      document.body.classList.add('overflow-hidden');
-      mountPdf().catch(showFallback);
-    }
-    function closeModal(){
-      MODAL.classList.add('hidden');
-      document.body.classList.remove('overflow-hidden');
-      renderAbort.abort();
-      renderAbort = new AbortController();
-      HOST.innerHTML="";
-      LOADER.style.display='flex';
-      if(blobUrl){ URL.revokeObjectURL(blobUrl); blobUrl=null; }
-      pdf=null; pages.length=0; scale=1.0; baseScale=1.0;
-
-      OPENNEW.disabled = true;
-      OPENNEW.classList.add('opacity-50','cursor-not-allowed');
-    }
-    function showFallback(err){
-      console.error(err);
-      HOST.innerHTML = `<div class="pdf-empty">미리보기 오류가 발생했습니다. PDF 파일 경로/배포를 확인해주세요.<br/><span class="text-xs opacity-80">detail: ${String(err)}</span></div>`;
+    const { ok, tried } = await tryResolvePdfUrl();
+    if(!ok){
+      HOST.innerHTML = `
+        <div class="pdf-empty">
+          PDF 파일을 찾지 못했습니다(404/경로 오류).<br/>
+          시도한 경로:<br/>
+          <div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\n')}</div>
+        </div>`;
       LOADER.style.display='none';
+      return;
     }
 
-    async function mountPdf(){
-      LOADER.style.display='flex';
-      HOST.innerHTML="";
-
-      const { ok, tried } = await tryResolvePdfUrl();
-      if(!ok){
-        HOST.innerHTML = `
-          <div class="pdf-empty">
-            PDF 파일을 찾지 못했습니다(404/경로 오류).<br/>
-            시도한 경로:<br/>
-            <div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\n')}</div>
-          </div>`;
-        LOADER.style.display='none';
-        return;
-      }
-
-      try{
-        const loadingTask = pdfjsLib.getDocument({ url: blobUrl, withCredentials: false });
-        pdf = await loadingTask.promise;
-      }catch(e){
-        // 워커/모듈 이슈 등으로 실패 시, 최소한 새 탭 열기는 가능하도록 버튼 허용
-        OPENNEW.disabled = false;
-        OPENNEW.classList.remove('opacity-50','cursor-not-allowed');
-        throw e;
-      }
-
-      const frag = document.createDocumentFragment();
-      for(let i=1;i<=pdf.numPages;i++){
-        const c=document.createElement('canvas');
-        c.className='pdf-page';
-        c.dataset.page=i;
-        frag.appendChild(c);
-        pages.push(c);
-      }
-      HOST.appendChild(frag);
-
-      await renderAll(true);
-      LOADER.style.display='none';
-
-      // 로드 성공 → 새 탭 버튼 활성화
+    try{
+      const loadingTask = pdfjsLib.getDocument({ url: blobUrl, withCredentials: false });
+      pdf = await loadingTask.promise;
+    }catch(e){
       OPENNEW.disabled = false;
       OPENNEW.classList.remove('opacity-50','cursor-not-allowed');
+      throw e;
     }
 
-    function containerWidth(){
-      const max = 900;
-      const w = Math.min(SCROLL.clientWidth - 24, max);
-      return Math.max(320, w);
+    const frag = document.createDocumentFragment();
+    for(let i=1;i<=pdf.numPages;i++){
+      const c=document.createElement('canvas');
+      c.className='pdf-page';
+      c.dataset.page=i;
+      frag.appendChild(c);
+      pages.push(c);
     }
+    HOST.appendChild(frag);
 
-    async function renderPage(pageIndex, initial=false){
-      const pageNum = pageIndex + 1;
-      const page = await pdf.getPage(pageNum);
-      const viewport0 = page.getViewport({ scale: 1 });
-      if(initial){ baseScale = containerWidth() / viewport0.width; scale = baseScale; }
-      const viewport = page.getViewport({ scale });
-      const canvas = pages[pageIndex];
-      const ctx = canvas.getContext('2d', { alpha:false });
+    await renderAll(true);
+    LOADER.style.display='none';
 
-      canvas.width = Math.floor(viewport.width);
-      canvas.height = Math.floor(viewport.height);
-      canvas.style.width = Math.floor(viewport.width)+'px';
-      canvas.style.height = Math.floor(viewport.height)+'px';
+    OPENNEW.disabled = false;
+    OPENNEW.classList.remove('opacity-50','cursor-not-allowed');
+  }
 
-      await page.render({ canvasContext: ctx, viewport, signal: renderAbort.signal }).promise;
-    }
-    async function renderAll(initial=false){
-      for(let i=0;i<pages.length;i++){ await renderPage(i, initial && i===0); }
-    }
+  function containerWidth(){
+    const max = 900;
+    const w = Math.min(SCROLL.clientWidth - 24, max);
+    return Math.max(320, w);
+  }
 
-    const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
-    async function zoom(delta){
-      const next = clamp(scale * delta, baseScale*0.6, baseScale*2.5);
-      if(Math.abs(next-scale)<0.01) return;
-      scale = next; LOADER.style.display='flex';
+  async function renderPage(pageIndex, initial=false){
+    const pageNum = pageIndex + 1;
+    const page = await pdf.getPage(pageNum);
+    const viewport0 = page.getViewport({ scale: 1 });
+    if(initial){ baseScale = containerWidth() / viewport0.width; scale = baseScale; }
+    const viewport = page.getViewport({ scale });
+    const canvas = pages[pageIndex];
+    const ctx = canvas.getContext('2d', { alpha:false });
+
+    canvas.width = Math.floor(viewport.width);
+    canvas.height = Math.floor(viewport.height);
+    canvas.style.width = Math.floor(viewport.width)+'px';
+    canvas.style.height = Math.floor(viewport.height)+'px';
+
+    await page.render({ canvasContext: ctx, viewport, signal: renderAbort.signal }).promise;
+  }
+  async function renderAll(initial=false){
+    for(let i=0;i<pages.length;i++){ await renderPage(i, initial && i===0); }
+  }
+
+  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+  async function zoom(delta){
+    const next = clamp(scale * delta, baseScale*0.6, baseScale*2.5);
+    if(Math.abs(next-scale)<0.01) return;
+    scale = next; LOADER.style.display='flex';
+    await renderAll(false); LOADER.style.display='none';
+  }
+
+  let rid=null;
+  window.addEventListener('resize', ()=>{
+    if(!pdf) return;
+    clearTimeout(rid);
+    rid=setTimeout(async ()=>{
+      baseScale = containerWidth() / (pages[0].width/scale);
+      scale = baseScale; LOADER.style.display='flex';
       await renderAll(false); LOADER.style.display='none';
+    },160);
+  });
+
+  // 팝업 차단/사파리 우회: 강인한 오프너
+  function openUrlRobust(url){
+    let w=null;
+    try{ w = window.open(url, '_blank'); }catch(e){}
+    if(!w){
+      const a=document.createElement('a');
+      a.href=url; a.target='_blank'; a.rel='noopener';
+      a.style.position='absolute'; a.style.left='-9999px';
+      document.body.appendChild(a); a.click(); setTimeout(()=>a.remove(),0);
     }
-
-    let rid=null;
-    window.addEventListener('resize', ()=>{
-      if(!pdf) return;
-      clearTimeout(rid);
-      rid=setTimeout(async ()=>{
-        baseScale = containerWidth() / (pages[0].width/scale);
-        scale = baseScale; LOADER.style.display='flex';
-        await renderAll(false); LOADER.style.display='none';
-      },160);
-    });
-
-    // 팝업 차단/사파리 우회
-    function openUrlRobust(url){
-      let w=null;
-      try{ w = window.open(url, '_blank'); }catch(e){}
-      if(!w){
-        const a=document.createElement('a');
-        a.href=url; a.target='_blank'; a.rel='noopener';
-        a.style.position='absolute'; a.style.left='-9999px';
-        document.body.appendChild(a); a.click(); setTimeout(()=>a.remove(),0);
-      }
-      if(!w){
-        const id='pdfOpenFallbackNotice';
-        if(!document.getElementById(id)){
-          const div=document.createElement('div');
-          div.id=id; div.className='pdf-empty';
-          div.innerHTML=`새 탭 열기가 차단되었어요.<br/>아래 링크를 길게 눌러 열거나 복사해 열어주세요.<br/>
-                         <a href="${url}" target="_blank" class="underline break-all">${url}</a>`;
-          HOST.appendChild(div);
-        }
+    if(!w){
+      const id='pdfOpenFallbackNotice';
+      if(!document.getElementById(id)){
+        const div=document.createElement('div');
+        div.id=id; div.className='pdf-empty';
+        div.innerHTML=`새 탭 열기가 차단되었어요.<br/>아래 링크를 길게 눌러 열거나 복사해 열어주세요.<br/>
+                       <a href="${url}" target="_blank" class="underline break-all">${url}</a>`;
+        HOST.appendChild(div);
       }
     }
+  }
 
-    // 이벤트 바인딩
-    ZIN.addEventListener('click', ()=> zoom(1.2));
-    ZOUT.addEventListener('click', ()=> zoom(1/1.2));
-    BTN.addEventListener('click', openModal);
-    CLOSE.addEventListener('click', closeModal);
-    MODAL.addEventListener('click', e=>{ if(e.target===MODAL) closeModal(); });
-    document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) closeModal(); });
+  // 이벤트 바인딩
+  ZIN.addEventListener('click', ()=> zoom(1.2));
+  ZOUT.addEventListener('click', ()=> zoom(1/1.2));
+  BTN.addEventListener('click', openModal);
+  CLOSE.addEventListener('click', closeModal);
+  MODAL.addEventListener('click', e=>{ if(e.target===MODAL) closeModal(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) closeModal(); });
 
-    // 새 탭 오픈: blob 우선
-    OPENNEW.addEventListener('click', ()=>{
-      if(OPENNEW.disabled) return;
-      if(blobUrl){ openUrlRobust(blobUrl); }
-      else if(resolvedUrl){ openUrlRobust(resolvedUrl); }
-    });
-  </script>
+  OPENNEW.addEventListener('click', ()=>{
+    if(OPENNEW.disabled) return;
+    if(blobUrl){ openUrlRobust(blobUrl); }
+    else if(resolvedUrl){ openUrlRobust(resolvedUrl); }
+  });
+</script>
 </body>
 </html>
