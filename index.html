@@ -50,8 +50,13 @@
     .pdf-modal{ inset:0; background:rgba(0,0,0,.5); }
     .pdf-panel{ width:calc(100% - 24px); max-width: 960px; height: min(88vh, 900px); display:flex; flex-direction:column; border-radius:1rem; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.25); }
     .pdf-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; padding:.75rem 1rem; background:#fff; border-bottom:1px solid rgba(15,23,42,.08); }
-    .pdf-main{ position:relative; flex:1; background:#0b1220; border-radius:.75rem; overflow:hidden; }
+    .pdf-main{ position:relative; flex:1; background:#0b1220; overflow:auto; }
     .pdf-loader{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#cbd5e1; font-size:.9rem; }
+    .pdf-page{ display:block; margin: 16px auto; background:#fff; box-shadow: 0 4px 24px rgba(0,0,0,.25); border-radius:8px; }
+    .pdf-empty{ color:#cbd5e1; text-align:center; padding:2rem; }
+    .btn-sm{ padding:.4rem .65rem; font-size:.85rem; border-radius:.5rem; }
+    .toolbar-left, .toolbar-right{ display:flex; gap:.5rem; align-items:center; }
+    .toolbar-title{ font-weight:600 }
   </style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
@@ -131,15 +136,19 @@
   <div id="pdfModal" class="pdf-modal hidden fixed flex items-center justify-center z-50 p-3">
     <div class="pdf-panel bg-white">
       <div class="pdf-toolbar">
-        <div class="font-semibold">제안서 미리보기</div>
-        <div class="flex items-center gap-2">
-          <button id="openInNew" class="px-3 py-1.5 rounded-md border text-sm hover:bg-slate-50">새 탭에서 열기</button>
-          <button id="closePdf" class="px-3 py-1.5 rounded-md btn-brand text-sm">닫기</button>
+        <div class="toolbar-left">
+          <span class="toolbar-title">제안서 미리보기</span>
+        </div>
+        <div class="toolbar-right">
+          <!-- 다운로드/프린트 버튼 고의 미표시 -->
+          <button id="zoomOut" class="px-3 btn-sm border hover:bg-slate-50" aria-label="축소">-</button>
+          <button id="zoomIn"  class="px-3 btn-sm border hover:bg-slate-50" aria-label="확대">+</button>
+          <button id="openInNew" class="px-3 btn-sm border hover:bg-slate-50">새 탭에서 열기</button>
+          <button id="closePdf" class="px-3 btn-sm btn-brand text-white">닫기</button>
         </div>
       </div>
-      <div class="pdf-main">
+      <div class="pdf-main" id="pdfScroll">
         <div id="pdfLoader" class="pdf-loader">불러오는 중…</div>
-        <!-- 브라우저별로 iframe/object 주입 -->
         <div id="pdfViewerHost" class="w-full h-full"></div>
       </div>
     </div>
@@ -198,7 +207,7 @@
       root.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
     })();
 
-    // 개인정보 모달(앱 다운로드 준비중)
+    // 앱 다운로드 준비중 모달
     (function(){
       const m=document.getElementById('downloadModal');
       const openBtn=document.getElementById('downloadBtn');
@@ -222,7 +231,7 @@
       onScroll();
     })();
 
-    // 이메일 클릭 복사 (HTTPS 외 폴백 포함)
+    // 이메일 클릭 복사
     (function(){
       const el=document.getElementById('copyEmail'); const toast=document.getElementById('copyToast');
       if(!el||!toast) return;
@@ -239,62 +248,142 @@
       const show=()=>{ toast.classList.remove('hidden'); clearTimeout(show._t); show._t=setTimeout(()=>toast.classList.add('hidden'),1600); };
       el.addEventListener('click', ()=> copy(el.textContent.trim()).then(ok=> ok&&show()));
     })();
+  </script>
 
-    // PDF 미리보기 (Safari는 <object>, 그 외는 sandbox iframe)
-    (function(){
-      const PDF_URL = "/assets/SaveUp_test.pdf"; // ← 실제 경로로 바꿔주세요
+  <!-- PDF.js 기반 뷰어 (모듈) -->
+  <script type="module">
+    // ✅ PDF 파일 경로(동일 출처 권장). CORS가 필요하면 서버에서 허용하세요.
+    const PDF_URL = "/assets/SaveUp_test.pdf"; // ← 실제 경로로 바꿔주세요
 
-      const BTN=document.getElementById('pdfPreviewBtn');
-      const MODAL=document.getElementById('pdfModal');
-      const CLOSE=document.getElementById('closePdf');
-      const OPENNEW=document.getElementById('openInNew');
-      const HOST=document.getElementById('pdfViewerHost');
-      const LOADER=document.getElementById('pdfLoader');
+    import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
 
-      const ua = navigator.userAgent;
-      const isIOS = /iPad|iPhone|iPod/.test(ua);
-      const isSafari = /^((?!chrome|crios|fxios|edgios|android).)*safari/i.test(ua) || isIOS;
+    const BTN=document.getElementById('pdfPreviewBtn');
+    const MODAL=document.getElementById('pdfModal');
+    const CLOSE=document.getElementById('closePdf');
+    const OPENNEW=document.getElementById('openInNew');
+    const HOST=document.getElementById('pdfViewerHost');
+    const LOADER=document.getElementById('pdfLoader');
+    const SCROLL=document.getElementById('pdfScroll');
+    const ZIN=document.getElementById('zoomIn');
+    const ZOUT=document.getElementById('zoomOut');
 
-      function mountViewer(){
-        HOST.innerHTML="";
-        if(isSafari){
-          const obj=document.createElement('object');
-          obj.type='application/pdf';
-          obj.data=PDF_URL;
-          obj.className='w-full h-full bg-white';
-          HOST.appendChild(obj);
-        }else{
-          const frame=document.createElement('iframe');
-          frame.className='w-full h-full';
-          frame.title='제안서 미리보기';
-          frame.loading='lazy';
-          frame.sandbox='allow-same-origin allow-scripts';
-          frame.referrerPolicy='no-referrer';
-          frame.src=PDF_URL+'#toolbar=0&navpanes=0&scrollbar=1';
-          HOST.appendChild(frame);
-        }
+    let pdf=null, pages=[], scale=1.0, baseScale=1.0;
+    let renderAbort=new AbortController();
+
+    function openModal(){
+      MODAL.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+      mountPdf().catch(showFallback);
+    }
+    function closeModal(){
+      MODAL.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+      // 렌더 정리
+      renderAbort.abort();
+      renderAbort = new AbortController();
+      HOST.innerHTML="";
+      LOADER.style.display='flex';
+      pdf=null; pages.length=0; scale=1.0; baseScale=1.0;
+    }
+    function showFallback(err){
+      console.error(err);
+      HOST.innerHTML = `<div class="pdf-empty">미리보기 오류로 새 탭에서 열기를 이용해주세요.</div>`;
+      LOADER.style.display='none';
+    }
+
+    async function mountPdf(){
+      LOADER.style.display='flex';
+      HOST.innerHTML="";
+      const loadingTask = pdfjsLib.getDocument({ url: PDF_URL, withCredentials: false });
+      pdf = await loadingTask.promise;
+
+      // 페이지 컨테이너 생성
+      const frag = document.createDocumentFragment();
+      for(let i=1;i<=pdf.numPages;i++){
+        const c=document.createElement('canvas');
+        c.className='pdf-page';
+        c.dataset.page=i;
+        frag.appendChild(c);
+        pages.push(c);
       }
+      HOST.appendChild(frag);
 
-      function openModal(){
+      // 기본 스케일 계산(컨테이너 폭 기준)
+      await renderAll(true);
+      LOADER.style.display='none';
+    }
+
+    function containerWidth(){
+      // 스크롤 패딩 감안, 모바일에서도 여백 유지
+      const max = 900; // 페이지 최대 폭 제한
+      const w = Math.min(SCROLL.clientWidth - 24, max);
+      return Math.max(320, w);
+    }
+
+    async function renderPage(pageIndex, initial=false){
+      const pageNum = pageIndex + 1;
+      const page = await pdf.getPage(pageNum);
+      const viewport0 = page.getViewport({ scale: 1 });
+      if(initial){
+        baseScale = containerWidth() / viewport0.width;
+        scale = baseScale; // 최초엔 기본 스케일로
+      }
+      const viewport = page.getViewport({ scale });
+      const canvas = pages[pageIndex];
+      const context = canvas.getContext('2d', { alpha: false });
+
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      canvas.style.width = Math.floor(viewport.width) + 'px';
+      canvas.style.height = Math.floor(viewport.height) + 'px';
+
+      const renderContext = { canvasContext: context, viewport, signal: renderAbort.signal };
+      await page.render(renderContext).promise;
+    }
+
+    async function renderAll(initial=false){
+      // 순차 렌더(모바일 메모리 보호)
+      for(let i=0;i<pages.length;i++){
+        await renderPage(i, initial && i===0);
+      }
+    }
+
+    // 확대/축소
+    function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+    async function zoom(delta){
+      const next = clamp(scale * delta, baseScale*0.6, baseScale*2.5);
+      if(Math.abs(next - scale) < 0.01) return;
+      scale = next;
+      LOADER.style.display='flex';
+      // 성능을 위해 viewport 근처만 우선 렌더해도 되지만, 일단 단순 전체 재렌더
+      await renderAll(false);
+      LOADER.style.display='none';
+    }
+
+    // 리사이즈 시 기본스케일 재계산
+    let resizeTid=null;
+    window.addEventListener('resize', ()=>{
+      if(!pdf) return;
+      clearTimeout(resizeTid);
+      resizeTid = setTimeout(async ()=>{
+        const oldBase = baseScale;
+        baseScale = containerWidth() / (pages[0].width/scale); // 간단한 재계산
+        scale = baseScale;
         LOADER.style.display='flex';
-        mountViewer();
-        MODAL.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-        setTimeout(()=>{ LOADER.style.display='none'; }, 400);
-      }
-      function closeModal(){
-        MODAL.classList.add('hidden');
-        document.body.classList.remove('overflow-hidden');
-        setTimeout(()=>{ HOST.innerHTML=""; },120);
-      }
+        await renderAll(false);
+        LOADER.style.display='none';
+      }, 160);
+    });
 
-      BTN.addEventListener('click', openModal);
-      CLOSE.addEventListener('click', closeModal);
-      MODAL.addEventListener('click', e=>{ if(e.target===MODAL) closeModal(); });
-      document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) closeModal(); });
-
-      OPENNEW.addEventListener('click', ()=> window.open(PDF_URL, '_blank', 'noopener,noreferrer'));
-    })();
+    // 이벤트 바인딩
+    BTN.addEventListener('click', openModal);
+    CLOSE.addEventListener('click', closeModal);
+    MODAL.addEventListener('click', e=>{ if(e.target===MODAL) closeModal(); });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) closeModal(); });
+    OPENNEW.addEventListener('click', ()=> window.open(PDF_URL, '_blank', 'noopener,noreferrer'));
+    ZIN.addEventListener('click', ()=> zoom(1.2));
+    ZOUT.addEventListener('click', ()=> zoom(1/1.2));
   </script>
 </body>
 </html>
