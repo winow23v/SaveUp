@@ -4,66 +4,70 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>회사명 | 랜딩 페이지</title>
-  <!-- SEO / 공유 (도메인/이미지 교체) -->
-  <meta name="description" content="일상 소비를 더 똑똑하게 만드는 회사명 서비스" />
-  <meta property="og:title" content="회사명" />
-  <meta property="og:description" content="일상 소비를 더 똑똑하게 만드는 회사명 서비스" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://example.com/" />
-  <meta property="og:image" content="https://example.com/og-image.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="회사명" />
-  <meta name="twitter:description" content="일상 소비를 더 똑똑하게 만드는 회사명 서비스" />
-  <meta name="twitter:image" content="https://example.com/og-image.png" />
-  <!-- JSON-LD -->
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Organization","name":"회사명","url":"https://example.com/","logo":"https://example.com/logo.png","sameAs":[]}
-  </script>
-  <!-- 내부 페이지 미리읽기 -->
-  <link rel="prefetch" href="/about.html" as="document">
-  <link rel="prefetch" href="/service.html" as="document">
-  <link rel="prefetch" href="/notice.html" as="document">
+
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}}}}}</script>
-  <!-- 공통 CSS -->
-  <link rel="stylesheet" href="/assets/site.css?v=2" />
+  <script>
+    tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}}}}}
+  </script>
+
+  <!-- 이 페이지 전용 CSS -->
+  <style>
+    /* 안전영역/툴바 고려: back-to-top 위치 */
+    :root{ --bt-desktop:16px; --bt-mobile:88px; }
+    #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-desktop)); }
+    @media (max-width:767px){
+      #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-mobile)); right:1rem; }
+    }
+    /* Skip link */
+    .skip-link{
+      position:fixed; top:.75rem; left:.75rem; z-index:60;
+      background:#5b8cff; color:#fff; padding:.5rem .75rem; border-radius:.5rem;
+      transform:translateY(-160%); transition:transform .18s ease;
+    }
+    .skip-link:focus{ transform:translateY(0); }
+  </style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Skip link -->
+  <a href="#main" class="skip-link">본문으로 건너뛰기</a>
+
   <!-- 헤더 -->
   <header class="bg-white border-b sticky top-0 z-40">
     <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
       <a href="index.html" class="text-lg font-extrabold text-brand">회사명</a>
       <nav class="hidden md:flex items-center gap-6">
-        <a href="about.html"   class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">About</a>
-        <a href="service.html" class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">Service</a>
-        <a href="notice.html"  class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">Notice</a>
+        <a href="about.html"   class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition">About</a>
+        <a href="service.html" class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition">Service</a>
+        <a href="notice.html"  class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition">Notice</a>
       </nav>
-      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" aria-label="Open menu" aria-expanded="false" aria-controls="drawerRoot">
+      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100" aria-label="Open menu" aria-expanded="false" aria-controls="drawerRoot">
         <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
     </div>
   </header>
-  <!-- 모바일 오프캔버스 -->
+
+  <!-- 모바일 드로어 -->
   <div id="drawerRoot" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div id="drawerOverlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
     <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true">
       <div class="flex items-center justify-end px-5 py-4 border-b">
-        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" aria-label="Close menu">
+        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100" aria-label="Close menu">
           <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
       <nav class="px-5 py-4 space-y-3">
-        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">About</a>
-        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">Service</a>
-        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">Notice</a>
+        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">About</a>
+        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">Service</a>
+        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">Notice</a>
       </nav>
     </aside>
   </div>
 
   <!-- 메인 -->
   <main id="main" class="flex-1">
-    <!-- Hero -->
+    <!-- Hero (가운데 정렬) -->
     <section id="hero" class="flex flex-col justify-center items-center text-center px-5 py-16 md:py-28">
       <h1 class="text-2xl sm:text-3xl md:text-5xl font-extrabold leading-tight">
         카드 혜택을 <span class="text-brand">자동</span>으로,  
@@ -73,11 +77,12 @@
         소비 패턴 분석으로 월간 혜택·포인트 손실을 최소화하는 <b>서비스</b>.
       </p>
       <div class="mt-5 sm:mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
-        <button id="downloadBtn" class="px-5 py-3 rounded-lg bg-brand text-white hover:bg-brand-dark transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">앱 다운로드</button>
-        <a id="pdfDownload" href="/SaveUp/assets/SaveUp_test.pdf" class="px-5 py-3 rounded-lg border hover:bg-slate-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">제안서 다운로드</a>
+        <button id="downloadBtn" class="px-5 py-3 rounded-lg bg-brand text-white hover:bg-brand-dark">앱 다운로드</button>
+        <a id="pdfDownload" href="/SaveUp/assets/SaveUp_test.pdf" class="px-5 py-3 rounded-lg border hover:bg-slate-50">제안서 다운로드</a>
       </div>
     </section>
-    <!-- Contact -->
+
+    <!-- Contact (띠 느낌 최소화) -->
     <section id="meeting" class="px-5 py-8 md:py-10 text-center border-t">
       <h2 class="text-xl md:text-2xl font-bold mb-2 md:mb-3">Contact us</h2>
       <p class="text-slate-600 text-sm md:text-base">문의는 이메일로 부탁드립니다.</p>
@@ -93,130 +98,112 @@
     <div class="max-w-6xl mx-auto px-5">
       <div class="flex flex-wrap items-center justify-center gap-2">
         <span class="px-2 py-0.5">© <span id="year"></span> 회사명. All rights reserved.</span>
-        <button id="privacyBtn" class="px-2 py-0.5 rounded-md hover:bg-brand/15 hover:text-brand transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">개인정보지침</button>
+        <button id="privacyBtn" class="px-2 py-0.5 rounded-md hover:bg-brand/15 hover:text-brand">개인정보지침</button>
       </div>
     </div>
   </footer>
 
-  <!-- Back-to-top (텍스트형, 위치는 site.css가 담당) -->
-  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center hover:bg-brand-dark transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" aria-label="맨위로">Top</button>
+  <!-- Back-to-top -->
+  <button id="backTop"
+    class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center hover:bg-brand-dark"
+    aria-label="맨위로">Top</button>
 
   <!-- 개인정보지침 모달 -->
-  <div id="privacyModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50" aria-hidden="true">
+  <div id="privacyModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div class="bg-white max-w-md w-full p-6 rounded-xl shadow-lg">
       <h3 class="text-xl font-bold mb-3">개인정보 처리방침</h3>
       <p class="text-slate-600 text-sm mb-4">
         본 사이트는 투자자 및 고객 문의 시 이메일 주소(admin@gmail.com)로만 연락을 받고 있으며,
         별도의 개인정보를 수집하지 않습니다.
       </p>
-      <button id="closeModal" class="w-full mt-4 px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">닫기</button>
+      <button id="closeModal" class="w-full mt-4 px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark">닫기</button>
     </div>
   </div>
 
-  <!-- 서비스 준비중 모달 -->
-  <div id="downloadModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50" aria-hidden="true">
+  <!-- 다운로드 준비중 모달 -->
+  <div id="downloadModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div class="bg-white max-w-sm w-full p-6 rounded-xl shadow-lg text-center">
       <h3 class="text-xl font-bold mb-3">서비스 준비중</h3>
       <p class="text-slate-600 mb-6">앱 다운로드 서비스는 곧 제공될 예정입니다.</p>
-      <button id="closeDownload" class="w-full px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">닫기</button>
+      <button id="closeDownload" class="w-full px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark">닫기</button>
     </div>
   </div>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 활성 메뉴 + aria-current (로고 제외)
+    // 현재 페이지 하이라이트
     (function(){
-      const current = (location.pathname.split('/').pop() || 'index.html');
-      const links = document.querySelectorAll('header nav a[href], #drawerRoot a[href]');
-      links.forEach(a => {
-        if (a.getAttribute('href') === current) {
-          a.classList.add('text-brand','underline','underline-offset-4');
-          a.setAttribute('aria-current','page');
-        }
+      const cur = (location.pathname.split('/').pop()||'index.html');
+      document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{
+        if(a.getAttribute('href')===cur){ a.classList.add('text-brand','underline','underline-offset-4'); a.setAttribute('aria-current','page'); }
       });
     })();
 
-    // 드로어
+    // 드로어 열고닫기
     (function(){
-      const btn = document.getElementById('drawerBtn');
-      const root = document.getElementById('drawerRoot');
-      const panel = document.getElementById('drawerPanel');
-      const overlay = document.getElementById('drawerOverlay');
-      const closeBtn = document.getElementById('drawerClose');
+      const btn=document.getElementById('drawerBtn'), root=document.getElementById('drawerRoot');
+      const panel=document.getElementById('drawerPanel'), overlay=document.getElementById('drawerOverlay');
+      const closeBtn=document.getElementById('drawerClose');
       const open=()=>{ root.classList.remove('hidden'); requestAnimationFrame(()=>{ panel.classList.remove('translate-x-full'); overlay.classList.remove('opacity-0');}); btn?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden'); };
-      const close=()=>{ panel.classList.add('translate-x-full'); overlay.classList.add('opacity-0'); btn?.setAttribute('aria-expanded','false'); setTimeout(()=> root.classList.add('hidden'),300); document.body.classList.remove('overflow-hidden'); };
-      btn?.addEventListener('click', open); overlay?.addEventListener('click', close); closeBtn?.addEventListener('click', close);
-      document.addEventListener('keydown', e => { if(e.key==='Escape' && !root.classList.contains('hidden')) close(); });
-      root.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+      const close=()=>{ panel.classList.add('translate-x-full'); overlay.classList.add('opacity-0'); btn?.setAttribute('aria-expanded','false'); setTimeout(()=>root.classList.add('hidden'),300); document.body.classList.remove('overflow-hidden'); };
+      btn?.addEventListener('click',open); overlay?.addEventListener('click',close); closeBtn?.addEventListener('click',close);
+      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !root.classList.contains('hidden')) close(); });
+      root.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
     })();
 
     // 개인정보 모달
     (function(){
-      const modal = document.getElementById('privacyModal');
-      document.getElementById('privacyBtn').addEventListener('click', ()=> modal.classList.remove('hidden'));
-      document.getElementById('closeModal')?.addEventListener('click', ()=> modal.classList.add('hidden'));
-      modal.addEventListener('click', e => { if(e.target === modal) modal.classList.add('hidden') });
+      const m=document.getElementById('privacyModal');
+      document.getElementById('privacyBtn').addEventListener('click',()=>m.classList.remove('hidden'));
+      document.getElementById('closeModal').addEventListener('click',()=>m.classList.add('hidden'));
+      m.addEventListener('click',e=>{ if(e.target===m) m.classList.add('hidden'); });
     })();
 
     // Back-to-top
-    (function () {
-      const btn = document.getElementById('backTop');
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      function onScroll(){ if (window.scrollY > 300) btn.classList.remove('hidden'); else btn.classList.add('hidden'); }
-      window.addEventListener('scroll', onScroll, { passive:true });
-      btn.addEventListener('click', () => { prefersReduced ? window.scrollTo(0,0) : window.scrollTo({ top:0, behavior:'smooth' }); });
+    (function(){
+      const b=document.getElementById('backTop');
+      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const onScroll=()=>{ if(window.scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
+      window.addEventListener('scroll',onScroll,{passive:true});
+      b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'}));
       onScroll();
     })();
 
-    // 이메일 클릭 복사 + 토스트
+    // 이메일 클릭 복사
     (function(){
-      const el = document.getElementById('copyEmail');
-      const toast = document.getElementById('copyToast');
-      if(!el || !toast) return;
-      el.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(el.textContent.trim());
-          toast.classList.remove('hidden');
-          setTimeout(()=> toast.classList.add('hidden'), 1600);
-        } catch(e) { console.warn('Clipboard error', e); }
+      const el=document.getElementById('copyEmail'); const toast=document.getElementById('copyToast');
+      if(!el||!toast) return;
+      el.addEventListener('click', async ()=>{
+        try{ await navigator.clipboard.writeText(el.textContent.trim()); toast.classList.remove('hidden'); setTimeout(()=>toast.classList.add('hidden'),1600); }catch(e){}
       });
     })();
 
-    // 앱 다운로드 모달
+    // 다운로드 모달
     (function(){
-      const m = document.getElementById('downloadModal');
-      document.getElementById('downloadBtn').addEventListener('click', ()=> m.classList.remove('hidden'));
-      document.getElementById('closeDownload').addEventListener('click', ()=> m.classList.add('hidden'));
-      m.addEventListener('click', e => { if(e.target === m) m.classList.add('hidden') });
+      const m=document.getElementById('downloadModal');
+      document.getElementById('downloadBtn').addEventListener('click',()=>m.classList.remove('hidden'));
+      document.getElementById('closeDownload').addEventListener('click',()=>m.classList.add('hidden'));
+      m.addEventListener('click',e=>{ if(e.target===m) m.classList.add('hidden'); });
     })();
 
     // PDF 강제 다운로드
-    (function () {
-      const link = document.getElementById('pdfDownload');
-      if (!link) return;
-      const FILE_URL = link.getAttribute('href');
-      const FILE_NAME = 'SaveUp_test.pdf';
-      function saveBlobCrossBrowser(blob, filename) {
-        if (window.navigator && typeof window.navigator.msSaveOrOpenBlob === 'function') {
-          window.navigator.msSaveOrOpenBlob(blob, filename); return true;
-        } return false;
-      }
-      async function forceDownload(e) {
+    (function(){
+      const link=document.getElementById('pdfDownload'); if(!link) return;
+      const FILE_URL=link.getAttribute('href'); const FILE_NAME='SaveUp_test.pdf';
+      function msSave(blob,filename){ if(window.navigator && typeof window.navigator.msSaveOrOpenBlob==='function'){ window.navigator.msSaveOrOpenBlob(blob,filename); return true;} return false;}
+      async function dl(e){
         e.preventDefault();
-        try {
-          const cacheBusted = FILE_URL + (FILE_URL.includes('?') ? '&' : '?') + 'v=' + Date.now();
-          const res = await fetch(cacheBusted, { cache: 'no-store', credentials: 'same-origin' });
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          const blob = await res.blob();
-          if (saveBlobCrossBrowser(blob, FILE_NAME)) return;
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.style.display='none'; a.href=url; a.download=FILE_NAME;
-          document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-        } catch (err) { console.error('[PDF download fallback]', err); window.location.href = FILE_URL; }
+        try{
+          const res=await fetch(FILE_URL + (FILE_URL.includes('?')?'&':'?') + 'v='+Date.now(), {cache:'no-store', credentials:'same-origin'});
+          if(!res.ok) throw new Error('HTTP '+res.status);
+          const blob=await res.blob();
+          if(msSave(blob,FILE_NAME)) return;
+          const url=URL.createObjectURL(blob); const a=document.createElement('a');
+          a.style.display='none'; a.href=url; a.download=FILE_NAME; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+        }catch{ window.location.href=FILE_URL; }
       }
-      link.addEventListener('click', forceDownload);
+      link.addEventListener('click',dl);
     })();
   </script>
 </body>

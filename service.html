@@ -5,34 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Service | 회사명</title>
 
-  <meta name="description" content="회사명의 핵심 서비스 소개" />
-  <meta property="og:title" content="Service | 회사명" />
-  <meta property="og:description" content="주요 기능 안내" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://example.com/service.html" />
-  <meta property="og:image" content="https://example.com/og-image.png" />
-
-  <link rel="prefetch" href="/index.html" as="document">
-  <link rel="prefetch" href="/about.html" as="document">
-  <link rel="prefetch" href="/notice.html" as="document">
-
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}}}}}</script>
+  <script>
+    tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}}}}}
+  </script>
 
-  <link rel="stylesheet" href="/assets/site.css?v=2" />
+  <style>
+    :root{ --bt-desktop:16px; --bt-mobile:88px; }
+    #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-desktop)); }
+    @media (max-width:767px){ #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-mobile)); right:1rem; } }
+    .skip-link{position:fixed;top:.75rem;left:.75rem;z-index:60;background:#5b8cff;color:#fff;padding:.5rem .75rem;border-radius:.5rem;transform:translateY(-160%);transition:.18s}
+    .skip-link:focus{transform:translateY(0)}
+  </style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
+  <a href="#main" class="skip-link">본문으로 건너뛰기</a>
 
-  <!-- 헤더 (index와 동일) -->
+  <!-- 헤더 -->
   <header class="bg-white border-b sticky top-0 z-40">
     <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
       <a href="index.html" class="text-lg font-extrabold text-brand">회사명</a>
       <nav class="hidden md:flex items-center gap-6">
-        <a href="about.html"   class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">About</a>
-        <a href="service.html" class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">Service</a>
-        <a href="notice.html"  class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">Notice</a>
+        <a href="about.html"   class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition">About</a>
+        <a href="service.html" class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition">Service</a>
+        <a href="notice.html"  class="text-sm px-1 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition">Notice</a>
       </nav>
-      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" aria-label="Open menu" aria-expanded="false" aria-controls="drawerRoot">
+      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100" aria-label="Open menu" aria-expanded="false" aria-controls="drawerRoot">
         <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
     </div>
@@ -42,14 +40,14 @@
     <div id="drawerOverlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
     <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true">
       <div class="flex items-center justify-end px-5 py-4 border-b">
-        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" aria-label="Close menu">
+        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100" aria-label="Close menu">
           <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
       <nav class="px-5 py-4 space-y-3">
-        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">About</a>
-        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">Service</a>
-        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">Notice</a>
+        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">About</a>
+        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">Service</a>
+        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">Notice</a>
       </nav>
     </aside>
   </div>
@@ -64,7 +62,7 @@
 
     <!-- 타임라인 -->
     <section id="steps" class="max-w-3xl mx-auto px-5 py-8 md:py-10">
-      <ol class="relative list-none border-l-2 border-brand/20 pl-6 space-y-6 md:space-y-8">
+      <ol class="relative list-none border-l-2 border-brand/20 pl-6 space-y-6 md:space-y-7">
         <li class="relative group pl-7 md:pl-9 rounded-lg">
           <span class="absolute -left-5 top-0 flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-full bg-brand text-white text-[11px] md:text-xs font-bold ring-4 ring-white shadow-sm">01</span>
           <h2 class="js-step-title text-lg md:text-xl font-bold text-slate-900 transition-colors duration-150 group-hover:text-brand select-none">카드 세분화 소비</h2>
@@ -93,78 +91,72 @@
     <div class="max-w-6xl mx-auto px-5">
       <div class="flex flex-wrap items-center justify-center gap-2">
         <span class="px-2 py-0.5">© <span id="year"></span> 회사명. All rights reserved.</span>
-        <button id="privacyBtn" class="px-2 py-0.5 rounded-md hover:bg-brand/15 hover:text-brand transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">개인정보지침</button>
+        <button id="privacyBtn" class="px-2 py-0.5 rounded-md hover:bg-brand/15 hover:text-brand">개인정보지침</button>
       </div>
     </div>
   </footer>
 
-  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center hover:bg-brand-dark transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" aria-label="맨위로">Top</button>
+  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center hover:bg-brand-dark" aria-label="맨위로">Top</button>
 
-  <div id="privacyModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50" aria-hidden="true">
+  <div id="privacyModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div class="bg-white max-w-md w-full p-6 rounded-xl shadow-lg">
       <h3 class="text-xl font-bold mb-3">개인정보 처리방침</h3>
       <p class="text-slate-600 text-sm mb-4">본 사이트는 투자자 및 고객 문의 시 이메일 주소(admin@gmail.com)로만 연락을 받고 있으며, 별도의 개인정보를 수집하지 않습니다.</p>
-      <button id="closeModal" class="w-full mt-4 px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">닫기</button>
+      <button id="closeModal" class="w-full mt-4 px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark">닫기</button>
     </div>
   </div>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    (function(){
-      const current = (location.pathname.split('/').pop() || 'service.html');
-      document.querySelectorAll('header nav a[href], #drawerRoot a[href]').forEach(a => {
-        if (a.getAttribute('href') === current) { a.classList.add('text-brand','underline','underline-offset-4'); a.setAttribute('aria-current','page'); }
-      });
+    (function(){ const cur=(location.pathname.split('/').pop()||'service.html');
+      document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{ if(a.getAttribute('href')===cur){ a.classList.add('text-brand','underline','underline-offset-4'); a.setAttribute('aria-current','page'); } });
     })();
 
-    // 드로어/모달/Top 버튼 (index와 동일)
+    // 드로어/모달/Top 버튼
     (function(){
-      const btn = document.getElementById('drawerBtn'), root = document.getElementById('drawerRoot');
-      const panel = document.getElementById('drawerPanel'), overlay = document.getElementById('drawerOverlay');
-      const closeBtn = document.getElementById('drawerClose');
+      const btn=document.getElementById('drawerBtn'), root=document.getElementById('drawerRoot');
+      const panel=document.getElementById('drawerPanel'), overlay=document.getElementById('drawerOverlay');
+      const closeBtn=document.getElementById('drawerClose');
       const open=()=>{ root.classList.remove('hidden'); requestAnimationFrame(()=>{ panel.classList.remove('translate-x-full'); overlay.classList.remove('opacity-0');}); btn?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden'); };
-      const close=()=>{ panel.classList.add('translate-x-full'); overlay.classList.add('opacity-0'); btn?.setAttribute('aria-expanded','false'); setTimeout(()=> root.classList.add('hidden'),300); document.body.classList.remove('overflow-hidden'); };
-      btn?.addEventListener('click', open); overlay?.addEventListener('click', close); closeBtn?.addEventListener('click', close);
-      document.addEventListener('keydown', e => { if(e.key==='Escape' && !root.classList.contains('hidden')) close(); });
-      root.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+      const close=()=>{ panel.classList.add('translate-x-full'); overlay.classList.add('opacity-0'); btn?.setAttribute('aria-expanded','false'); setTimeout(()=>root.classList.add('hidden'),300); document.body.classList.remove('overflow-hidden'); };
+      btn?.addEventListener('click',open); overlay?.addEventListener('click',close); closeBtn?.addEventListener('click',close);
+      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !root.classList.contains('hidden')) close(); });
+      root.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
 
-      const modal = document.getElementById('privacyModal');
-      document.getElementById('privacyBtn').addEventListener('click', ()=> modal.classList.remove('hidden'));
-      document.getElementById('closeModal')?.addEventListener('click', ()=> modal.classList.add('hidden'));
-      modal.addEventListener('click', e => { if(e.target === modal) modal.classList.add('hidden') });
+      const m=document.getElementById('privacyModal');
+      document.getElementById('privacyBtn').addEventListener('click',()=>m.classList.remove('hidden'));
+      document.getElementById('closeModal')?.addEventListener('click',()=>m.classList.add('hidden'));
+      m.addEventListener('click',e=>{ if(e.target===m) m.classList.add('hidden'); });
 
-      const bt = document.getElementById('backTop');
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const onScroll=()=>{ if (window.scrollY > 300) bt.classList.remove('hidden'); else bt.classList.add('hidden'); };
-      window.addEventListener('scroll', onScroll, {passive:true});
-      bt.addEventListener('click', ()=> { reduced? window.scrollTo(0,0) : window.scrollTo({top:0,behavior:'smooth'}) });
+      const b=document.getElementById('backTop');
+      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const onScroll=()=>{ if(window.scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
+      window.addEventListener('scroll',onScroll,{passive:true});
+      b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'}));
       onScroll();
     })();
 
-    // 모바일 전용: 5초 간격 자동 하이라이트(색상만) + 화면 보일 때만 동작
+    // 모바일 전용: 5초 간격 자동 하이라이트(밑줄/강조 없음, 색상만)
     (function(){
       const mq = window.matchMedia('(max-width: 767px)');
       const titles = Array.from(document.querySelectorAll('.js-step-title'));
       const box = document.getElementById('steps');
-      const INTERVAL_MS = 5000;
+      const INTERVAL_MS = 5000; // 5초
       let idx = 0, timer = null, visible = true;
 
       function apply(i){
-        titles.forEach((el, k) => {
-          el.classList.toggle('text-brand', k === i);
-          el.classList.toggle('text-slate-900', k !== i);
-        });
+        titles.forEach((el,k)=>{ el.classList.toggle('text-brand',k===i); el.classList.toggle('text-slate-900',k!==i); });
       }
-      function start(){ if (!mq.matches || !visible || timer || titles.length===0) return; apply(idx); timer = setInterval(()=>{ idx=(idx+1)%titles.length; apply(idx); }, INTERVAL_MS); }
-      function stop(){ if (timer){ clearInterval(timer); timer=null; } }
+      function start(){ if(!mq.matches || !visible || timer || !titles.length) return; apply(idx); timer=setInterval(()=>{ idx=(idx+1)%titles.length; apply(idx); }, INTERVAL_MS); }
+      function stop(){ if(timer){ clearInterval(timer); timer=null; } }
 
-      if (box){
-        const io = new IntersectionObserver(es => { visible = !!es[0]?.isIntersecting; visible ? start() : stop(); }, { threshold: 0.1 });
+      if(box){
+        const io=new IntersectionObserver(es=>{ visible=!!es[0]?.isIntersecting; visible?start():stop(); },{threshold:0.1});
         io.observe(box);
       }
-      document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
-      (mq.addEventListener ? mq.addEventListener('change', e=> e.matches? start():stop()) : mq.addListener(e=> e.matches? start():stop()));
+      document.addEventListener('visibilitychange',()=>{ document.hidden?stop():start(); });
+      (mq.addEventListener ? mq.addEventListener('change',e=> e.matches?start():stop()) : mq.addListener(e=> e.matches?start():stop()));
       start();
     })();
   </script>
