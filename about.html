@@ -5,17 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>About | 회사명</title>
 
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}}}}}
   </script>
 
+  <!-- 이 페이지 전용 CSS -->
   <style>
-    :root{ --bt-desktop:16px; --bt-mobile:88px; }
-    #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-desktop)); }
-    @media (max-width:767px){ #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-mobile)); right:1rem; } }
-    .skip-link{position:fixed;top:.75rem;left:.75rem;z-index:60;background:#5b8cff;color:#fff;padding:.5rem .75rem;border-radius:.5rem;transform:translateY(-160%);transition:.18s}
-    .skip-link:focus{transform:translateY(0)}
+    /* Top 버튼 하단 고정 위치(모바일 오프셋 축소) */
+    :root{ --bt-desktop:16px; --bt-mobile:28px; }
+    #backTop{
+      position:fixed;
+      right:1rem;
+      top:auto; /* 혹시 모를 상단 고정 방지 */
+      bottom:calc(env(safe-area-inset-bottom,0px) + var(--bt-desktop));
+    }
+    @media (min-width:768px){ #backTop{ right:1.5rem; } }
+    @media (max-width:767px){
+      #backTop{
+        bottom:calc(env(safe-area-inset-bottom,0px) + var(--bt-mobile));
+        right:1rem;
+      }
+    }
+
+    /* 키보드 탭용 스킵 링크 */
+    .skip-link{
+      position:fixed; top:.75rem; left:.75rem; z-index:60;
+      background:#5b8cff; color:#fff; padding:.5rem .75rem; border-radius:.5rem;
+      transform:translateY(-160%); transition:transform .18s ease;
+    }
+    .skip-link:focus{ transform:translateY(0); }
   </style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
@@ -36,6 +56,7 @@
     </div>
   </header>
 
+  <!-- 모바일 드로어 -->
   <div id="drawerRoot" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div id="drawerOverlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
     <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true">
@@ -52,6 +73,7 @@
     </aside>
   </div>
 
+  <!-- 메인 -->
   <main id="main" class="flex-1">
     <!-- Hero -->
     <section class="px-5 py-12 md:py-16 text-center bg-gradient-to-r from-brand/10 to-brand/5">
@@ -81,6 +103,7 @@
     </section>
   </main>
 
+  <!-- 푸터 -->
   <footer class="border-t py-6 text-sm text-slate-500 mt-auto">
     <div class="max-w-6xl mx-auto px-5">
       <div class="flex flex-wrap items-center justify-center gap-2">
@@ -90,8 +113,12 @@
     </div>
   </footer>
 
-  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center hover:bg-brand-dark" aria-label="맨위로">Top</button>
+  <!-- Back-to-top -->
+  <button id="backTop"
+    class="hidden z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center hover:bg-brand-dark"
+    aria-label="맨위로">Top</button>
 
+  <!-- 개인정보지침 모달 -->
   <div id="privacyModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div class="bg-white max-w-md w-full p-6 rounded-xl shadow-lg">
       <h3 class="text-xl font-bold mb-3">개인정보 처리방침</h3>
@@ -100,10 +127,13 @@
     </div>
   </div>
 
+  <!-- jQuery(리빌 효과) -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
+    // 현재 페이지 하이라이트
     (function(){ const cur=(location.pathname.split('/').pop()||'about.html');
       document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{ if(a.getAttribute('href')===cur){ a.classList.add('text-brand','underline','underline-offset-4'); a.setAttribute('aria-current','page'); } });
     })();
