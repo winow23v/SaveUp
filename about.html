@@ -13,19 +13,30 @@
 
   <!-- 이 페이지 전용 CSS -->
   <style>
-    /* Top 버튼 하단 고정 위치(모바일 오프셋 축소) */
+    /* Top 버튼 하단 고정 + 푸터 가림 방지용 lift 상태 정의 */
     :root{ --bt-desktop:16px; --bt-mobile:28px; }
     #backTop{
       position:fixed;
       right:1rem;
-      top:auto; /* 혹시 모를 상단 고정 방지 */
+      top:auto; /* 상단 배치 방지 */
       bottom:calc(env(safe-area-inset-bottom,0px) + var(--bt-desktop));
+      transition: bottom .2s ease;
+      z-index:40;
     }
     @media (min-width:768px){ #backTop{ right:1.5rem; } }
     @media (max-width:767px){
       #backTop{
         bottom:calc(env(safe-area-inset-bottom,0px) + var(--bt-mobile));
         right:1rem;
+      }
+    }
+    /* 푸터가 보일 때 버튼을 더 위로 올림(개인정보지침과 겹침 방지) */
+    #backTop.lift{
+      bottom:calc(env(safe-area-inset-bottom,0px) + var(--bt-desktop) + 72px);
+    }
+    @media (max-width:767px){
+      #backTop.lift{
+        bottom:calc(env(safe-area-inset-bottom,0px) + var(--bt-mobile) + 96px);
       }
     }
 
@@ -104,7 +115,7 @@
   </main>
 
   <!-- 푸터 -->
-  <footer class="border-t py-6 text-sm text-slate-500 mt-auto">
+  <footer id="siteFooter" class="border-t py-6 text-sm text-slate-500 mt-auto">
     <div class="max-w-6xl mx-auto px-5">
       <div class="flex flex-wrap items-center justify-center gap-2">
         <span class="px-2 py-0.5">© <span id="year"></span> 회사명. All rights reserved.</span>
@@ -115,7 +126,7 @@
 
   <!-- Back-to-top -->
   <button id="backTop"
-    class="hidden z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center hover:bg-brand-dark"
+    class="hidden bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center hover:bg-brand-dark"
     aria-label="맨위로">Top</button>
 
   <!-- 개인정보지침 모달 -->
@@ -160,6 +171,16 @@
       window.addEventListener('scroll',onScroll,{passive:true});
       b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'}));
       onScroll();
+
+      // *** 푸터가 보이면 Top 버튼을 위로 띄워서 가림 방지 ***
+      const footer = document.getElementById('siteFooter');
+      if(footer && b){
+        const io = new IntersectionObserver((entries)=>{
+          const visible = entries[0]?.isIntersecting;
+          b.classList.toggle('lift', !!visible);
+        }, {threshold: 0.01});
+        io.observe(footer);
+      }
     })();
 
     // jQuery 스크롤 리빌
