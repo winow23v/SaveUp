@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>회사명 | 랜딩 페이지</title>
 
-  <!-- ★ 프로젝트 사이트 서브패스 기준점 -->
-  <base href="/SaveUp/">
-
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -252,13 +249,21 @@
     })();
   </script>
 
-  <!-- PDF.js 기반 뷰어 (모듈) -->
+  <!-- PDF.js 기반 뷰어 (모듈, 경로 자동 계산 + 워커 안정화) -->
   <script type="module">
-    // ✅ 상대경로 (base가 /SaveUp/ 로 보정)
-    const PDF_FILE = 'assets/SaveUp_test.pdf';
+    // 1) 레포 서브패스 자동 계산: /SaveUp/ 이면 prefix 붙임
+    function resolvePdfPath(fileRel){
+      const segs = location.pathname.split('/').filter(Boolean);
+      const repoGuess = segs[0] || '';              // 예: 'SaveUp'
+      // 사용자 사이트(root)면 prefix 없음, 프로젝트 사이트면 prefix
+      const needsPrefix = repoGuess.toLowerCase() === 'saveup';
+      return needsPrefix ? `${repoGuess}/${fileRel.replace(/^\/+/,'')}` : fileRel.replace(/^\/+/,'');
+    }
+    const PDF_FILE = resolvePdfPath('assets/SaveUp_test.pdf');
 
-    import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
+    // 2) PDF.js (버전 고정)
+    import * as pdfjsLib from 'https://unpkg.com/pdfjs-dist@4.6.82/build/pdf.mjs';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@4.6.82/build/pdf.worker.mjs';
 
     const BTN=document.getElementById('pdfPreviewBtn');
     const MODAL=document.getElementById('pdfModal');
@@ -279,16 +284,14 @@
     OPENNEW.classList.add('opacity-50','cursor-not-allowed');
 
     function candidateUrls(file){
-      // base가 있기 때문에 상대경로만으로 충분하지만, 안전하게 여러 후보를 시도
+      const here = new URL(location.href);
+      const origin = here.origin;
+      const dir = here.pathname.endsWith('/') ? here.pathname : here.pathname.replace(/[^/]+$/, '');
       const list = [
-        file,
-        './'+file,
-        '/'+file.replace(/^\/+/,'')
+        new URL(file, origin + dir).href,     // ./assets/...
+        new URL('./'+file, origin + dir).href,
+        new URL('/'+file.replace(/^\/+/,'')).href
       ];
-      const base = document.querySelector('base')?.href;
-      if(base){
-        try{ list.unshift(new URL(file, base).href); }catch{}
-      }
       return [...new Set(list)];
     }
 
@@ -301,10 +304,12 @@
           if(res.ok){
             const blob = await res.blob();
             blobUrl = URL.createObjectURL(blob);
-            resolvedUrl = (typeof url === 'string') ? url : String(url);
+            resolvedUrl = url;
             return { ok:true, tried };
           }
-        }catch(e){ /* continue */ }
+        }catch(e){
+          tried.push('ERR:'+ (e?.message || e));
+        }
       }
       return { ok:false, tried };
     }
@@ -329,7 +334,7 @@
     }
     function showFallback(err){
       console.error(err);
-      HOST.innerHTML = `<div class="pdf-empty">미리보기 오류가 발생했습니다. PDF 파일 경로/배포를 확인해주세요.</div>`;
+      HOST.innerHTML = `<div class="pdf-empty">미리보기 오류가 발생했습니다. PDF 파일 경로/배포를 확인해주세요.<br/><span class="text-xs opacity-80">detail: ${String(err)}</span></div>`;
       LOADER.style.display='none';
     }
 
@@ -349,8 +354,15 @@
         return;
       }
 
-      const loadingTask = pdfjsLib.getDocument({ url: blobUrl, withCredentials: false });
-      pdf = await loadingTask.promise;
+      try{
+        const loadingTask = pdfjsLib.getDocument({ url: blobUrl, withCredentials: false });
+        pdf = await loadingTask.promise;
+      }catch(e){
+        // 워커/모듈 이슈 등으로 실패 시, 최소한 새 탭 열기는 가능하도록 버튼 허용
+        OPENNEW.disabled = false;
+        OPENNEW.classList.remove('opacity-50','cursor-not-allowed');
+        throw e;
+      }
 
       const frag = document.createDocumentFragment();
       for(let i=1;i<=pdf.numPages;i++){
@@ -415,7 +427,7 @@
       },160);
     });
 
-    // 팝업 차단/사파리 우회: 강인한 오프너
+    // 팝업 차단/사파리 우회
     function openUrlRobust(url){
       let w=null;
       try{ w = window.open(url, '_blank'); }catch(e){}
@@ -445,7 +457,7 @@
     MODAL.addEventListener('click', e=>{ if(e.target===MODAL) closeModal(); });
     document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) closeModal(); });
 
-    // 새 탭 오픈
+    // 새 탭 오픈: blob 우선
     OPENNEW.addEventListener('click', ()=>{
       if(OPENNEW.disabled) return;
       if(blobUrl){ openUrlRobust(blobUrl); }
