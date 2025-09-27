@@ -249,10 +249,10 @@
       el.addEventListener('click', ()=> copy(el.textContent.trim()).then(ok=> ok&&show()));
     })();
   </script>
-<!-- PDF.js 기반 뷰어 (모듈) : 기존 <script type="module"> 블록 전체 교체 -->
+<!-- PDF.js 뷰어 (기존 <script type="module"> 교체) -->
   <script type="module">
-    // ✅ 파일명만 맞추면 대부분 자동 해결됩니다.
-    const PDF_FILE = 'assets/SaveUp_test.pdf'; // 실제 파일명/위치에 맞게만 바꾸세요(폴더 포함)
+    // ✅ 상대경로 기본. 프로젝트 사이트( /<repo>/ )에서도 안전.
+    const PDF_FILE = 'assets/SaveUp_test.pdf';
   
     import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs';
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
@@ -269,27 +269,24 @@
   
     let pdf=null, pages=[], scale=1.0, baseScale=1.0;
     let renderAbort=new AbortController();
-    let blobUrl=null;          // ← blob URL을 전역으로 보관
-    let resolvedUrl=null;      // ← 실제 성공한 원본 URL(진단용)
+    let blobUrl=null, resolvedUrl=null;
   
-    // 배포 환경에서 자주 생기는 경로 문제를 자동으로 보정
+    // 🔒 로드 전엔 '새 탭' 비활성화(404 혼동 방지)
+    OPENNEW.disabled = true;
+    OPENNEW.classList.add('opacity-50','cursor-not-allowed');
+  
     function candidateUrls(file){
       const here = new URL(location.href);
       const origin = here.origin;
       const dir = here.pathname.endsWith('/') ? here.pathname : here.pathname.replace(/[^/]+$/, '');
-      // 1) 현재 디렉토리 기준
-      const rel1 = new URL(file, origin + dir).href;
-      // 2) ./ 명시
-      const rel2 = new URL('./' + file, origin + dir).href;
-      // 3) 사이트 루트 기준(절대경로)
-      const abs  = new URL('/' + file.replace(/^\/+/,'')).href;
-      // 4) SPA/리포지토리 서브패스용: <base href>가 있는 경우 그것도 고려
+      const list = [
+        new URL(file, origin + dir).href,     // ./assets/SaveUp_test.pdf
+        new URL('./'+file, origin + dir).href,
+        // 주의: 절대경로는 프로젝트 사이트에서 깨질 수 있으므로 뒤로 배치
+        new URL('/'+file.replace(/^\/+/,'')).href
+      ];
       const base = document.querySelector('base')?.href;
-      const baseRel = base ? new URL(file, base).href : null;
-  
-      const list = [rel1, rel2, abs];
-      if(baseRel) list.unshift(baseRel);
-      // 중복 제거
+      if(base) list.unshift(new URL(file, base).href);
       return [...new Set(list)];
     }
   
@@ -298,27 +295,16 @@
       for(const url of candidateUrls(PDF_FILE)){
         tried.push(url);
         try{
-          // 일부 서버가 HEAD를 막으므로 GET으로 최소 바이트만…
           const res = await fetch(url, { method:'GET' });
           if(res.ok){
-            // Content-Type이 잘못이어도 blob으로 처리 가능
             const blob = await res.blob();
-            // 아주 드물게 PDF가 아닌 에셋이 오는 경우 MIME 체크(선택)
-            // if(!/pdf/i.test(blob.type)) continue;
             blobUrl = URL.createObjectURL(blob);
             resolvedUrl = url;
-            return true;
+            return { ok:true, tried };
           }
-        }catch(e){ /* ignore and continue */ }
+        }catch(e){ /* continue */ }
       }
-      // 실패 시 시도한 URL 안내
-      HOST.innerHTML = `
-        <div class="pdf-empty">
-          PDF 파일을 찾지 못했습니다(404/경로오류).<br/>
-          시도한 경로:<br/>
-          <div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\n')}</div>
-        </div>`;
-      return false;
+      return { ok:false, tried };
     }
   
     function openModal(){
@@ -335,25 +321,36 @@
       LOADER.style.display='flex';
       if(blobUrl){ URL.revokeObjectURL(blobUrl); blobUrl=null; }
       pdf=null; pages.length=0; scale=1.0; baseScale=1.0;
+  
+      // 닫으면 새 탭 버튼 다시 잠금(다음 오픈 대비)
+      OPENNEW.disabled = true;
+      OPENNEW.classList.add('opacity-50','cursor-not-allowed');
     }
     function showFallback(err){
       console.error(err);
-      HOST.innerHTML = `<div class="pdf-empty">미리보기 오류가 발생했습니다. 새 탭 열기를 이용해 주세요.</div>`;
+      HOST.innerHTML = `<div class="pdf-empty">미리보기 오류가 발생했습니다. PDF 파일 경로/배포를 확인해주세요.</div>`;
       LOADER.style.display='none';
     }
   
     async function mountPdf(){
       LOADER.style.display='flex';
       HOST.innerHTML="";
-      // 1) 경로 자동 해결 + blob URL 생성
-      const ok = await tryResolvePdfUrl();
-      if(!ok){ LOADER.style.display='none'; return; }
   
-      // 2) PDF.js로 로드(Blob URL → CORS 영향 거의 없음)
+      const { ok, tried } = await tryResolvePdfUrl();
+      if(!ok){
+        HOST.innerHTML = `
+          <div class="pdf-empty">
+            PDF 파일을 찾지 못했습니다(404/경로 오류).<br/>
+            시도한 경로 목록:<br/>
+            <div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\n')}</div>
+          </div>`;
+        LOADER.style.display='none';
+        return;
+      }
+  
       const loadingTask = pdfjsLib.getDocument({ url: blobUrl, withCredentials: false });
       pdf = await loadingTask.promise;
   
-      // 3) 페이지 캔버스 생성
       const frag = document.createDocumentFragment();
       for(let i=1;i<=pdf.numPages;i++){
         const c=document.createElement('canvas');
@@ -366,6 +363,10 @@
   
       await renderAll(true);
       LOADER.style.display='none';
+  
+      // ✅ 로드 성공 → 새 탭 버튼 활성화 (blob URL로 열기 → 404 방지)
+      OPENNEW.disabled = false;
+      OPENNEW.classList.remove('opacity-50','cursor-not-allowed');
     }
   
     function containerWidth(){
@@ -378,66 +379,55 @@
       const pageNum = pageIndex + 1;
       const page = await pdf.getPage(pageNum);
       const viewport0 = page.getViewport({ scale: 1 });
-      if(initial){
-        baseScale = containerWidth() / viewport0.width;
-        scale = baseScale;
-      }
+      if(initial){ baseScale = containerWidth() / viewport0.width; scale = baseScale; }
       const viewport = page.getViewport({ scale });
       const canvas = pages[pageIndex];
-      const context = canvas.getContext('2d', { alpha: false });
+      const ctx = canvas.getContext('2d', { alpha:false });
   
       canvas.width = Math.floor(viewport.width);
       canvas.height = Math.floor(viewport.height);
-      canvas.style.width = Math.floor(viewport.width) + 'px';
-      canvas.style.height = Math.floor(viewport.height) + 'px';
+      canvas.style.width = Math.floor(viewport.width)+'px';
+      canvas.style.height = Math.floor(viewport.height)+'px';
   
-      const renderContext = { canvasContext: context, viewport, signal: renderAbort.signal };
-      await page.render(renderContext).promise;
+      await page.render({ canvasContext: ctx, viewport, signal: renderAbort.signal }).promise;
     }
-  
     async function renderAll(initial=false){
-      for(let i=0;i<pages.length;i++){
-        await renderPage(i, initial && i===0);
-      }
+      for(let i=0;i<pages.length;i++){ await renderPage(i, initial && i===0); }
     }
-  
-    function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+    const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
     async function zoom(delta){
       const next = clamp(scale * delta, baseScale*0.6, baseScale*2.5);
-      if(Math.abs(next - scale) < 0.01) return;
-      scale = next;
-      LOADER.style.display='flex';
-      await renderAll(false);
-      LOADER.style.display='none';
+      if(Math.abs(next-scale)<0.01) return;
+      scale = next; LOADER.style.display='flex';
+      await renderAll(false); LOADER.style.display='none';
     }
   
-    let resizeTid=null;
+    let rid=null;
     window.addEventListener('resize', ()=>{
       if(!pdf) return;
-      clearTimeout(resizeTid);
-      resizeTid = setTimeout(async ()=>{
+      clearTimeout(rid);
+      rid=setTimeout(async ()=>{
         baseScale = containerWidth() / (pages[0].width/scale);
-        scale = baseScale;
-        LOADER.style.display='flex';
-        await renderAll(false);
-        LOADER.style.display='none';
-      }, 160);
+        scale = baseScale; LOADER.style.display='flex';
+        await renderAll(false); LOADER.style.display='none';
+      },160);
     });
   
-    // 이벤트
+    // 바인딩
     BTN.addEventListener('click', openModal);
     CLOSE.addEventListener('click', closeModal);
     MODAL.addEventListener('click', e=>{ if(e.target===MODAL) closeModal(); });
     document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) closeModal(); });
   
-    // 새 탭 열기는 원본 URL이 아니라 blob URL을 사용 → 404 회피
+    // ‘새 탭’은 로드 완료 후 blob URL로만 오픈 (서버 경로 404 회피)
     OPENNEW.addEventListener('click', ()=>{
+      if(OPENNEW.disabled) return;
       if(blobUrl){ window.open(blobUrl, '_blank', 'noopener,noreferrer'); }
-      else if(resolvedUrl){ window.open(resolvedUrl, '_blank', 'noopener,noreferrer'); }
     });
   
+    // 확대/축소
     ZIN.addEventListener('click', ()=> zoom(1.2));
     ZOUT.addEventListener('click', ()=> zoom(1/1.2));
-  </script>
+  </script> 
 </body>
 </html>
