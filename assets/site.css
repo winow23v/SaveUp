@@ -1,0 +1,80 @@
+/* assets/site.css */
+/* ========== Layout Variables ========== */
+:root{
+    --container-w: 72rem;       /* max-w-6xl */
+    --page-x: 1.25rem;          /* px-5 */
+    --header-h: 64px;           /* 헤더 고정 높이 */
+    --hero-py: 80px;            /* 상단 Hero 세로 여백(데스크탑) */
+    --hero-py-sm: 56px;         /* 모바일 */
+    --footer-py: 24px;          /* 푸터 세로 여백 */
+    --grid-gap: 24px;           /* 배경 격자 간격 */
+    --brand: #5b8cff; 
+    --brand-dark:#0a46c7;
+    --divider: rgba(15,23,42,.08);
+    --muted: #94a3b8;
+  }
+  
+  /* ========== Header (통일) ========== */
+  .site-header{
+    position: sticky; top: 0; z-index: 40;
+    height: var(--header-h);
+    background: rgba(255,255,255,.85); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--divider);
+  }
+  @supports not (backdrop-filter: blur(8px)){ .site-header{ background:#fff } }
+  .site-header .wrap{
+    max-width: var(--container-w); margin:0 auto;
+    height: 100%; padding: 0 var(--page-x);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .site-header nav a{ font-weight:700; padding:.25rem .5rem; border-radius:.375rem }
+  .site-header nav a:hover{ color:var(--brand); background: color-mix(in srgb, var(--brand) 10%, transparent); }
+  
+  /* ========== Hero (격자/여백 통일) ========== */
+  .hero-wrap{
+    position: relative; isolation: isolate;
+    padding: var(--hero-py-sm) var(--page-x);
+  }
+  @media (min-width:768px){ .hero-wrap{ padding: var(--hero-py) var(--page-x); } }
+  .hero-wrap .inner{ max-width: var(--container-w); margin: 0 auto; text-align:center; }
+  .hero-wrap::before{
+    content:""; position:absolute; inset:0; z-index:-1;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(91,140,255,.20), transparent 60%),
+      radial-gradient(1000px 500px at 90% -10%, rgba(10,70,199,.10), transparent 60%),
+      linear-gradient(90deg, rgba(91,140,255,.06), rgba(91,140,255,.03));
+  }
+  .hero-wrap::after{
+    content:""; position:absolute; inset:0; z-index:-1;
+    background-image:
+      linear-gradient(rgba(100,116,139,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(100,116,139,.06) 1px, transparent 1px);
+    background-size: var(--grid-gap) var(--grid-gap);
+    mask-image: radial-gradient(80% 60% at 50% 10%, #000 55%, transparent 70%);
+  }
+  
+  /* ========== Main container (통일) ========== */
+  .site-main{ flex:1; }
+  .section{ max-width: var(--container-w); margin:0 auto; padding: 40px var(--page-x); }
+  .section.border-top{ border-top:1px solid var(--divider); }
+  
+  /* ========== Footer (가운데 정렬/구분자/밑줄X) ========== */
+  .site-footer{ border-top:1px solid var(--divider); }
+  .site-footer .wrap{
+    max-width: var(--container-w); margin:0 auto; padding: var(--footer-py) var(--page-x);
+    text-align:center; color:#94a3b8; font-size:.9rem;
+  }
+  .site-footer .line{
+    display:inline-flex; align-items:center; justify-content:center; flex-wrap:wrap;
+    gap: 0 24px;
+  }
+  .site-footer a{ color:#94a3b8; text-decoration:none; }
+  .site-footer a:hover{ color:#64748b; }
+  .site-footer .sep{ display:none; }
+  @media (min-width:640px){ .site-footer .sep{ display:inline } }
+  
+  /* ========== Utilities ========== */
+  .gtext{ background:linear-gradient(90deg,var(--brand-dark),var(--brand) 45%,#7ea4ff);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .card{ border:1px solid var(--divider); border-radius: 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.03); }
+  
