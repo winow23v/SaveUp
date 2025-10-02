@@ -4,12 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Notice | 회사명</title>
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}}}}}</script>
+  <script>tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}},boxShadow:{soft:'0 8px 30px rgba(0,0,0,0.06)'}}}}</script>
+
   <style>
-    :root{ --bt-desktop:16px; --bt-mobile:88px; }
-    #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-desktop)); }
-    @media (max-width:767px){ #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-mobile)); right:1rem; } }
     .hdr{ background:rgba(255,255,255,.85); backdrop-filter:blur(8px) }
     @supports not (backdrop-filter: blur(8px)){ .hdr{ background:#fff } }
     .hero-wrap{ position:relative; isolation:isolate; background:
@@ -21,15 +21,15 @@
                         linear-gradient(90deg, rgba(100,116,139,.06) 1px, transparent 1px);
       background-size:24px 24px; mask-image:radial-gradient(80% 60% at 50% 10%, #000 55%, transparent 70%); }
     .gtext{ background:linear-gradient(90deg,#0a46c7,#5b8cff 45%,#7ea4ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .card{ border:1px solid rgba(15,23,42,.10); border-radius: .9rem; box-shadow: 0 8px 24px rgba(0,0,0,.03); }
   </style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
-  <a href="#main" class="sr-only focus:not-sr-only">본문으로 건너뛰기</a>
-
+  <!-- 헤더 -->
   <header class="hdr border-b sticky top-0 z-40">
     <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
-      <a href="index.html" aria-label="홈" class="inline-flex items-center gap-2">
-        <img src="assets/saveup-logo.svg" alt="" class="h-7 w-auto">
+      <a href="index.html" class="inline-flex items-center gap-2" aria-label="홈">
+        <img src="assets/saveup-logo.svg" alt="SaveUp 로고" class="h-7 w-auto" />
       </a>
       <nav class="hidden md:flex items-center gap-6">
         <a href="about.html"   class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10">About</a>
@@ -59,6 +59,7 @@
     </aside>
   </div>
 
+  <!-- 본문 -->
   <main id="main" class="flex-1">
     <section class="hero-wrap text-center px-5 py-14 md:py-20 border-b">
       <h1 class="text-3xl md:text-5xl font-extrabold gtext">Notice</h1>
@@ -68,13 +69,14 @@
     <section class="max-w-5xl mx-auto px-5 py-8 md:py-12">
       <label class="block text-sm font-semibold mb-2">검색</label>
       <input id="noticeFilter" type="text" placeholder="키워드로 필터링" class="w-full border rounded-lg px-4 py-3" />
-      <ul id="noticeList" class="mt-6 divide-y rounded-xl border">
-        <!-- 목록 예시 -->
+
+      <!-- 목록: 스크린샷과 동일하게 2개 항목 -->
+      <ul id="noticeList" class="mt-6 divide-y rounded-xl border overflow-hidden">
         <li class="p-4">
           <a class="font-semibold hover:underline" href="#">[안내] 서비스 점검 예정</a>
           <p class="text-sm text-slate-600 mt-1">2025-10-03 02:00~03:00 시스템 점검이 진행됩니다.</p>
         </li>
-        <li>
+        <li class="p-4">
           <a class="font-semibold hover:underline" href="#">[안내] 앱 서비스 출시 예정</a>
           <p class="text-sm text-slate-600 mt-1">2025년 하반기 런칭 예정입니다.</p>
         </li>
@@ -82,23 +84,31 @@
     </section>
   </main>
 
+  <!-- 푸터: 가운데 저작권, 우측 링크(모바일에선 세로 스택) -->
   <footer class="border-t">
-    <div class="max-w-6xl mx-auto px-5 py-6 text-sm text-slate-500 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-      <div class="text-center md:text-left">© <span id="year"></span> 회사명. All rights reserved.</div>
-      <a href="privacy.html" class="hover:text-slate-700 underline underline-offset-4 md:ml-auto">개인정보 처리방침</a>
+    <div class="max-w-6xl mx-auto px-5 py-6 text-sm text-slate-500 grid gap-3
+                grid-cols-1 md:grid-cols-3 items-center">
+      <div class="md:justify-self-start">
+        <a href="privacy.html" class="hover:text-slate-700 underline underline-offset-4">개인정보 처리방침</a>
+      </div>
+      <div class="text-center md:justify-self-center">
+        © <span id="year"></span> 회사명. All rights reserved.
+      </div>
+      </div>
     </div>
   </footer>
 
-  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 rounded-full text-sm font-semibold" type="button">Top</button>
-
+  <!-- 스크립트 -->
   <script>
+    // 연도/하이라이트
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // 페이지 하이라이트
     (function(){
       const cur=(location.pathname.split('/').pop()||'notice.html');
       document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{
-        if(a.getAttribute('href')===cur){ a.classList.add('text-brand','underline','underline-offset-4'); a.setAttribute('aria-current','page'); }
+        if(a.getAttribute('href')===cur){
+          a.classList.add('text-brand','underline','underline-offset-4');
+          a.setAttribute('aria-current','page');
+        }
       });
     })();
 
@@ -107,23 +117,22 @@
       const btn=document.getElementById('drawerBtn'), root=document.getElementById('drawerRoot'),
             panel=document.getElementById('drawerPanel'), overlay=document.getElementById('drawerOverlay'),
             closeBtn=document.getElementById('drawerClose');
-      const open=()=>{ root.classList.remove('hidden'); requestAnimationFrame(()=>{ panel.classList.remove('translate-x-full'); overlay.classList.remove('opacity-0'); }); btn?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden'); };
-      const close=()=>{ panel.classList.add('translate-x-full'); overlay.classList.add('opacity-0'); btn?.setAttribute('aria-expanded','false'); setTimeout(()=>root.classList.add('hidden'),300); document.body.classList.remove('overflow-hidden'); };
+      const open=()=>{ root.classList.remove('hidden');
+        requestAnimationFrame(()=>{ panel.classList.remove('translate-x-full'); overlay.classList.remove('opacity-0'); });
+        btn?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden'); };
+      const close=()=>{ panel.classList.add('translate-x-full'); overlay.classList.add('opacity-0');
+        btn?.setAttribute('aria-expanded','false'); setTimeout(()=>root.classList.add('hidden'),300);
+        document.body.classList.remove('overflow-hidden'); };
       btn?.addEventListener('click',open); overlay?.addEventListener('click',close); closeBtn?.addEventListener('click',close);
       root.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
     })();
 
-    // Back-to-top
-    (function(){
-      const b=document.getElementById('backTop'); const onScroll=()=>{ if(window.scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
-      window.addEventListener('scroll',onScroll,{passive:true}); b.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'})); onScroll();
-    })();
-
-    // 간단 필터
+    // 필터
     (function(){
       const input=document.getElementById('noticeFilter'), list=document.getElementById('noticeList');
       input.addEventListener('input', ()=>{
-        const q=input.value.toLowerCase(); list.querySelectorAll('li').forEach(li=>{
+        const q=input.value.toLowerCase();
+        list.querySelectorAll('li').forEach(li=>{
           li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
       });
