@@ -4,124 +4,40 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Notice | 회사명</title>
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/saveup-logo.svg">
-  <link rel="alternate icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-  <link rel="alternate icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
-
-  <!-- Safari Pinned Tab (macOS) -->
-  <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#0a46c7">
-
-  <!-- iOS/Android 홈화면 아이콘 -->
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon-180.png">
-
-  <!-- PWA/Android 설치 배너용 (선택) -->
-  <link rel="manifest" href="assets/site.webmanifest">
-
-  <!-- 브라우저 UI 색 (다크/라이트 대응) -->
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#0b1220">
-
-  <!-- 소셜 공유(카톡/페북/슬랙/아이메시지 미리보기) -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="SaveUp | 혜택은 자동으로, 소비는 똑똑하게">
-  <meta property="og:description" content="소비 패턴 분석으로 카드 혜택·포인트 누수를 줄여주는 서비스">
-  <meta property="og:image" content="https://winow23v.github.io/SaveUp/assets/og-image-1200x630.png">
-  <meta property="og:url" content="https://winow23v.github.io/SaveUp/">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: { brand: { DEFAULT:"#5b8cff", dark:"#0a46c7" } },
-          boxShadow: {
-            'soft': '0 8px 30px rgba(0,0,0,0.06)',
-            'elev': '0 10px 40px rgba(0,0,0,0.10)'
-          },
-        }
-      }
-    }
-  </script>
-
+  <script>tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}}}}}</script>
   <style>
     :root{ --bt-desktop:16px; --bt-mobile:88px; }
     #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-desktop)); }
     @media (max-width:767px){ #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-mobile)); right:1rem; } }
-
-    /* Skip link */
-    .skip-link{position:fixed;top:.75rem;left:.75rem;z-index:60;background:#5b8cff;color:#fff;padding:.5rem .75rem;border-radius:.5rem;transform:translateY(-160%);transition:.18s}
-    .skip-link:focus{transform:translateY(0)}
-
-    /* Hero background: subtle grid + gradient (service.html과 동일) */
-    .hero-wrap{
-      position: relative;
-      isolation: isolate;
-      background:
-        radial-gradient(1200px 600px at 10% -10%, rgba(91,140,255,.20), transparent 60%),
-        radial-gradient(1000px 500px at 90% -10%, rgba(10,70,199,.10), transparent 60%),
-        linear-gradient(90deg, rgba(91,140,255,.06), rgba(91,140,255,.03));
-    }
-    .hero-wrap::after{
-      content:"";
-      position:absolute; inset:0; z-index:-1;
-      background-image:
-        linear-gradient(rgba(100,116,139,.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(100,116,139,.06) 1px, transparent 1px);
-      background-size: 24px 24px;
-      mask-image: radial-gradient(80% 60% at 50% 10%, #000 55%, transparent 70%);
-    }
-
-    /* Gradient text headline */
-    .gtext{
-      background: linear-gradient(90deg,#0a46c7, #5b8cff 45%, #7ea4ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      filter: drop-shadow(0 2px 6px rgba(91,140,255,.25));
-    }
-
-    /* Card micro-interaction */
-    .card{ transition: transform .22s ease, box-shadow .22s ease, background-color .22s ease; background-color: rgba(255,255,255,.9); backdrop-filter: blur(2px); }
-    .card:hover{ transform: translateY(-2px); box-shadow: var(--shadow, 0 8px 30px rgba(0,0,0,.08)); }
-
-    /* Reveal animation */
-    .reveal{ opacity: 0; transform: translateY(10px); }
-    .reveal.is-in{ opacity: 1; transform: translateY(0); transition: opacity .5s ease, transform .6s cubic-bezier(.2,.65,.2,1); }
-
-    /* Back-to-top: glassy pill */
-    .btn-top{
-      backdrop-filter: blur(8px);
-      background: rgba(91,140,255,.92);
-      transition: opacity .2s ease, transform .2s ease, box-shadow .2s ease, background .2s ease;
-    }
-    .btn-top:hover{ box-shadow: 0 12px 36px rgba(91,140,255,.35); }
-
-    @media (prefers-reduced-motion: reduce){
-      .reveal{ opacity:1; transform:none; }
-      .card{ transition: box-shadow .2s ease; }
-    }
+    .hdr{ background:rgba(255,255,255,.85); backdrop-filter:blur(8px) }
+    @supports not (backdrop-filter: blur(8px)){ .hdr{ background:#fff } }
+    .hero-wrap{ position:relative; isolation:isolate; background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(91,140,255,.20), transparent 60%),
+      radial-gradient(1000px 500px at 90% -10%, rgba(10,70,199,.10), transparent 60%),
+      linear-gradient(90deg, rgba(91,140,255,.06), rgba(91,140,255,.03)); }
+    .hero-wrap::after{ content:""; position:absolute; inset:0; z-index:-1;
+      background-image: linear-gradient(rgba(100,116,139,.06) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(100,116,139,.06) 1px, transparent 1px);
+      background-size:24px 24px; mask-image:radial-gradient(80% 60% at 50% 10%, #000 55%, transparent 70%); }
+    .gtext{ background:linear-gradient(90deg,#0a46c7,#5b8cff 45%,#7ea4ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
   </style>
 </head>
-<body class="bg-white text-slate-800 min-h-screen flex flex-col antialiased">
-  <a href="#main" class="skip-link">본문으로 건너뛰기</a>
+<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
+  <a href="#main" class="sr-only focus:not-sr-only">본문으로 건너뛰기</a>
 
-  <!-- 헤더(글래스 + 스크롤 쉐도우) -->
-  <header id="siteHeader" class="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b sticky top-0 z-40 transition-shadow">
+  <header class="hdr border-b sticky top-0 z-40">
     <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
-      <a href="index.html" class="inline-flex items-center gap-2" aria-label="홈">
-        <img src="assets/saveup-logo.svg" alt="SaveUp 로고" class="h-7 w-auto" />
-        <span class="sr-only">홈으로</span>
+      <a href="index.html" aria-label="홈" class="inline-flex items-center gap-2">
+        <img src="assets/saveup-logo.svg" alt="" class="h-7 w-auto">
       </a>
       <nav class="hidden md:flex items-center gap-6">
-        <a href="about.html"   class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">About</a>
-        <a href="service.html" class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">Service</a>
-        <a href="notice.html"  class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">Notice</a>
+        <a href="about.html"   class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10">About</a>
+        <a href="service.html" class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10">Service</a>
+        <a href="notice.html"  class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10">Notice</a>
       </nav>
-      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40" aria-label="Open menu" aria-expanded="false" aria-controls="drawerRoot">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <button id="drawerBtn" class="md:hidden p-2 rounded-md hover:bg-slate-100" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawerRoot" type="button">
+        <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
     </div>
   </header>
@@ -129,146 +45,88 @@
   <!-- 드로어 -->
   <div id="drawerRoot" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div id="drawerOverlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
-    <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true">
+    <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
       <div class="flex items-center justify-end px-5 py-4 border-b">
-        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40" aria-label="Close menu">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100" aria-label="닫기" type="button">
+          <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
       <nav class="px-5 py-4 space-y-3">
-        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">About</a>
-        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">Service</a>
-        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">Notice</a>
+        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">About</a>
+        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">Service</a>
+        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">Notice</a>
+        <a href="privacy.html" class="block text-lg py-2 rounded-md hover:text-brand hover:bg-brand/10">개인정보 처리방침</a>
       </nav>
     </aside>
   </div>
 
   <main id="main" class="flex-1">
-    <!-- Hero (서비스와 동일한 배경/텍스트 처리) -->
-    <section class="hero-wrap py-12 md:py-16 text-center px-5">
-      <h1 class="text-2xl sm:text-3xl md:text-5xl font-extrabold">
-        <span class="gtext">Notice</span>
-      </h1>
-      <p class="mt-3 sm:mt-4 max-w-2xl mx-auto text-slate-600 text-sm sm:text-base">최신 소식을 확인하세요.</p>
+    <section class="hero-wrap text-center px-5 py-14 md:py-20 border-b">
+      <h1 class="text-3xl md:text-5xl font-extrabold gtext">Notice</h1>
+      <p class="mt-3 text-slate-600">최신 소식을 확인하세요.</p>
     </section>
 
-    <!-- 검색 -->
-    <div class="max-w-3xl mx-auto px-5 mt-6">
-      <label for="noticeSearch" class="block text-sm text-slate-600 mb-1">검색</label>
-      <input id="noticeSearch" type="search" placeholder="키워드로 필터링" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand/50" />
-    </div>
-
-    <!-- 리스트 -->
-    <section class="max-w-3xl mx-auto px-5 py-8 md:py-10 space-y-6">
-      <article class="card p-5 md:p-6 rounded-2xl shadow-soft border reveal">
-        <h2 class="text-lg md:text-xl font-semibold text-slate-900">협업 문의</h2>
-        <p class="text-slate-500 text-xs md:text-sm mt-1">작성일: 2025-09-14</p>
-        <p class="mt-3 text-slate-700 leading-relaxed text-sm md:text-base">
-          이메일 <b class="text-brand">admin@gmail.com</b> 으로만 받고 있습니다. 문의 시 회사명/담당자명/희망 일정을 함께 적어주세요.
-        </p>
-      </article>
-
-      <article class="card p-5 md:p-6 rounded-2xl shadow-soft border reveal">
-        <h2 class="text-lg md:text-xl font-semibold text-slate-900">서비스 출시 일정</h2>
-        <p class="text-slate-500 text-xs md:text-sm mt-1">작성일: 2025-09-14</p>
-        <p class="mt-3 text-slate-700 leading-relaxed text-sm md:text-base">
-          앱 서비스는 현재 기획 단계이며, 2025년 하반기 내 출시 예정입니다.
-        </p>
-      </article>
+    <section class="max-w-5xl mx-auto px-5 py-8 md:py-12">
+      <label class="block text-sm font-semibold mb-2">검색</label>
+      <input id="noticeFilter" type="text" placeholder="키워드로 필터링" class="w-full border rounded-lg px-4 py-3" />
+      <ul id="noticeList" class="mt-6 divide-y rounded-xl border">
+        <!-- 목록 예시 -->
+        <li class="p-4">
+          <a class="font-semibold hover:underline" href="#">[안내] 서비스 점검 예정</a>
+          <p class="text-sm text-slate-600 mt-1">2025-10-02 02:00~03:00 시스템 점검이 진행됩니다.</p>
+        </li>
+        <li class="p-4">
+          <a class="font-semibold hover:underline" href="#">신규 기능 베타 오픈</a>
+          <p class="text-sm text-slate-600 mt-1">혜택 자동 분할 추천 베타를 오픈했습니다.</p>
+        </li>
+      </ul>
     </section>
   </main>
 
-  <footer class="border-t py-6 text-sm text-slate-500 mt-auto">
-    <div class="max-w-6xl mx-auto px-5">
-      <div class="flex flex-wrap items-center justify-center gap-2">
-        <span class="px-2 py-0.5">© <span id="year"></span> 회사명. All rights reserved.</span>
-        <button id="privacyBtn" class="px-2 py-0.5 rounded-md hover:bg-brand/15 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">개인정보지침</button>
-      </div>
+  <footer class="border-t">
+    <div class="max-w-6xl mx-auto px-5 py-6 text-sm text-slate-500 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div class="text-center md:text-left">© <span id="year"></span> 회사명. All rights reserved.</div>
+      <a href="privacy.html" class="hover:text-slate-700 underline underline-offset-4 md:ml-auto">개인정보 처리방침</a>
     </div>
   </footer>
 
-  <!-- Top -->
-  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg btn-top text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center" aria-label="맨위로">Top</button>
-
-  <!-- Modal -->
-  <div id="privacyModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div class="bg-white max-w-md w-full p-6 rounded-xl shadow-lg">
-      <h3 class="text-xl font-bold mb-3">개인정보 처리방침</h3>
-      <p class="text-slate-600 text-sm mb-4">본 사이트는 투자자 및 고객 문의 시 이메일 주소(admin@gmail.com)로만 연락을 받고 있으며, 별도의 개인정보를 수집하지 않습니다.</p>
-      <button id="closeModal" class="w-full mt-4 px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark">닫기</button>
-    </div>
-  </div>
+  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 rounded-full text-sm font-semibold" type="button">Top</button>
 
   <script>
-    // 연도
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // 현재 메뉴 표시
+    // 페이지 하이라이트
     (function(){
       const cur=(location.pathname.split('/').pop()||'notice.html');
       document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{
-        if(a.getAttribute('href')===cur){
-          a.classList.add('text-brand','underline','underline-offset-4');
-          a.setAttribute('aria-current','page');
-        }
+        if(a.getAttribute('href')===cur){ a.classList.add('text-brand','underline','underline-offset-4'); a.setAttribute('aria-current','page'); }
       });
     })();
 
-    // 헤더 그림자 토글 + 드로어/모달/Top 버튼
+    // 드로어
     (function(){
-      const header = document.getElementById('siteHeader');
-      const onScrollHeader = ()=> {
-        if(window.scrollY>6){ header.classList.add('shadow'); }
-        else{ header.classList.remove('shadow'); }
-      };
-      onScrollHeader();
-      window.addEventListener('scroll', onScrollHeader, {passive:true});
-
-      // Drawer
-      const btn=document.getElementById('drawerBtn'), root=document.getElementById('drawerRoot');
-      const panel=document.getElementById('drawerPanel'), overlay=document.getElementById('drawerOverlay');
-      const closeBtn=document.getElementById('drawerClose');
-      const open=()=>{ root.classList.remove('hidden'); requestAnimationFrame(()=>{ panel.classList.remove('translate-x-full'); overlay.classList.remove('opacity-0');}); btn?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden'); };
+      const btn=document.getElementById('drawerBtn'), root=document.getElementById('drawerRoot'),
+            panel=document.getElementById('drawerPanel'), overlay=document.getElementById('drawerOverlay'),
+            closeBtn=document.getElementById('drawerClose');
+      const open=()=>{ root.classList.remove('hidden'); requestAnimationFrame(()=>{ panel.classList.remove('translate-x-full'); overlay.classList.remove('opacity-0'); }); btn?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden'); };
       const close=()=>{ panel.classList.add('translate-x-full'); overlay.classList.add('opacity-0'); btn?.setAttribute('aria-expanded','false'); setTimeout(()=>root.classList.add('hidden'),300); document.body.classList.remove('overflow-hidden'); };
       btn?.addEventListener('click',open); overlay?.addEventListener('click',close); closeBtn?.addEventListener('click',close);
-      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !root.classList.contains('hidden')) close(); });
       root.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
-
-      // Modal
-      const m=document.getElementById('privacyModal');
-      document.getElementById('privacyBtn').addEventListener('click',()=>m.classList.remove('hidden'));
-      document.getElementById('closeModal')?.addEventListener('click',()=>m.classList.add('hidden'));
-      m.addEventListener('click',e=>{ if(e.target===m) m.classList.add('hidden'); });
-
-      // Top
-      const b=document.getElementById('backTop');
-      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const onScrollTop=()=>{ if(window.scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
-      window.addEventListener('scroll',onScrollTop,{passive:true});
-      b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'}));
-      onScrollTop();
     })();
 
-    // 스크롤 리빌: 공지 카드 페이드업
+    // Back-to-top
     (function(){
-      const els = Array.from(document.querySelectorAll('.reveal'));
-      if(!('IntersectionObserver' in window) || !els.length) return els.forEach(el=>el.classList.add('is-in'));
-      const io = new IntersectionObserver((entries)=>{
-        entries.forEach(e=>{
-          if(e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); }
+      const b=document.getElementById('backTop'); const onScroll=()=>{ if(window.scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
+      window.addEventListener('scroll',onScroll,{passive:true}); b.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'})); onScroll();
+    })();
+
+    // 간단 필터
+    (function(){
+      const input=document.getElementById('noticeFilter'), list=document.getElementById('noticeList');
+      input.addEventListener('input', ()=>{
+        const q=input.value.toLowerCase(); list.querySelectorAll('li').forEach(li=>{
+          li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
-      },{ rootMargin:'-5% 0px -10% 0px', threshold: 0.01 });
-      els.forEach(el=>io.observe(el));
-    })();
-
-    // 검색 필터 (그대로 유지)
-    (function(){
-      const input=document.getElementById('noticeSearch');
-      const cards=[...document.querySelectorAll('main article.card')];
-      if(!input||!cards.length) return;
-      input.addEventListener('input',()=>{
-        const q=input.value.trim().toLowerCase();
-        cards.forEach(c=>{ c.style.display = c.textContent.toLowerCase().includes(q) ? '' : 'none'; });
       });
     })();
   </script>

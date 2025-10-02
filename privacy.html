@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>개인정보 처리방침 | 회사명</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme:{ extend:{ colors:{ brand:{ DEFAULT:"#5b8cff", dark:"#0a46c7" } }, boxShadow:{ soft:'0 8px 30px rgba(0,0,0,0.06)' } } } }
+  </script>
+
+  <style>
+    .hdr{ background:rgba(255,255,255,.85); backdrop-filter:blur(8px) }
+    @supports not (backdrop-filter: blur(8px)){ .hdr{ background:#fff } }
+
+    .hero-wrap{
+      position:relative; isolation:isolate;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(91,140,255,.20), transparent 60%),
+        radial-gradient(1000px 500px at 90% -10%, rgba(10,70,199,.10), transparent 60%),
+        linear-gradient(90deg, rgba(91,140,255,.06), rgba(91,140,255,.03));
+    }
+    .hero-wrap::after{
+      content:""; position:absolute; inset:0; z-index:-1;
+      background-image:
+        linear-gradient(rgba(100,116,139,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100,116,139,.06) 1px, transparent 1px);
+      background-size:24px 24px;
+      mask-image:radial-gradient(80% 60% at 50% 10%, #000 55%, transparent 70%);
+    }
+    .gtext{ background:linear-gradient(90deg,#0a46c7,#5b8cff 45%,#7ea4ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .toc a{ color:#0a46c7 }
+    .toc a:hover{ text-decoration: underline; text-underline-offset: 4px; }
+    .card{ border:1px solid rgba(15,23,42,.08); border-radius: .75rem; box-shadow: 0 8px 24px rgba(0,0,0,.03); }
+    .kbd{ border:1px solid rgba(15,23,42,.18); border-bottom-width:2px; border-radius:.5rem; padding:.1rem .4rem; font-size:.8rem; }
+  </style>
+</head>
+<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
+  <!-- 헤더 -->
+  <header class="hdr border-b sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
+      <a href="index.html" class="inline-flex items-center gap-2" aria-label="홈">
+        <img src="assets/saveup-logo.svg" alt="SaveUp 로고" class="h-7 w-auto" />
+      </a>
+      <nav class="hidden md:flex items-center gap-6">
+        <a href="about.html"   class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10">About</a>
+        <a href="service.html" class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10">Service</a>
+        <a href="notice.html"  class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10">Notice</a>
+      </nav>
+      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawerRoot" type="button">
+        <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- 드로어 -->
+  <div id="drawerRoot" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+    <div id="drawerOverlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
+    <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
+      <div class="flex items-center justify-end px-5 py-4 border-b">
+        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100" aria-label="닫기" type="button">
+          <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <nav class="px-5 py-4 space-y-3">
+        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">About</a>
+        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">Service</a>
+        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">Notice</a>
+        <a href="privacy.html" class="block text-lg py-2 rounded-md font-bold text-brand hover:bg-brand/10 underline underline-offset-4">개인정보 처리방침</a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- 본문 -->
+  <main id="main" class="flex-1">
+    <!-- Hero -->
+    <section class="hero-wrap text-center px-5 py-14 md:py-20 border-b">
+      <h1 class="text-3xl md:text-5xl font-extrabold gtext">개인정보 처리방침</h1>
+      <p class="mt-3 text-slate-600 max-w-3xl mx-auto">
+        회사명(이하 “회사”)은 「개인정보 보호법」 등 관련 법령을 준수하며 이용자의 개인정보를 안전하게 보호하기 위해 본 처리방침을 수립·공개합니다.
+      </p>
+      <p class="mt-2 text-xs text-slate-500">시행일: <span id="effectiveDate">2025-10-02</span></p>
+    </section>
+
+    <!-- 목차 -->
+    <section class="max-w-5xl mx-auto px-5 py-8 md:py-10">
+      <div class="card p-5 md:p-6">
+        <h2 class="text-lg font-bold mb-3">목차</h2>
+        <ol class="toc list-decimal list-inside space-y-1 text-sm">
+          <li><a href="#sec1">수집하는 개인정보 항목 및 수집 방법</a></li>
+          <li><a href="#sec2">개인정보의 이용 목적</a></li>
+          <li><a href="#sec3">보유 및 이용 기간</a></li>
+          <li><a href="#sec4">개인정보의 제3자 제공</a></li>
+          <li><a href="#sec5">개인정보 처리의 위탁</a></li>
+          <li><a href="#sec6">이용자의 권리 및 행사 방법</a></li>
+          <li><a href="#sec7">개인정보의 안전성 확보 조치</a></li>
+          <li><a href="#sec8">개인정보 보호책임자 및 문의처</a></li>
+          <li><a href="#sec9">국외 이전(해당 시)</a></li>
+          <li><a href="#sec10">만 14세 미만 아동의 개인정보(해당 시)</a></li>
+          <li><a href="#sec11">처리방침의 변경</a></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 본문 섹션들 -->
+    <section class="max-w-5xl mx-auto px-5 pb-10 md:pb-16 space-y-8 md:space-y-10 text-sm md:text-base">
+      <article id="sec1" class="space-y-2">
+        <h3 class="text-lg font-bold">1. 수집하는 개인정보 항목 및 수집 방법</h3>
+        <div class="card p-5">
+          <p class="font-semibold">① 수집 항목</p>
+          <ul class="list-disc pl-5 space-y-1 text-slate-700">
+            <li><b>필수</b>: 이메일, 비밀번호(또는 소셜 로그인 식별자), 서비스 이용기록, 접속 로그/접속 IP, 기기 정보</li>
+            <li><b>선택</b>: 마케팅 수신 동의, 관심 카드/소비 카테고리, 설문 응답</li>
+          </ul>
+          <p class="font-semibold mt-4">② 수집 방법</p>
+          <ul class="list-disc pl-5 space-y-1 text-slate-700">
+            <li>회원가입/로그인, 고객 문의, 이벤트 응모</li>
+            <li>서비스 이용 과정에서 자동 생성·수집(쿠키/로컬스토리지 등)</li>
+            <li>법령에 따른 동의 하의 마이데이터 연계(해당 시 별도 고지)</li>
+          </ul>
+        </div>
+      </article>
+
+      <article id="sec2" class="space-y-2">
+        <h3 class="text-lg font-bold">2. 개인정보의 이용 목적</h3>
+        <div class="card p-5">
+          <ul class="list-disc pl-5 space-y-1 text-slate-700">
+            <li>회원 식별 및 서비스 제공, 결제/정산(해당 시)</li>
+            <li>카드 혜택 추천, 실적 임계치/포인트 소멸 알림 등 핵심 기능 제공</li>
+            <li>고객 상담/민원 처리, 공지사항 전달</li>
+            <li>서비스 품질 개선, 통계·분석 및 신규 기능 연구</li>
+            <li>법령 준수 및 분쟁 대응</li>
+          </ul>
+        </div>
+      </article>
+
+      <article id="sec3" class="space-y-2">
+        <h3 class="text-lg font-bold">3. 보유 및 이용 기간</h3>
+        <div class="card p-5">
+          <p>개인정보는 수집·이용 목적이 달성되면 지체 없이 파기합니다. 단, 다음의 경우는 예외로 보관합니다.</p>
+          <ul class="list-disc pl-5 space-y-1 text-slate-700 mt-2">
+            <li>법령에 따른 보존: 전자상거래 등 소비자보호에 관한 법률 등 관련 규정에 따름</li>
+            <li>분쟁 대비: 분쟁 해결을 위한 최소 기간</li>
+          </ul>
+        </div>
+      </article>
+
+      <article id="sec4" class="space-y-2">
+        <h3 class="text-lg font-bold">4. 개인정보의 제3자 제공</h3>
+        <div class="card p-5">
+          <p>회사는 이용자의 동의가 있거나 법령이 허용하는 경우를 제외하고 제3자에게 제공하지 않습니다. 제공이 필요한 경우 제공받는 자·목적·항목·기간을 별도로 고지하고 동의를 받습니다.</p>
+        </div>
+      </article>
+
+      <article id="sec5" class="space-y-2">
+        <h3 class="text-lg font-bold">5. 개인정보 처리의 위탁</h3>
+        <div class="card p-5">
+          <p>원활한 서비스 제공을 위해 일부 업무를 외부에 위탁할 수 있습니다. 위탁 시 수탁사·업무 내용·보유기간을 고지하고, 안전하게 관리되도록 감독합니다.</p>
+        </div>
+      </article>
+
+      <article id="sec6" class="space-y-2">
+        <h3 class="text-lg font-bold">6. 이용자의 권리 및 행사 방법</h3>
+        <div class="card p-5">
+          <ul class="list-disc pl-5 space-y-1 text-slate-700">
+            <li>개인정보 열람·정정·삭제·처리정지 요구</li>
+            <li>동의 철회 및 회원 탈퇴</li>
+            <li>법정대리인 권리 행사(만 14세 미만 아동의 경우)</li>
+          </ul>
+          <p class="mt-2 text-slate-600">앱/웹 내 설정 또는 고객센터를 통해 신청하실 수 있으며, 회사는 지체 없이 조치합니다.</p>
+        </div>
+      </article>
+
+      <article id="sec7" class="space-y-2">
+        <h3 class="text-lg font-bold">7. 개인정보의 안전성 확보 조치</h3>
+        <div class="card p-5">
+          <ul class="list-disc pl-5 space-y-1 text-slate-700">
+            <li>관리적 조치: 내부관리계획 수립·교육, 접근권한 최소화</li>
+            <li>기술적 조치: 암호화 저장/전송, 접근통제, 로그/모니터링, 취약점 점검</li>
+            <li>물리적 조치: 전산실/자료보관실 접근통제 등</li>
+          </ul>
+        </div>
+      </article>
+
+      <article id="sec8" class="space-y-2">
+        <h3 class="text-lg font-bold">8. 개인정보 보호책임자 및 문의처</h3>
+        <div class="card p-5">
+          <p class="text-slate-700">개인정보 보호책임자:이름(CTO)</p>
+          <p class="text-slate-700">이메일: admin@gmail.com</a></p>
+          <p class="text-slate-600 text-sm mt-2">개인정보 침해에 대한 신고·상담은 한국인터넷진흥원(KISA) 개인정보침해신고센터(국번없이 118) 등으로도 가능.</p>
+        </div>
+      </article>
+
+      <article id="sec9" class="space-y-2">
+        <h3 class="text-lg font-bold">9. 국외 이전(해당 시)</h3>
+        <div class="card p-5">
+          <p>국외 클라우드 사용 등으로 개인정보가 국외로 이전되는 경우, 이전받는 자·국가·이전일시 및 방법·보유기간·정보관리 책임자 연락처를 고지하고 필요한 동의를 받습니다.</p>
+        </div>
+      </article>
+
+      <article id="sec10" class="space-y-2">
+        <h3 class="text-lg font-bold">10. 만 14세 미만 아동의 개인정보(해당 시)</h3>
+        <div class="card p-5">
+          <p>만 14세 미만 아동의 개인정보는 법정대리인의 동의를 받아 수집·이용하며, 권리 행사는 법정대리인을 통해 가능합니다.</p>
+        </div>
+      </article>
+
+      <article id="sec11" class="space-y-2">
+        <h3 class="text-lg font-bold">11. 처리방침의 변경</h3>
+        <div class="card p-5">
+          <p>본 처리방침은 법령·정책 변경 또는 서비스 개선에 따라 수정될 수 있으며, 변경사항은 시행 7일 전(중요 변경 30일 전)부터 공지사항을 통해 안내합니다.</p>
+          <div class="mt-4">
+            <h4 class="font-semibold">개정 이력</h4>
+            <ul class="list-disc pl-5 text-slate-700">
+              <li>v1.0 (2025-9-28) 최초 제정</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 빠른 위로가기 안내 -->
+      <div class="text-right">
+        <span class="kbd">⌘</span> + <span class="kbd">↑</span> 또는 <button id="goTop" class="underline">TOP</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- 푸터 -->
+  <footer class="border-t">
+    <div class="max-w-6xl mx-auto px-5 py-6 text-sm text-slate-500 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div>© <span id="year"></span> 회사명. All rights reserved.</div>
+      <nav class="flex items-center gap-4">
+        <a href="privacy.html" class="hover:text-slate-700 underline underline-offset-4">개인정보 처리방침</a>
+        <a href="terms.html" class="hover:text-slate-700 underline underline-offset-4">이용약관</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- 스크립트 -->
+  <script>
+    // 연도/하이라이트
+    document.getElementById('year').textContent = new Date().getFullYear();
+    (function(){
+      const cur = (location.pathname.split('/').pop() || 'privacy.html');
+      document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{
+        if(a.getAttribute('href')===cur){
+          a.classList.add('text-brand','underline','underline-offset-4');
+          a.setAttribute('aria-current','page');
+        }
+      });
+    })();
+
+    // 드로어
+    (function(){
+      const btn=document.getElementById('drawerBtn'),
+            root=document.getElementById('drawerRoot'),
+            panel=document.getElementById('drawerPanel'),
+            overlay=document.getElementById('drawerOverlay'),
+            closeBtn=document.getElementById('drawerClose');
+
+      const open=()=>{ root.classList.remove('hidden');
+        requestAnimationFrame(()=>{ panel.classList.remove('translate-x-full'); overlay.classList.remove('opacity-0'); });
+        btn?.setAttribute('aria-expanded','true');
+        document.body.classList.add('overflow-hidden');
+      };
+      const close=()=>{ panel.classList.add('translate-x-full'); overlay.classList.add('opacity-0');
+        btn?.setAttribute('aria-expanded','false');
+        setTimeout(()=>root.classList.add('hidden'),300);
+        document.body.classList.remove('overflow-hidden');
+      };
+
+      btn?.addEventListener('click',open);
+      overlay?.addEventListener('click',close);
+      closeBtn?.addEventListener('click',close);
+      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !root.classList.contains('hidden')) close(); });
+      root.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+    })();
+
+    // 맨위로
+    document.getElementById('goTop')?.addEventListener('click', ()=> window.scrollTo({ top:0, behavior:'smooth' }));
+  </script>
+</body>
+</html>

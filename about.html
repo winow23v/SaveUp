@@ -4,64 +4,20 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>About | 회사명</title>
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/saveup-logo.svg">
-  <link rel="alternate icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-  <link rel="alternate icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
-
-  <!-- Safari Pinned Tab (macOS) -->
-  <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#0a46c7">
-
-  <!-- iOS/Android 홈화면 아이콘 -->
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon-180.png">
-
-  <!-- PWA/Android 설치 배너용 (선택) -->
-  <link rel="manifest" href="assets/site.webmanifest">
-
-  <!-- 브라우저 UI 색 (다크/라이트 대응) -->
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#0b1220">
-
-  <!-- 소셜 공유(카톡/페북/슬랙/아이메시지 미리보기) -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="SaveUp | 혜택은 자동으로, 소비는 똑똑하게">
-  <meta property="og:description" content="소비 패턴 분석으로 카드 혜택·포인트 누수를 줄여주는 서비스">
-  <meta property="og:image" content="https://winow23v.github.io/SaveUp/assets/og-image-1200x630.png">
-  <meta property="og:url" content="https://winow23v.github.io/SaveUp/">
-  <meta name="twitter:card" content="summary_large_image">
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: { brand: { DEFAULT:"#5b8cff", dark:"#0a46c7" } },
-          boxShadow: {
-            soft: '0 8px 30px rgba(0,0,0,0.06)',
-            elev: '0 10px 40px rgba(0,0,0,0.10)'
-          }
-        }
-      }
-    }
+    tailwind.config={theme:{extend:{
+      colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}},
+      boxShadow:{soft:'0 8px 30px rgba(0,0,0,0.06)'}
+    }}}
   </script>
 
   <style>
-    :root{
-      --rail-offset-desktop:-2rem;
-      --rail-offset-mobile:-1.25rem;
-      --bt-desktop:16px; --bt-mobile:88px;
-    }
+    .hdr{ background:rgba(255,255,255,.85); backdrop-filter:blur(8px) }
+    @supports not (backdrop-filter: blur(8px)){ .hdr{ background:#fff } }
 
-    /* Skip link */
-    .skip-link{position:fixed;top:.75rem;left:.75rem;z-index:60;background:#5b8cff;color:#fff;padding:.5rem .75rem;border-radius:.5rem;transform:translateY(-160%);transition:.18s}
-    .skip-link:focus{transform:translateY(0)}
-
-    /* Glass header */
-    .hdr{background:rgba(255,255,255,.8);backdrop-filter:blur(8px)}
-    @supports not (backdrop-filter: blur(8px)){ .hdr{background:#fff} }
-
-    /* Hero (gradient + grid) */
     .hero-wrap{
       position:relative; isolation:isolate;
       background:
@@ -77,145 +33,143 @@
       background-size:24px 24px;
       mask-image:radial-gradient(80% 60% at 50% 10%, #000 55%, transparent 70%);
     }
-    .gtext{
-      background:linear-gradient(90deg,#0a46c7,#5b8cff 45%,#7ea4ff);
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-      filter:drop-shadow(0 2px 6px rgba(91,140,255,.25));
+    .gtext{ background:linear-gradient(90deg,#0a46c7,#5b8cff 45%,#7ea4ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .card{ border:1px solid rgba(15,23,42,.08); border-radius: .9rem; box-shadow: 0 8px 24px rgba(0,0,0,.03); }
+    .lead{ font-size:1.0625rem; line-height:1.75rem; }
+    .quote{
+      border-left:4px solid #5b8cff;
+      background: linear-gradient(0deg, rgba(91,140,255,.06), rgba(91,140,255,.03));
     }
-
-    /* Reveal */
-    .reveal{opacity:0; transform:translateY(10px)}
-    .reveal.is-in{opacity:1; transform:translateY(0); transition:opacity .5s ease, transform .6s cubic-bezier(.2,.65,.2,1)}
-    @media (prefers-reduced-motion: reduce){ .reveal{opacity:1; transform:none} }
-
-    /* Section title underline (페이지 톤 유지용) */
-    .title-ux{position:relative; display:inline-block}
-    .title-ux::after{
-      content:""; position:absolute; left:0; right:0; bottom:-6px; height:4px; border-radius:9999px;
-      background:linear-gradient(90deg, rgba(10,70,199,.25), rgba(91,140,255,.6), rgba(126,164,255,.25));
-      transform:scaleX(0); transform-origin:left; transition:transform .6s cubic-bezier(.2,.65,.2,1);
-    }
-    .section-in .title-ux::after{ transform:scaleX(1) }
-
-    /* Side rail Top */
-    .rail-wrap{position:relative}
-    .rail-top{
-      position:absolute; top:var(--rail-offset-desktop); right:-3.25rem;
-      display:flex; align-items:center; justify-content:center;
-      height:2.25rem; padding:0 .75rem; border-radius:9999px; white-space:nowrap; z-index:40;
-      background:rgba(91,140,255,.9); color:#fff; font-weight:600; font-size:.8rem;
-      box-shadow:0 8px 24px rgba(16,24,40,.12); backdrop-filter:saturate(120%) blur(6px);
-      transition:opacity .2s, transform .2s, box-shadow .2s, background .2s;
-    }
-    .rail-top.is-hidden{opacity:0; pointer-events:none; transform:translateY(-6px)}
-    .rail-top:hover, .rail-top:focus-visible{background:rgba(91,140,255,1); box-shadow:0 12px 36px rgba(91,140,255,.35); outline:none}
-    @media (max-width:767px){ .rail-top{ right:0; top:var(--rail-offset-mobile) } }
-
-    /* Global Top */
-    #backTop{bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-desktop))}
-    @media (max-width:767px){ #backTop{bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-mobile)); right:1rem} }
-    .btn-top{backdrop-filter:blur(8px); background:rgba(91,140,255,.92); transition:opacity .2s, transform .2s, box-shadow .2s, background .2s}
-    .btn-top:hover{box-shadow:0 12px 36px rgba(91,140,255,.35)}
   </style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
-  <a href="#main" class="skip-link">본문으로 건너뛰기</a>
-
-  <!-- Header -->
-  <header id="siteHeader" class="hdr border-b sticky top-0 z-40 transition-shadow">
+  <!-- 헤더 -->
+  <header class="hdr border-b sticky top-0 z-40">
     <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
       <a href="index.html" class="inline-flex items-center gap-2" aria-label="홈">
         <img src="assets/saveup-logo.svg" alt="SaveUp 로고" class="h-7 w-auto" />
-        <span class="sr-only">홈으로</span>
       </a>
       <nav class="hidden md:flex items-center gap-6">
-        <a href="about.html"   class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">About</a>
-        <a href="service.html" class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">Service</a>
-        <a href="notice.html"  class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">Notice</a>
+        <a href="about.html"   class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10">About</a>
+        <a href="service.html" class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10">Service</a>
+        <a href="notice.html"  class="text-sm px-2 py-1 rounded-md font-bold hover:text-brand hover:bg-brand/10">Notice</a>
       </nav>
-      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40" aria-label="Open menu" aria-expanded="false" aria-controls="drawerRoot">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawerRoot" type="button">
+        <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
     </div>
   </header>
 
-  <!-- Drawer -->
+  <!-- 드로어 -->
   <div id="drawerRoot" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div id="drawerOverlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
-    <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true">
+    <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
       <div class="flex items-center justify-end px-5 py-4 border-b">
-        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40" aria-label="Close menu">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100" aria-label="닫기" type="button">
+          <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </div>
       <nav class="px-5 py-4 space-y-3">
-        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">About</a>
-        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">Service</a>
-        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:bg-brand/10 hover:text-brand">Notice</a>
+        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">About</a>
+        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">Service</a>
+        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">Notice</a>
+        <a href="privacy.html" class="block text-lg py-2 rounded-md hover:text-brand hover:bg-brand/10">개인정보 처리방침</a>
       </nav>
     </aside>
   </div>
 
-  <main id="main" class="flex-1">
+  <!-- 본문 -->
+  <main class="flex-1">
     <!-- Hero -->
-    <section class="hero-wrap px-5 py-12 md:py-16 text-center">
-      <h1 class="text-2xl sm:text-3xl md:text-5xl font-extrabold"><span class="gtext">About</span></h1>
-      <p class="mt-3 sm:mt-4 max-w-2xl mx-auto text-slate-600 text-sm sm:text-base">
-        회사명은 소비자의 카드 혜택 최적화를 돕는 혁신적인 금융 서비스 플랫폼입니다.
-      </p>
+    <section class="hero-wrap text-center px-5 py-14 md:py-20 border-b">
+      <h1 class="text-3xl md:text-5xl font-extrabold gtext">About</h1>
+      <p class="mt-3 text-slate-600">모카 는 “소비가 곧 절약”이 되는 스마트한 금융 문화를 만듭니다.</p>
     </section>
 
-    <!-- 회사 소개 (텍스트만: 이미지/플레이스홀더 제거) -->
-    <section id="intro" class="rail-wrap max-w-4xl mx-auto px-5 py-8 md:py-12 reveal">
-      <h2 class="title-ux text-xl md:text-2xl font-bold text-slate-900 mb-2 md:mb-4">회사 소개</h2>
-      <button class="js-rail-top rail-top is-hidden" aria-label="맨위로">Top</button>
-
-      <div class="space-y-4 text-slate-700 text-sm md:text-base leading-relaxed">
-        <p>(회사)는 소비가 곧 절약으로 이어지는 새로운 금융 문화를 만드는 것을 목표로 설립되었습니다. 누구나 일상 속에서 자연스럽게 혜택을 누리고 생활비를 관리할 수 있도록 돕는 것을 핵심 가치로 삼고 있습니다. 복잡한 금융 지식이나 어려운 계산이 없어도, 카드를 올바르게 사용하는 것만으로 절약 효과를 극대화할 수 있다는 믿음에서 출발했습니다.</p>
-        <p>OO는 쇼핑, 여행, 편의점, 음식점, 공과금 등 주요 소비 영역에 최적화된 솔루션을 제공하여, 사용자가 체감할 수 있는 실질적 변화를 만들어 갑니다. 우리의 비전은 단순히 카드 혜택 안내를 넘어, 소비 습관 자체를 더 스마트하게 변화시키는 데 있습니다.</p>
-        <p>우리는 신뢰, 투명성, 혁신을 바탕으로 서비스를 설계하며, 사용자에게 언제나 정확하고 최신의 정보를 제공하는 것을 최우선으로 합니다. 금융 소비를 단순한 지출이 아닌 자산 관리의 출발점으로 재정의해, 모두가 경제적 자립을 향한 작은 발걸음을 내딛을 수 있게 돕습니다.</p>
+    <!-- 소개(네가 준 문구 반영) -->
+    <section class="max-w-5xl mx-auto px-5 py-10 md:py-14 space-y-8">
+      <!-- 리드 -->
+      <div class="card p-6 md:p-8">
+        <h2 class="text-xl md:text-2xl font-bold mb-3">회사소개</h2>
+        <p class="lead text-slate-700">
+          카드백서(회사명)는 소비가 곧 절약으로 이어지는 새로운 금융 문화를 만드는 것을 목표로 설립되었습니다.
+          우리는 누구나 일상 속에서 자연스럽게 혜택을 누리고, 생활비를 관리할 수 있도록 돕는 것을 핵심 가치로 삼고 있습니다.
+          복잡한 금융 지식이나 어려운 계산이 없어도, 단순히 카드를 올바르게 사용하는 것만으로 절약 효과를 극대화할 수 있다는 믿음에서 출발했습니다.
+        </p>
+        <p class="lead text-slate-700 mt-4">
+          카드백서는 쇼핑, 여행, 편의점, 음식점, 술집, 공과금 등 한국인의 주요 소비 영역에 최적화된 솔루션을 제공하여,
+          사용자가 체감할 수 있는 <span class="font-semibold">실질적 변화</span>를 만들어 갑니다.
+        </p>
       </div>
-    </section>
 
-    <!-- 비전 (텍스트만, 하이라이트 제거) -->
-    <section id="vision" class="rail-wrap max-w-4xl mx-auto px-5 py-8 md:py-12 reveal">
-      <h2 class="title-ux text-xl md:text-2xl font-bold text-slate-900 mb-2 md:mb-4">비전</h2>
-      <button class="js-rail-top rail-top is-hidden" aria-label="맨위로">Top</button>
+      <!-- 비전 -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card p-6 md:col-span-2">
+          <h3 class="text-lg font-bold mb-2">비전</h3>
+          <p class="text-slate-700">
+            우리의 비전은 단순히 카드 혜택을 안내하는 것을 넘어, <b>소비 습관 자체</b>를 더 스마트하게 변화시키는 데 있습니다.
+            이를 통해 개인의 재정적 여유를 확대하고, 사회 전반에 합리적이고 지속 가능한 소비 문화를 확산시키고자 합니다.
+            카드백서는 데이터 기반 분석과 직관적인 사용자 경험을 결합하여,
+            누구나 쉽게 금융 혜택을 활용하고 절약의 가치를 실현할 수 있도록 합니다.
+          </p>
+        </div>
+        <aside class="card p-6 quote rounded-xl">
+          <p class="text-sm text-slate-700">
+            “복잡한 계산 없이도, 올바른 사용만으로 절약은 커질 수 있다.”
+          </p>
+        </aside>
+      </div>
 
-      <p class="text-slate-700 leading-relaxed text-sm md:text-base">
-        회사명은 데이터 기반 소비 분석을 통해 모든 사용자가 혜택 손실 없는 소비를 하도록 돕고,
-        더 나아가 금융 생활의 효율성과 투명성을 높이는 것을 목표로 합니다.
-      </p>
+      <!-- 원칙/사명 -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="card p-6">
+          <h4 class="font-bold mb-2">핵심 원칙</h4>
+          <ul class="text-slate-700 list-disc pl-5 space-y-1">
+            <li>신뢰와 투명성</li>
+            <li>정확하고 최신의 정보</li>
+            <li>데이터 기반 의사결정</li>
+          </ul>
+        </div>
+        <div class="card p-6">
+          <h4 class="font-bold mb-2">사용자 약속</h4>
+          <ul class="text-slate-700 list-disc pl-5 space-y-1">
+            <li>누구나 쉽게 쓰는 UX</li>
+            <li>실질적 절약 경험 제공</li>
+            <li>보안과 개인정보 보호 우선</li>
+          </ul>
+        </div>
+        <div class="card p-6">
+          <h4 class="font-bold mb-2">사명(Mission)</h4>
+          <p class="text-slate-700">
+            금융 소비를 단순한 지출이 아닌 <b>자산 관리의 출발점</b>으로 재정의하고,
+            모두가 경제적 자립을 향해 한 걸음 더 나아가도록 돕는 것.
+          </p>
+        </div>
+      </div>
+
+      <!-- 마무리 카피 -->
+      <div class="card p-6 md:p-8">
+        <p class="lead text-slate-700">
+          카드백서는 앞으로도 <b>스마트한 소비의 표준</b>을 만들며,
+          금융을 더 쉽고, 더 친근하며, 더 가치 있게 만드는 기업으로 성장하겠습니다.
+        </p>
+      </div>
     </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="border-t py-6 text-sm text-slate-500 mt-auto">
-    <div class="max-w-6xl mx-auto px-5">
-      <div class="flex flex-wrap items-center justify-center gap-2">
-        <span class="px-2 py-0.5">© <span id="year"></span> 회사명. All rights reserved.</span>
-        <button id="privacyBtn" class="px-2 py-0.5 rounded-md hover:bg-brand/15 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40">개인정보지침</button>
-      </div>
+  <!-- 푸터 -->
+  <footer class="border-t">
+    <div class="max-w-6xl mx-auto px-5 py-6 text-sm text-slate-500 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div>© <span id="year"></span> 회사명. All rights reserved.</div>
+      <a href="privacy.html" class="hover:text-slate-700 underline underline-offset-4 md:ml-auto">개인정보 처리방침</a>
     </div>
   </footer>
 
-  <!-- Global Top -->
-  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg btn-top text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold flex items-center justify-center" aria-label="맨위로">Top</button>
-
-  <!-- Modal -->
-  <div id="privacyModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div class="bg-white max-w-md w-full p-6 rounded-xl shadow-lg">
-      <h3 class="text-xl font-bold mb-3">개인정보 처리방침</h3>
-      <p class="text-slate-600 text-sm mb-4">본 사이트는 투자자 및 고객 문의 시 이메일 주소(admin@gmail.com)로만 연락을 받고 있으며, 별도의 개인정보를 수집하지 않습니다.</p>
-      <button id="closeModal" class="w-full mt-4 px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark">닫기</button>
-    </div>
-  </div>
-
+  <!-- 스크립트 -->
   <script>
-    // Year
-    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('year').textContent=new Date().getFullYear();
 
-    // Active nav
+    // 현재 페이지 하이라이트
     (function(){
       const cur=(location.pathname.split('/').pop()||'about.html');
       document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{
@@ -226,59 +180,19 @@
       });
     })();
 
-    // Header shadow + Drawer + Modal + Global Top
+    // 드로어
     (function(){
-      const header=document.getElementById('siteHeader');
-      const onScrollHeader=()=>{ if(window.scrollY>6) header?.classList.add('shadow'); else header?.classList.remove('shadow'); };
-      onScrollHeader(); window.addEventListener('scroll', onScrollHeader, {passive:true});
-
-      const btn=document.getElementById('drawerBtn'), root=document.getElementById('drawerRoot');
-      const panel=document.getElementById('drawerPanel'), overlay=document.getElementById('drawerOverlay');
-      const closeBtn=document.getElementById('drawerClose');
-      const open=()=>{ root.classList.remove('hidden'); requestAnimationFrame(()=>{ panel.classList.remove('translate-x-full'); overlay.classList.remove('opacity-0');}); btn?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden'); };
-      const close=()=>{ panel.classList.add('translate-x-full'); overlay.classList.add('opacity-0'); btn?.setAttribute('aria-expanded','false'); setTimeout(()=>root.classList.add('hidden'),300); document.body.classList.remove('overflow-hidden'); };
-      btn?.addEventListener('click',open); overlay?.addEventListener('click',close); closeBtn?.addEventListener('click',close);
-      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !root.classList.contains('hidden')) close(); });
-      root?.querySelectorAll('a')?.forEach(a=>a.addEventListener('click',close));
-
-      const m=document.getElementById('privacyModal');
-      document.getElementById('privacyBtn').addEventListener('click',()=>m.classList.remove('hidden'));
-      document.getElementById('closeModal')?.addEventListener('click',()=>m.classList.add('hidden'));
-      m.addEventListener('click',e=>{ if(e.target===m) m.classList.add('hidden'); });
-
-      const b=document.getElementById('backTop');
-      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const onScrollTop=()=>{ if(window.scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
-      window.addEventListener('scroll',onScrollTop,{passive:true});
-      b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'}));
-      onScrollTop();
-    })();
-
-    // Reveal + section title underline trigger
-    (function(){
-      const sections=[...document.querySelectorAll('#intro, #vision')];
-      const els=[...document.querySelectorAll('.reveal')];
-      if(!('IntersectionObserver' in window)){ sections.forEach(s=>s.classList.add('section-in')); els.forEach(e=>e.classList.add('is-in')); return; }
-
-      const io1=new IntersectionObserver(entries=>{
-        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('section-in'); io1.unobserve(e.target);} });
-      },{rootMargin:'-10% 0px -10% 0px', threshold:0.01});
-      sections.forEach(s=>io1.observe(s));
-
-      const io2=new IntersectionObserver(entries=>{
-        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('is-in'); io2.unobserve(e.target);} });
-      },{rootMargin:'-5% 0px -10% 0px', threshold:0.01});
-      els.forEach(el=>io2.observe(el));
-    })();
-
-    // Side rail Top show/hide + click
-    (function(){
-      const railButtons=[...document.querySelectorAll('.js-rail-top')];
-      if(!railButtons.length) return;
-      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      railButtons.forEach(b=>b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'})));
-      const onScroll=()=>{ const show=window.scrollY>160; railButtons.forEach(b=>b.classList.toggle('is-hidden', !show)); };
-      window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+      const b=document.getElementById('drawerBtn'), r=document.getElementById('drawerRoot'),
+            p=document.getElementById('drawerPanel'), o=document.getElementById('drawerOverlay'),
+            c=document.getElementById('drawerClose');
+      const open=()=>{ r.classList.remove('hidden');
+        requestAnimationFrame(()=>{ p.classList.remove('translate-x-full'); o.classList.remove('opacity-0'); });
+        b?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden'); };
+      const close=()=>{ p.classList.add('translate-x-full'); o.classList.add('opacity-0');
+        b?.setAttribute('aria-expanded','false'); setTimeout(()=>r.classList.add('hidden'),300);
+        document.body.classList.remove('overflow-hidden'); };
+      b?.addEventListener('click',open); o?.addEventListener('click',close); c?.addEventListener('click',close);
+      r.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
     })();
   </script>
 </body>
