@@ -86,15 +86,23 @@
 
   <!-- 푸터: 가운데 저작권, 우측 링크(모바일에선 세로 스택) -->
   <footer class="border-t">
-    <div class="max-w-6xl mx-auto px-5 py-6 text-sm text-slate-500 grid gap-3
-                grid-cols-1 md:grid-cols-3 items-center">
-      <div class="md:justify-self-start">
-        <a href="privacy.html" class="hover:text-slate-700 underline underline-offset-4">개인정보 처리방침</a>
-      </div>
-      <div class="text-center md:justify-self-center">
-        © <span id="year"></span> 회사명. All rights reserved.
-      </div>
-      </div>
+    <div class="px-5 py-8">
+      <p class="mx-auto text-center text-slate-400 text-sm
+                inline-flex items-center justify-center gap-x-6 gap-y-2
+                flex-wrap">
+        <span class="whitespace-nowrap">
+          © <span id="year"></span> 회사명. All Rights Reserved.
+        </span>
+  
+        <!-- 구분자: 데스크톱에서만 보이게 -->
+        <span class="hidden sm:inline text-slate-300">|</span>
+  
+        <!-- 밑줄 제거 / 색상 통일 -->
+        <a href="privacy.html"
+           class="no-underline whitespace-nowrap text-slate-400 hover:text-slate-500">
+          개인정보 처리방침
+        </a>
+      </p>
     </div>
   </footer>
 
