@@ -85,17 +85,23 @@
   </main>
 
   <!-- 푸터: 가운데 저작권, 우측 링크(모바일에선 세로 스택) -->
-  <footer class="site-footer">
-    <div class="wrap">
-      <p class="line">
-        <span>© <span id="year"></span> 회사명. All Rights Reserved.</span>
-        <span class="sep">|</span>
-        <a href="privacy.html">개인정보 처리방침</a>
-        <!-- 필요하면 약관도 추가 -->
-        <!-- <span class="sep">|</span><a href="terms.html">이용약관</a> -->
-      </p>
-    </div>
-  </footer>
+   <!-- FOOTER (모든 페이지 동일 적용) -->
+<footer class="border-t">
+  <div class="max-w-6xl mx-auto px-5 py-6 text-sm text-slate-400
+              flex flex-col md:flex-row md:items-center md:gap-4
+              text-center md:text-left">
+    <span>© <span id="year"></span> 회사명. All Rights Reserved.</span>
+
+    <!-- 데스크탑에서만 보이는 구분자 -->
+    <span class="hidden md:inline text-slate-300">|</span>
+
+    <!-- 밑줄 제거 + 컬러 통일 -->
+    <a href="privacy.html" class="no-underline text-slate-400 hover:text-slate-500">
+      개인정보 처리방침
+    </a>
+  </div>
+</footer>
+
   <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
   
 
