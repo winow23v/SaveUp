@@ -4,71 +4,116 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>About | 회사명</title>
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}},boxShadow:{soft:'0 8px 30px rgba(0,0,0,0.06)'}}}}</script>
-  <link rel="stylesheet" href="assets/site.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: "#0064FF", dark: "#0046B5" } /* Toss tone */
+          },
+          boxShadow: { soft:'0 8px 30px rgba(0,0,0,0.06)' }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="assets/site.css" />
+
   <style>
-    .hdr{background:rgba(255,255,255,.85);backdrop-filter:blur(8px)}
-    @supports not (backdrop-filter: blur(8px)){.hdr{background:#fff}}
-    .hero-wrap{position:relative;isolation:isolate;background:
-      radial-gradient(1200px 600px at 10% -10%, rgba(91,140,255,.20), transparent 60%),
-      radial-gradient(1000px 500px at 90% -10%, rgba(10,70,199,.10), transparent 60%),
-      linear-gradient(90deg, rgba(91,140,255,.06), rgba(91,140,255,.03))}
-    .hero-wrap::after{content:"";position:absolute;inset:0;z-index:-1;background-image:
-      linear-gradient(rgba(100,116,139,.06) 1px,transparent 1px),
-      linear-gradient(90deg, rgba(100,116,139,.06) 1px,transparent 1px);
-      background-size:24px 24px;mask-image:radial-gradient(80% 60% at 50% 10%, #000 55%, transparent 70%)}
-    .gtext{background:linear-gradient(90deg,#0a46c7,#5b8cff 45%,#7ea4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .card{border:1px solid rgba(15,23,42,.08);border-radius:1rem;box-shadow:0 8px 24px rgba(0,0,0,.03)}
+    /* 헤더 글래스 백그라운드 */
+    .hdr { background: rgba(255,255,255,.85); backdrop-filter: blur(8px); }
+    @supports not (backdrop-filter: blur(8px)) { .hdr{ background:#fff } }
+
+    /* 히어로 배경: Toss 톤으로 색만 교체 */
+    .hero-wrap{
+      position:relative; isolation:isolate;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(0,100,255,.18), transparent 60%),
+        radial-gradient(1000px 500px at 90% -10%, rgba(0,70,181,.10), transparent 60%),
+        linear-gradient(90deg, rgba(0,100,255,.05), rgba(0,100,255,.02));
+    }
+    .hero-wrap::after{
+      content:""; position:absolute; inset:0; z-index:-1;
+      background-image:
+        linear-gradient(rgba(100,116,139,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100,116,139,.06) 1px, transparent 1px);
+      background-size:24px 24px;
+      mask-image:radial-gradient(80% 60% at 50% 10%, #000 55%, transparent 70%);
+    }
+
+    /* 그라디언트 텍스트: Toss 톤 */
+    .gtext{
+      background:linear-gradient(90deg,#0046B5,#0064FF 45%,#5A8FFF);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+
+    /* 카드 스타일 (여백/그림자만 살짝 정리) */
+    .card{ border:1px solid rgba(15,23,42,.08); border-radius:1rem; box-shadow:0 8px 24px rgba(0,0,0,.03); }
   </style>
 </head>
+
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
-  <!-- 헤더 -->
-  <header class="site-header">
-    <div class="wrap">
-      <a href="index.html" aria-label="홈">
+
+  <!-- 헤더: 구조 동일, 컨테이너/여백/정렬만 통일 -->
+  <header class="site-header hdr border-b border-slate-200 sticky top-0 z-40">
+    <div class="wrap max-w-6xl mx-auto px-5 h-14 md:h-16 flex items-center justify-between">
+      <a href="index.html" aria-label="홈" class="inline-flex items-center gap-2">
         <img src="assets/saveup-logo.svg" alt="SaveUp 로고" style="height:28px;width:auto" />
       </a>
-      <nav class="hidden md:flex items-center gap-6">
-        <a href="about.html">About</a>
-        <a href="service.html">Service</a>
-        <a href="notice.html">Notice</a>
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a class="hover:text-slate-900" href="about.html">About</a>
+        <a class="hover:text-slate-900" href="service.html">Service</a>
+        <a class="hover:text-slate-900" href="notice.html">Notice</a>
       </nav>
-      <button id="drawerBtn" class="md:hidden p-2 rounded-md hover:bg-slate-100" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawerRoot" type="button">
-        <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <button id="drawerBtn"
+              class="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawerRoot" type="button">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
       </button>
     </div>
   </header>
 
-  <!-- 드로어 -->
+  <!-- 드로어: 기능 동일, 포커스 스타일만 보강 -->
   <div id="drawerRoot" class="fixed inset-0 z-50 hidden" aria-hidden="true">
     <div id="drawerOverlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
-    <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
+    <aside id="drawerPanel"
+           class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300"
+           role="dialog" aria-modal="true" aria-label="모바일 메뉴">
       <div class="flex items-center justify-end px-5 py-4 border-b">
-        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100" aria-label="닫기" type="button">
-          <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300" aria-label="닫기" type="button">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
         </button>
       </div>
       <nav class="px-5 py-4 space-y-3">
-        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">About</a>
-        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">Service</a>
-        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">Notice</a>
+        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">About</a>
+        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">Service</a>
+        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">Notice</a>
       </nav>
     </aside>
   </div>
 
   <!-- 본문 -->
   <main class="flex-1">
-    <section class="hero-wrap text-center px-5 py-14 md:py-20 border-b">
-      <h1 class="text-3xl md:text-5xl font-extrabold gtext">About</h1>
-      <p class="mt-3 text-slate-600">소개합니다</p>
+    <!-- 히어로: 카피/구조 동일, 타이포/여백/정렬만 조정 -->
+    <section class="hero-wrap border-b">
+      <div class="max-w-6xl mx-auto px-5 py-14 md:py-20 text-center">
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight tracking-tight gtext">About</h1>
+        <p class="mt-3 text-slate-600 text-sm md:text-base">소개합니다</p>
+      </div>
     </section>
 
-    <!-- 회사소개 (한 문단) -->
-    <section class="max-w-5xl mx-auto px-5 py-10 md:py-14">
+    <!-- 회사소개 (내용 그대로, 카드 스타일만 적용) -->
+    <section class="max-w-6xl mx-auto px-5 py-10 md:py-14">
       <article class="card p-6 md:p-8">
         <h2 class="text-xl md:text-2xl font-bold mb-3">회사소개</h2>
-        <p class="text-slate-700 leading-7">         
+        <p class="text-slate-700 leading-7">
 회사는 소비가 곧 절약으로 이어지는 새로운 금융 문화를 만드는 것을 목표로 설립되었습니다. 우리는 누구나 일상 속에서 자연스럽게 혜택을 누리고, 생활비를 관리할 수 있도록 돕는 것을 핵심 가치로 삼고 있습니다. 복잡한 금융 지식이나 어려운 계산이 없어도, 단순히 카드를 올바르게 사용하는 것만으로 절약 효과를 극대화할 수 있다는 믿음에서 출발했습니다. 회사는 쇼핑, 여행, 편의점, 음식점, 술집, 공과금 등 한국인의 주요 소비 영역에 최적화된 솔루션을 제공하여, 사용자가 체감할 수 있는 실질적 변화를 만들어 갑니다.
 우리의 비전은 단순히 카드 혜택을 안내하는 것을 넘어, 소비 습관 자체를 더 스마트하게 변화시키는 데 있습니다. 이를 통해 개인의 재정적 여유를 확대하고, 더 나아가 사회 전반에 합리적이고 지속 가능한 소비 문화를 확산시키고자 합니다. 회사는 데이터 기반 분석과 직관적인 사용자 경험을 결합하여, 누구나 쉽게 금융 혜택을 활용하고 절약의 가치를 실현할 수 있도록 합니다.
 우리는 신뢰, 투명성, 혁신을 바탕으로 서비스를 설계하며, 사용자에게 언제나 정확하고 최신의 정보를 제공하는 것을 최우선으로 합니다. 또한 금융 소비를 단순한 지출이 아닌 자산 관리의 출발점으로 재정의하여, 모든 사람이 경제적 자립을 향한 작은 발걸음을 내딛을 수 있게 돕는 것을 사명으로 삼고 있습니다. 회사는 앞으로도 스마트한 소비의 표준을 만들어 가며, 금융을 더 쉽고, 더 친근하며, 더 가치 있게 만드는 기업으로 성장하겠습니다.
@@ -76,36 +121,26 @@
       </article>
     </section>
   </main>
- <!-- FOOTER (모든 페이지 동일 적용) -->
-<footer class="border-t">
-  <div class="max-w-6xl mx-auto px-5 py-6 text-sm text-slate-400
-              flex flex-col md:flex-row md:items-center md:gap-4
-              text-center md:text-left">
-    <span>© <span id="year"></span> 회사명. All Rights Reserved.</span>
 
-    <!-- 데스크탑에서만 보이는 구분자 -->
-    <span class="hidden md:inline text-slate-300">|</span>
+  <!-- 푸터: 컨테이너/색상만 정리 -->
+  <footer class="border-t">
+    <div class="max-w-6xl mx-auto px-5 py-6 text-sm text-slate-500
+                flex flex-col md:flex-row md:items-center md:gap-4
+                text-center md:text-left">
+      <span>© <span id="year"></span> 회사명. All Rights Reserved.</span>
+      <span class="hidden md:inline text-slate-300">|</span>
+      <a href="privacy.html" class="no-underline text-slate-500 hover:text-slate-700">개인정보 처리방침</a>
+    </div>
+  </footer>
 
-    <!-- 밑줄 제거 + 컬러 통일 -->
-    <a href="privacy.html" class="no-underline text-slate-400 hover:text-slate-500">
-      개인정보 처리방침
-    </a>
-  </div>
-</footer>
-
-<script>
-  // 페이지 어디에든 1번만 있으면 됩니다
-  document.getElementById('year').textContent = new Date().getFullYear();
-</script>
-
-<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
-
-
+  <!-- 스크립트 -->
   <script>
-    document.getElementById('year').textContent=new Date().getFullYear();
-    // nav highlight
+    // 연도(중복 제거)
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 현재 페이지 하이라이트
     (function(){
-      const cur=(location.pathname.split('/').pop()||'about.html');
+      const cur = (location.pathname.split('/').pop() || 'about.html');
       document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{
         if(a.getAttribute('href')===cur){
           a.classList.add('text-brand','underline','underline-offset-4');
@@ -113,14 +148,29 @@
         }
       });
     })();
-    // drawer
+
+    // 드로어
     (function(){
-      const b=document.getElementById('drawerBtn'), r=document.getElementById('drawerRoot'),
-            p=document.getElementById('drawerPanel'), o=document.getElementById('drawerOverlay'),
+      const b=document.getElementById('drawerBtn'),
+            r=document.getElementById('drawerRoot'),
+            p=document.getElementById('drawerPanel'),
+            o=document.getElementById('drawerOverlay'),
             c=document.getElementById('drawerClose');
-      const open=()=>{ r.classList.remove('hidden'); requestAnimationFrame(()=>{ p.classList.remove('translate-x-full'); o.classList.remove('opacity-0'); }); b?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden'); };
-      const close=()=>{ p.classList.add('translate-x-full'); o.classList.add('opacity-0'); b?.setAttribute('aria-expanded','false'); setTimeout(()=>r.classList.add('hidden'),300); document.body.classList.remove('overflow-hidden'); };
-      b?.addEventListener('click',open); o?.addEventListener('click',close); c?.addEventListener('click',close); r.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+
+      const open=()=>{ r.classList.remove('hidden');
+        requestAnimationFrame(()=>{ p.classList.remove('translate-x-full'); o.classList.remove('opacity-0'); });
+        b?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden');
+      };
+      const close=()=>{ p.classList.add('translate-x-full'); o.classList.add('opacity-0');
+        b?.setAttribute('aria-expanded','false'); setTimeout(()=>r.classList.add('hidden'),300);
+        document.body.classList.remove('overflow-hidden');
+      };
+
+      b?.addEventListener('click',open);
+      o?.addEventListener('click',close);
+      c?.addEventListener('click',close);
+      r.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !r.classList.contains('hidden')) close(); });
     })();
   </script>
 </body>
