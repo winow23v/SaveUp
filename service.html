@@ -1,169 +1,58 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Service | 회사명</title>
+<div id="mNav3" class="md:hidden hidden pb-4">
+<div class="grid gap-2 text-slate-700 text-sm">
+<a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="/SaveUp/index.html">Home</a>
+<a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="/SaveUp/about.html">About</a>
+<a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="/SaveUp/service.html">Service</a>
+<a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="/SaveUp/notice.html">Notice</a>
+</div>
+</div>
+</div>
+</header>
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: { brand: { DEFAULT: "#0064FF", dark: "#0046B5" } }, /* Toss tone */
-          boxShadow: { soft: "0 8px 30px rgba(0,0,0,0.06)" }
-        }
-      }
-    }
-  </script>
+<main class="mx-auto max-w-screen-xl px-4 py-14 md:py-20">
+<h1 class="text-3xl md:text-5xl font-extrabold text-center">우리의 서비스</h1>
+<div class="mt-10 grid gap-6 md:grid-cols-2">
+<div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-2xl bg-blue-50 text-blue-600 inline-flex items-center justify-center">✓</div>
+<h3 class="font-semibold">카드 혜택 분석</h3>
+</div>
+<p class="mt-2 text-sm text-slate-600 leading-6">모든 카드 혜택을 비교하고 최적의 사용 방법을 제안합니다.</p>
+<ul class="mt-3 text-sm text-slate-600 space-y-1 list-disc pl-5">
+<li>실시간 혜택 비교</li>
+<li>맞춤형 카드 추천</li>
+<li>월간 리포트 제공</li>
+</ul>
+</div>
+<div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-2xl bg-blue-50 text-blue-600 inline-flex items-center justify-center">✓</div>
+<h3 class="font-semibold">맞춤형 추천</h3>
+</div>
+<p class="mt-2 text-sm text-slate-600 leading-6">소비 기록과 카테고리별 혜택을 반영한 AI 추천.</p>
+</div>
+<div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-2xl bg-blue-50 text-blue-600 inline-flex items-center justify-center">✓</div>
+<h3 class="font-semibold">실시간 알림</h3>
+</div>
+<p class="mt-2 text-sm text-slate-600 leading-6">혜택 소멸, 한도 도달, 실적 부족 등 주요 시점에 정확히 알립니다.</p>
+</div>
+<div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="h-9 w-9 rounded-2xl bg-blue-50 text-blue-600 inline-flex items-center justify-center">✓</div>
+<h3 class="font-semibold">통합 관리</h3>
+</div>
+<p class="mt-2 text-sm text-slate-600 leading-6">여러 카드를 한 곳에서 등록하고 혜택/실적/사용내역을 통합 관리합니다.</p>
+</div>
+</div>
+</main>
 
-  <link rel="stylesheet" href="assets/site.css" />
+<footer class="border-t border-slate-200">
+<div class="mx-auto max-w-screen-xl px-4 py-10 text-sm text-slate-500">© 2025 SaveUp</div>
+</footer>
 
-  <style>
-    /* Header glass */
-    .hdr{ background:rgba(255,255,255,.85); backdrop-filter:blur(8px) }
-    @supports not (backdrop-filter: blur(8px)){ .hdr{ background:#fff } }
-
-    /* Hero background (Toss tone) */
-    .hero-wrap{
-      position:relative; isolation:isolate;
-      background:
-        radial-gradient(1200px 600px at 10% -10%, rgba(0,100,255,.18), transparent 60%),
-        radial-gradient(1000px 500px at 90% -10%, rgba(0,70,181,.10), transparent 60%),
-        linear-gradient(90deg, rgba(0,100,255,.05), rgba(0,100,255,.02));
-    }
-    .hero-wrap::after{
-      content:""; position:absolute; inset:0; z-index:-1;
-      background-image:
-        linear-gradient(rgba(100,116,139,.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(100,116,139,.06) 1px, transparent 1px);
-      background-size:24px 24px; mask-image:radial-gradient(80% 60% at 50% 10%, #000 55%, transparent 70%);
-    }
-
-    /* Gradient text (Toss tone) */
-    .gtext{
-      background:linear-gradient(90deg,#0046B5,#0064FF 45%,#5A8FFF);
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-    }
-  </style>
-</head>
-<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
-
-  <!-- Header (정렬/여백 통일) -->
-  <header class="site-header hdr border-b border-slate-200 sticky top-0 z-40">
-    <div class="wrap max-w-6xl mx-auto px-5 h-14 md:h-16 flex items-center justify-between">
-      <a href="index.html" aria-label="홈" class="inline-flex items-center gap-2">
-        <img src="assets/saveup-logo.svg" alt="SaveUp 로고" style="height:28px;width:auto" />
-      </a>
-      <nav class="hidden md:flex items-center gap-6 text-sm">
-        <a class="hover:text-slate-900" href="about.html">About</a>
-        <a class="hover:text-slate-900" href="service.html">Service</a>
-        <a class="hover:text-slate-900" href="notice.html">Notice</a>
-      </nav>
-      <button id="drawerBtn"
-              class="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-              aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawerRoot" type="button">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
-    </div>
-  </header>
-
-  <!-- Drawer (기능 동일, 포커스 보강) -->
-  <div id="drawerRoot" class="fixed inset-0 z-50 hidden" aria-hidden="true">
-    <div id="drawerOverlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
-    <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
-      <div class="flex items-center justify-end px-5 py-4 border-b">
-        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300" aria-label="닫기" type="button">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-      <nav class="px-5 py-4 space-y-3">
-        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">About</a>
-        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">Service</a>
-        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">Notice</a>
-      </nav>
-    </aside>
-  </div>
-
-  <!-- Main -->
-  <main class="flex-1">
-    <!-- Hero -->
-    <section class="hero-wrap text-center border-b">
-      <div class="max-w-6xl mx-auto px-5 py-14 md:py-20">
-        <h1 class="text-3xl md:text-5xl font-extrabold gtext leading-tight tracking-tight">Service</h1>
-        <p class="mt-3 text-slate-600">일상 속 소비를 더 똑똑하게 만드는 회사명의 핵심 기능을 소개합니다.</p>
-      </div>
-    </section>
-
-    <!-- Features (내용 동일, 톤/여백만 정리) -->
-    <section class="max-w-6xl mx-auto px-5 py-10 md:py-14 grid md:grid-cols-3 gap-6">
-      <div class="p-6 rounded-xl border border-slate-200 shadow-soft">
-        <h3 class="font-bold mb-1">혜택 자동 분할</h3>
-        <p class="text-sm text-slate-600">결제 전 카드별 실적/구간을 반영해 분할 추천.</p>
-      </div>
-      <div class="p-6 rounded-xl border border-slate-200 shadow-soft">
-        <h3 class="font-bold mb-1">실적 임계치 알림</h3>
-        <p class="text-sm text-slate-600">달성 전/초과 위험을 예측하고 푸시 알림.</p>
-      </div>
-      <div class="p-6 rounded-xl border border-slate-200 shadow-soft">
-        <h3 class="font-bold mb-1">포인트 소멸 방지</h3>
-        <p class="text-sm text-slate-600">소멸 예정 포인트·쿠폰을 일정 기반으로 리마인드.</p>
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer (정렬 통일) -->
-  <footer class="border-t">
-    <div class="max-w-6xl mx-auto px-5 py-6 text-sm text-slate-500
-                flex flex-col md:flex-row md:items-center md:gap-4
-                text-center md:text-left">
-      <span>© <span id="year"></span> 회사명. All Rights Reserved.</span>
-      <span class="hidden md:inline text-slate-300">|</span>
-      <a href="privacy.html" class="no-underline text-slate-500 hover:text-slate-700">개인정보 처리방침</a>
-    </div>
-  </footer>
-
-  <!-- Scripts -->
-  <script>
-    // 연도 (중복 제거)
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // 현재 페이지 하이라이트
-    (function(){
-      const cur=(location.pathname.split('/').pop()||'service.html');
-      document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{
-        if(a.getAttribute('href')===cur){
-          a.classList.add('text-brand','underline','underline-offset-4');
-          a.setAttribute('aria-current','page');
-        }
-      });
-    })();
-
-    // 드로어
-    (function(){
-      const b=document.getElementById('drawerBtn'),
-            r=document.getElementById('drawerRoot'),
-            p=document.getElementById('drawerPanel'),
-            o=document.getElementById('drawerOverlay'),
-            c=document.getElementById('drawerClose');
-
-      const open=()=>{ r.classList.remove('hidden');
-        requestAnimationFrame(()=>{ p.classList.remove('translate-x-full'); o.classList.remove('opacity-0'); });
-        b?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden'); };
-
-      const close=()=>{ p.classList.add('translate-x-full'); o.classList.add('opacity-0');
-        b?.setAttribute('aria-expanded','false'); setTimeout(()=>r.classList.add('hidden'),300);
-        document.body.classList.remove('overflow-hidden'); };
-
-      b?.addEventListener('click',open);
-      o?.addEventListener('click',close);
-      c?.addEventListener('click',close);
-      r.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
-      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !r.classList.contains('hidden')) close(); });
-    })();
-  </script>
+<script>document.getElementById('mBtn3')?.addEventListener('click',()=>document.getElementById('mNav3').classList.toggle('hidden'))</script>
 </body>
 </html>
