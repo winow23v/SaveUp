@@ -63,7 +63,14 @@
     .btn-sm{ padding:.4rem .65rem; font-size:.85rem; border-radius:.5rem; }
     .toolbar-left, .toolbar-right{ display:flex; gap:.5rem; align-items:center; }
     .toolbar-title{ font-weight:600 }
-  </style>
+    /* === mobile footer left align & back-to-top position fix === */
+  @media (max-width:767px){
+    .site-footer .col{ text-align:left; }
+  }
+  /* 강제 하단 고정 (상단으로 붙는 문제 방지) */
+  #backTop{ top:auto !important; bottom:20px !important; }
+  @media (max-width:767px){ #backTop{ bottom:84px !important; right:1rem !important; } }
+</style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
 
@@ -166,14 +173,14 @@
     <div class="wrap">
       <div class="grid gap-8 md:grid-cols-4 text-sm text-slate-600">
         <!-- 브랜드 -->
-        <div class="space-y-3">
+        <div class="space-y-3 col">
           <div class="flex items-center gap-2">
             <img src="assets/saveup-logo.svg" alt="SaveUp" class="h-7 w-auto"/>
           </div>
           <p class="text-slate-600">스마트한 카드 혜택 관리</p>
         </div>
         <!-- 메뉴 -->
-        <div>
+        <div class="col">
           <div class="font-semibold text-slate-900 mb-2">메뉴</div>
           <ul class="space-y-2">
             <li><a href="about.html" class="hover:text-slate-700">About</a></li>
@@ -182,7 +189,7 @@
           </ul>
         </div>
         <!-- 지원 -->
-        <div>
+        <div class="col">
           <div class="font-semibold text-slate-900 mb-2">지원</div>
           <ul class="space-y-2">
             <li><a href="#" class="hover:text-slate-700">자주 묻는 질문</a></li>
@@ -191,7 +198,7 @@
           </ul>
         </div>
         <!-- 문의 -->
-        <div>
+        <div class="col">
           <div class="font-semibold text-slate-900 mb-2">문의</div>
           <div class="flex items-center gap-2">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z" opacity=".08"/><path d="M4 8l8 5 8-5"/></svg>
@@ -358,6 +365,7 @@
       const { ok, data, tried } = await resolveAndDownload();
       if(!ok){
         HOST.innerHTML = `<div class="pdf-empty">PDF 파일을 찾지 못했습니다(404/경로 오류).<div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\\n')}</div></div>`;
+
         LOADER.style.display='none'; return;
       }
       try{ const loadingTask = pdfjsLib.getDocument({ data, withCredentials: false }); pdf = await loadingTask.promise; }
