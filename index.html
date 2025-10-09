@@ -150,20 +150,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Contact & CTA -->
-    <section class="section border-top text-center">
-      <h2 class="text-xl md:text-2xl font-bold mb-2 md:mb-3">Contact us</h2>
-      <p class="text-slate-600 text-sm md:text-base">문의는 이메일로 부탁드립니다.</p>
-      <div class="mt-4 max-w-md mx-auto flex flex-col sm:flex-row gap-3 items-center justify-center">
-        <code id="copyEmail" class="text-brand font-semibold break-all cursor-pointer" title="클릭하면 복사됩니다">admin@gmail.com</code>
-        <div id="copyToast" class="hidden fixed left-1/2 -translate-x-1/2 bottom-24 md:bottom-10 bg-slate-900 text-white text-sm px-3 py-2 rounded-lg shadow-md z-50">복사되었어요</div>
-      </div>
-      <div class="mt-8">
-        <!-- 하단 CTA 버튼도 무료로 시작하기로 통일 (모달 오픈) -->
-        <button id="startBtnCta" class="inline-flex px-5 py-3 rounded-lg bg-brand text-white hover:bg-brand-dark font-semibold shadow-soft" type="button">무료로 시작하기</button>
-      </div>
-    </section>
   </main>
 
   <!-- Footer (메뉴 컬럼 제거 버전) -->
@@ -276,7 +262,6 @@
       const open=()=>{ modal.classList.remove('hidden'); document.body.classList.add('overflow-hidden'); };
       const close=()=>{ modal.classList.add('hidden'); document.body.classList.remove('overflow-hidden'); };
       document.getElementById('startBtnHero')?.addEventListener('click', open);
-      document.getElementById('startBtnCta')?.addEventListener('click', open);
       closeBtn?.addEventListener('click', close);
       modal?.addEventListener('click', e=>{ if(e.target===modal) close(); });
       document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !modal.classList.contains('hidden')) close(); });
@@ -290,20 +275,6 @@
       window.addEventListener('scroll',onScroll,{passive:true});
       b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'}));
       onScroll();
-    })();
-
-    // 이메일 클릭 복사
-    (function(){
-      const el=document.getElementById('copyEmail'); const toast=document.getElementById('copyToast');
-      if(!el||!toast) return;
-      async function copy(t){
-        if(window.isSecureContext && navigator.clipboard?.writeText){
-          try{ await navigator.clipboard.writeText(t); return true; }catch{}
-        }
-        try{ const ta=document.createElement('textarea'); t=String(t||''); ta.value=t; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.top='-9999px'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); return true; }catch{ return false; }
-      }
-      const show=()=>{ toast.classList.remove('hidden'); clearTimeout(show._t); show._t=setTimeout(()=>toast.classList.add('hidden'),1600); };
-      el.addEventListener('click', ()=> copy(el.textContent.trim()).then(ok=> ok&&show()));
     })();
   </script>
 
@@ -366,7 +337,7 @@
       LOADER.style.display='flex'; HOST.innerHTML="";
       const { ok, data, tried } = await resolveAndDownload();
       if(!ok){
-        HHOST.innerHTML = `<div class="pdf-empty">PDF 파일을 찾지 못했습니다(404/경로 오류).<div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\\n')}</div></div>`;
+        HOST.innerHTML = `<div class="pdf-empty">PDF 파일을 찾지 못했습니다(404/경로 오류).<div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\\n')}</div></div>`;
         LOADER.style.display='none'; return;
       }
       try{ const loadingTask = pdfjsLib.getDocument({ data, withCredentials: false }); pdf = await loadingTask.promise; }
