@@ -117,9 +117,8 @@
           소비 패턴 분석으로 월간 혜택·포인트 손실을 최소화하는 <b>서비스</b>.
         </p>
         <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-          <!-- 앱 다운로드 제거 → 무료로 시작하기로 대체 (모달 오픈) -->
+          <!-- 앱 다운로드/제안서 버튼은 하단 CTA로 이동 -->
           <button id="startBtnHero" class="btn-brand px-5 py-3 rounded-lg font-semibold" type="button">무료로 시작하기</button>
-          <button id="pdfPreviewBtn" class="btn-ghost px-5 py-3 rounded-lg border font-semibold" type="button">제안서 미리보기</button>
         </div>
       </div>
     </section>
@@ -150,18 +149,37 @@
         </div>
       </div>
     </section>
-  </main>
+    <!-- Bottom CTA: 지금 바로 시작하세요 -->
+  <section class="section border-top text-center">
+    <h2 class="text-2xl md:text-3xl font-extrabold mb-3">지금 바로 시작하세요</h2>
+    <p class="text-slate-600 max-w-2xl mx-auto">SaveUp과 함께 더 똑똑한 금융 생활을 경험해보세요.</p>
+    <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+      <button id="startBtnCta" class="btn-brand px-5 py-3 rounded-lg font-semibold" type="button">무료로 시작하기</button>
+      <button id="downloadBtn" class="btn-ghost px-5 py-3 rounded-lg border font-semibold" type="button">앱 다운로드</button>
+      <button id="pdfPreviewBtnCta" class="btn-ghost px-5 py-3 rounded-lg border font-semibold" type="button">제안서 미리보기</button>
+    </div>
+  </section>
+</main>
 
   <!-- Footer (메뉴 컬럼 제거 버전) -->
   <footer class="site-footer">
     <div class="wrap">
-      <div class="grid gap-8 md:grid-cols-3 text-sm text-slate-600">
+      <div class="grid gap-8 md:grid-cols-4 text-sm text-slate-600">
         <!-- 브랜드 -->
         <div class="space-y-3">
           <div class="flex items-center gap-2">
             <img src="assets/saveup-logo.svg" alt="SaveUp" class="h-7 w-auto"/>
           </div>
           <p class="text-slate-600">스마트한 카드 혜택 관리</p>
+        </div>
+        <!-- 메뉴 -->
+        <div>
+          <div class="font-semibold text-slate-900 mb-2">메뉴</div>
+          <ul class="space-y-2">
+            <li><a href="about.html" class="hover:text-slate-700">About</a></li>
+            <li><a href="service.html" class="hover:text-slate-700">Service</a></li>
+            <li><a href="notice.html" class="hover:text-slate-700">Notice</a></li>
+          </ul>
         </div>
         <!-- 지원 -->
         <div>
@@ -262,6 +280,8 @@
       const open=()=>{ modal.classList.remove('hidden'); document.body.classList.add('overflow-hidden'); };
       const close=()=>{ modal.classList.add('hidden'); document.body.classList.remove('overflow-hidden'); };
       document.getElementById('startBtnHero')?.addEventListener('click', open);
+      document.getElementById('startBtnCta')?.addEventListener('click', open);
+      document.getElementById('downloadBtn')?.addEventListener('click', open);
       closeBtn?.addEventListener('click', close);
       modal?.addEventListener('click', e=>{ if(e.target===modal) close(); });
       document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !modal.classList.contains('hidden')) close(); });
@@ -369,16 +389,29 @@
     document.getElementById('zoomIn').addEventListener('click', ()=> zoom(1.2));
     document.getElementById('zoomOut').addEventListener('click', ()=> zoom(1/1.2));
 
-    // 미리보기 버튼 바인딩
-    document.getElementById('pdfPreviewBtn').addEventListener('click', ()=>{
-      const MODAL=document.getElementById('pdfModal');
-      MODAL.classList.remove('hidden'); document.body.classList.add('overflow-hidden');
-      mountPdf().catch(showFallback);
-      // 닫기 핸들러
-      document.getElementById('closePdf').addEventListener('click', ()=> MODAL.classList.add('hidden'), { once:true });
-      MODAL.addEventListener('click', e=>{ if(e.target===MODAL) MODAL.classList.add('hidden'); }, { once:true });
-      document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) MODAL.classList.add('hidden'); }, { once:true });
-    });
-  </script>
+    // 미리보기 버튼 바인딩 (정상 동작으로 정리)
+function openPdfModal(){
+  if(!MODAL) return;
+  MODAL.classList.remove('hidden');
+  document.body.classList.add('overflow-hidden');
+  mountPdf().catch(showFallback);
+
+  const onBackdrop = (e)=>{ if(e.target===MODAL) close(); };
+  const onKey = (e)=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) close(); };
+  function close(){
+    MODAL.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+    MODAL.removeEventListener('click', onBackdrop);
+    document.removeEventListener('keydown', onKey);
+  }
+  document.getElementById('closePdf')?.addEventListener('click', close, { once:true });
+  MODAL.addEventListener('click', onBackdrop);
+  document.addEventListener('keydown', onKey);
+}
+['pdfPreviewBtn','pdfPreviewBtnCta'].forEach(id=>{
+  const el = document.getElementById(id);
+  el?.addEventListener('click', openPdfModal);
+});
+</script>
 </body>
 </html>
