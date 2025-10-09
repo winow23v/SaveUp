@@ -366,8 +366,7 @@
       LOADER.style.display='flex'; HOST.innerHTML="";
       const { ok, data, tried } = await resolveAndDownload();
       if(!ok){
-        HOST.innerHTML = `<div class="pdf-empty">PDF 파일을 찾지 못했습니다(404/경로 오류).<div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('
-')}</div></div>`;
+        HHOST.innerHTML = `<div class="pdf-empty">PDF 파일을 찾지 못했습니다(404/경로 오류).<div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\\n')}</div></div>`;
         LOADER.style.display='none'; return;
       }
       try{ const loadingTask = pdfjsLib.getDocument({ data, withCredentials: false }); pdf = await loadingTask.promise; }
