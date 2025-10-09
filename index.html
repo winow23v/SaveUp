@@ -1,169 +1,109 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="scroll-smooth">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SaveUp | 혜택은 자동으로, 소비는 똑똑하게</title>
+  <title>SaveUp | 랜딩 페이지</title>
 
-  <!-- Favicon -->
+  <!-- Favicon / Manifest (있으면 그대로 사용) -->
   <link rel="icon" type="image/svg+xml" href="assets/saveup-logo.svg">
   <link rel="alternate icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="alternate icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
-  <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#0a46c7">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon-180.png">
   <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#0a46c7">
 
-  <!-- Base styles (공통 변수/레이아웃) -->
+  <!-- (선택) 기존 공통 CSS 사용 중이면 유지 -->
   <link rel="stylesheet" href="assets/site.css">
 
-  <!-- Social -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="SaveUp | 혜택은 자동으로, 소비는 똑똑하게">
-  <meta property="og:description" content="소비 패턴 분석으로 카드 혜택·포인트 누수를 줄여주는 서비스">
-  <meta property="og:image" content="https://winow23v.github.io/SaveUp/assets/og-image-1200x630.png">
-  <meta property="og:url" content="https://winow23v.github.io/SaveUp/">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <!-- Theme color -->
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#0b1220">
-
-  <!-- Tailwind -->
+  <!-- Pretendard + Tailwind (about 스타일 통일) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/static/pretendard.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config={theme:{extend:{
-      colors:{brand:{DEFAULT:"#5b8cff",dark:"#0a46c7"}},
-      boxShadow:{soft:'0 8px 30px rgba(0,0,0,0.06)'}
-    }}}
+    tailwind.config = { theme: { extend: { colors: { brand: { DEFAULT:'#2563eb' } } } } };
   </script>
-
   <style>
-    /* ===== override: 그리드/메시 배경 제거 ===== */
-    .hero-wrap{ background:none !important; }
-    .hero-wrap::after{ display:none !important; }
-
-    /* ===== page-level tweaks (토스형 미니멀) ===== */
-    .gtext{ background:linear-gradient(90deg,#0a46c7,#5b8cff 45%,#7ea4ff); -webkit-background-clip:text; background-clip:text; color:transparent; }
-    .btn-brand{ background:#5b8cff; color:#fff; transition:background .2s, box-shadow .2s, transform .2s }
-    .btn-brand:hover{ background:#0a46c7; box-shadow:0 10px 30px rgba(91,140,255,.35) }
-    .btn-ghost:hover{ background:#f8fafc; }
-
-    :root{ --bt-desktop:16px; --bt-mobile:88px; }
-    #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-desktop)); }
-    @media (max-width:767px){ #backTop{ bottom:calc(env(safe-area-inset-bottom,0px)+var(--bt-mobile)); right:1rem; } }
-
-    /* PDF modal (index 전용) */
-    .pdf-modal{ inset:0; background:rgba(0,0,0,.5); }
-    .pdf-panel{ width:calc(100% - 24px); max-width: 960px; height: min(88vh, 900px); display:flex; flex-direction:column; border-radius:1rem; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.25); }
-    .pdf-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; padding:.75rem 1rem; background:#fff; border-bottom:1px solid rgba(15,23,42,.08); }
-    .pdf-main{ position:relative; flex:1; background:#0b1220; overflow:auto; }
-    .pdf-loader{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#cbd5e1; font-size:.9rem; }
-    .pdf-page{ display:block; margin: 16px auto; background:#fff; box-shadow: 0 4px 24px rgba(0,0,0,.25); border-radius:8px; }
-    .pdf-empty{ color:#cbd5e1; text-align:center; padding:2rem; }
-    .btn-sm{ padding:.4rem .65rem; font-size:.85rem; border-radius:.5rem; }
-    .toolbar-left, .toolbar-right{ display:flex; gap:.5rem; align-items:center; }
-    .toolbar-title{ font-weight:600 }
-    /* === mobile footer left align & back-to-top position fix === */
-  @media (max-width:767px){
-    .site-footer .col{ text-align:left; }
-  }
-  /* 강제 하단 고정 (상단으로 붙는 문제 방지) */
-  #backTop{ top:auto !important; bottom:20px !important; }
-  @media (max-width:767px){ #backTop{ bottom:84px !important; right:1rem !important; } }
-</style>
+    body{font-family:Pretendard,system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+    .gtext{background:linear-gradient(90deg,#0a46c7,#2563eb 45%,#7ea4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .btn-brand{background:#2563eb;color:#fff;transition:background .2s,box-shadow .2s}
+    .btn-brand:hover{background:#1e40af;box-shadow:0 10px 28px rgba(37,99,235,.35)}
+    .btn-ghost:hover{background:#f8fafc}
+    /* 모바일 푸터 좌정렬 & Top 버튼 하단 고정 */
+    @media (max-width:767px){ .site-footer .col{ text-align:left; } }
+    #backTop{ top:auto !important; bottom:20px !important; }
+    @media (max-width:767px){ #backTop{ bottom:84px !important; right:1rem !important; } }
+  </style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
 
-  <!-- Skip -->
-  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 bg-brand text-white px-3 py-2 rounded-md z-50">본문으로 건너뛰기</a>
-
-  <!-- Header (site.css 사용) -->
-  <header class="site-header">
-    <div class="wrap">
-      <a href="index.html" aria-label="홈">
-        <img src="assets/saveup-logo.svg" alt="SaveUp 로고" style="height:28px;width:auto" />
-      </a>
-      <nav class="hidden md:flex items-center gap-6">
-        <a href="about.html">About</a>
-        <a href="service.html">Service</a>
-        <a href="notice.html">Notice</a>
-      </nav>
-      <!-- 모바일 드로어 버튼 -->
-      <button id="drawerBtn" class="md:hidden inline-flex items-center justify-center p-2 rounded-md hover:bg-slate-100" aria-label="메뉴 열기" aria-expanded="false" aria-controls="drawerRoot" type="button">
-        <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
+  <!-- Header (about 스타일) -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
+    <div class="mx-auto max-w-screen-xl px-4">
+      <div class="flex h-16 items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2" aria-label="홈">
+          <img src="assets/saveup-logo.svg" alt="SaveUp 로고" class="h-7 w-auto">
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm text-slate-600">
+          <a href="about.html"   class="hover:text-slate-900">About</a>
+          <a href="service.html" class="hover:text-slate-900">Service</a>
+          <a href="notice.html"  class="hover:text-slate-900">Notice</a>
+        </nav>
+        <button id="mBtn" class="md:hidden p-2 rounded-2xl border border-slate-300" aria-label="메뉴">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+      <div id="mNav" class="md:hidden hidden pb-4">
+        <div class="grid gap-2 text-slate-700 text-sm">
+          <a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="index.html">Home</a>
+          <a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="about.html">About</a>
+          <a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="service.html">Service</a>
+          <a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="notice.html">Notice</a>
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- 모바일 드로어 -->
-  <div id="drawerRoot" class="fixed inset-0 z-50 hidden" aria-hidden="true">
-    <div id="drawerOverlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
-    <aside id="drawerPanel" class="absolute right-0 top-0 h-full w-64 max-w-[78%] bg-white shadow-xl translate-x-full transition-transform duration-300" role="dialog" aria-modal="true" aria-label="모바일 메뉴">
-      <div class="flex items-center justify-end px-5 py-4 border-b">
-        <button id="drawerClose" class="p-2 rounded-md hover:bg-slate-100" aria-label="닫기" type="button">
-          <svg class="w-6 h-6" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-      <nav class="px-5 py-4 space-y-3">
-        <a href="about.html"   class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">About</a>
-        <a href="service.html" class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">Service</a>
-        <a href="notice.html"  class="block text-lg py-2 rounded-md font-bold hover:text-brand hover:bg-brand/10">Notice</a>
-      </nav>
-    </aside>
-  </div>
-
   <!-- Main -->
-  <main id="main" class="site-main">
-    <!-- Hero: 심플 + 여백 (격자 제거) -->
-    <section class="section">
-      <div class="inner text-center">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
-          카드 혜택을 <span class="gtext">자동</span>으로, 소비는 <span class="gtext">똑똑</span>하게
-        </h1>
-        <p class="mt-4 max-w-2xl mx-auto text-slate-600 text-base md:text-lg">
-          소비 패턴 분석으로 월간 혜택·포인트 손실을 최소화하는 <b>서비스</b>.
-        </p>
+  <main id="main" class="flex-1">
+    <!-- Hero (격자 제거, 미니멀) -->
+    <section class="px-5 py-16 md:py-24 text-center">
+      <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
+        카드 혜택을 <span class="gtext">자동</span>으로, 소비는 <span class="gtext">똑똑</span>하게
+      </h1>
+      <p class="mt-4 max-w-2xl mx-auto text-slate-600">
+        소비 패턴 분석으로 월간 혜택·포인트 손실을 최소화하는 서비스.
+      </p>
+    </section>
+
+    <!-- (원하면) 기능 3개 요약 카드 -->
+    <section class="max-w-6xl mx-auto px-5 pb-8 grid gap-6 md:grid-cols-3">
+      <div class="card p-6 bg-white">
+        <div class="flex items-center gap-3"><span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">✓</span><h3 class="font-semibold">카드 혜택 분석</h3></div>
+        <p class="mt-2 text-sm text-slate-600">모든 카드 혜택을 비교해 가장 유리한 조건을 안내합니다.</p>
+      </div>
+      <div class="card p-6 bg-white">
+        <div class="flex items-center gap-3"><span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">✓</span><h3 class="font-semibold">맞춤 추천</h3></div>
+        <p class="mt-2 text-sm text-slate-600">소비 패턴 기반으로 지금 유리한 카드를 추천합니다.</p>
+      </div>
+      <div class="card p-6 bg-white">
+        <div class="flex items-center gap-3"><span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">✓</span><h3 class="font-semibold">실시간 알림</h3></div>
+        <p class="mt-2 text-sm text-slate-600">혜택 소멸·실적 부족 등 중요한 시점을 놓치지 않습니다.</p>
       </div>
     </section>
 
-    <!-- 주요 기능 3카드 -->
-    <section class="section">
-      <div class="grid gap-6 md:grid-cols-3">
-        <div class="card p-6 bg-white">
-          <div class="flex items-center gap-3">
-            <span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">✓</span>
-            <h3 class="font-semibold">카드 혜택 분석</h3>
-          </div>
-          <p class="mt-2 text-sm text-slate-600 leading-6">모든 카드 혜택을 비교해 가장 유리한 조건을 안내합니다.</p>
-        </div>
-        <div class="card p-6 bg-white">
-          <div class="flex items-center gap-3">
-            <span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">✓</span>
-            <h3 class="font-semibold">맞춤 추천</h3>
-          </div>
-          <p class="mt-2 text-sm text-slate-600 leading-6">소비 패턴 기반으로 지금 유리한 카드를 추천합니다.</p>
-        </div>
-        <div class="card p-6 bg-white">
-          <div class="flex items-center gap-3">
-            <span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">✓</span>
-            <h3 class="font-semibold">실시간 알림</h3>
-          </div>
-          <p class="mt-2 text-sm text-slate-600 leading-6">혜택 소멸 전/실적 부족 등 중요 시점을 놓치지 않습니다.</p>
-        </div>
+    <!-- Bottom CTA -->
+    <section class="section border-top text-center">
+      <h2 class="text-2xl md:text-3xl font-extrabold mb-3">지금 바로 시작하세요</h2>
+      <p class="text-slate-600 max-w-2xl mx-auto">혜빗과 함께 더 똑똑한 금융 생활을 경험해보세요.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+        <button id="startBtnCta" class="btn-brand px-5 py-3 rounded-lg font-semibold" type="button">지금 시작하기</button>
+        <button id="pdfPreviewBtnCta" class="btn-ghost px-5 py-3 rounded-lg border font-semibold" type="button">미리보기</button>
       </div>
     </section>
-    <!-- Bottom CTA: 지금 바로 시작하세요 -->
-  <section class="section border-top text-center">
-    <h2 class="text-2xl md:text-3xl font-extrabold mb-3">지금 바로 시작하세요</h2>
-    <p class="text-slate-600 max-w-2xl mx-auto">혜빗과 함께 더 똑똑한 금융 생활을 경험해보세요.</p>
-    <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-      <button id="startBtnCta" class="btn-brand px-5 py-3 rounded-lg font-semibold" type="button">시작하기</button>
-      <button id="pdfPreviewBtnCta" class="btn-ghost px-5 py-3 rounded-lg border font-semibold" type="button">제안서 미리보기</button>
-    </div>
-  </section>
-</main>
+  </main>
 
-  <!-- Footer (메뉴 컬럼 제거 버전) -->
+  <!-- Footer (4열 유지) -->
   <footer class="site-footer">
     <div class="wrap">
       <div class="grid gap-8 md:grid-cols-4 text-sm text-slate-600">
@@ -218,64 +158,60 @@
       </div>
     </div>
   </footer>
-
   <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
 
   <!-- Back-to-top -->
-  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold items-center justify-center hover:bg-brand-dark" aria-label="맨위로" type="button">Top</button>
+  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold items-center justify-center hover:bg-[#1e40af]" aria-label="맨위로" type="button">Top</button>
 
-  <!-- 서비스 준비중 모달 (무료로 시작하기와 연동) -->
+  <!-- 서비스 준비중 모달 -->
   <div id="downloadModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3">
     <div class="bg-white max-w-sm w-full p-6 rounded-xl shadow-lg text-center">
       <h3 class="text-xl font-bold mb-3">서비스 준비중</h3>
-      <p class="text-slate-600 mb-6">앱 다운로드 서비스는 곧 제공될 예정입니다.</p>
+      <p class="text-slate-600 mb-6">앱 서비스는 곧 제공될 예정입니다.</p>
       <button id="closeDownload" class="w-full px-6 py-3 btn-brand rounded-lg" type="button">닫기</button>
     </div>
   </div>
 
   <!-- PDF 미리보기 모달 -->
-  <div id="pdfModal" class="pdf-modal hidden fixed flex items-center justify-center z-50 p-3">
-    <div class="pdf-panel bg-white">
-      <div class="pdf-toolbar">
-        <div class="toolbar-left"><span class="toolbar-title">제안서 미리보기</span></div>
-        <div class="toolbar-right">
+  <div id="pdfModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3">
+    <div class="bg-white w-[calc(100%-24px)] max-w-[960px] h-[min(88vh,900px)] rounded-xl overflow-hidden shadow-2xl flex flex-col">
+      <div class="flex items-center justify-between gap-2 px-4 py-3 border-b">
+        <div class="font-semibold">제안서 미리보기</div>
+        <div class="flex items-center gap-2">
           <button id="zoomOut"  type="button" class="px-3 btn-sm border hover:bg-slate-50" aria-label="축소">-</button>
           <button id="zoomIn"   type="button" class="px-3 btn-sm border hover:bg-slate-50" aria-label="확대">+</button>
           <button id="openInNew" type="button" class="px-3 btn-sm border hover:bg-slate-50">새 탭에서 열기</button>
           <button id="closePdf" type="button" class="px-3 btn-sm btn-brand text-white">닫기</button>
         </div>
       </div>
-      <div class="pdf-main" id="pdfScroll">
-        <div id="pdfLoader" class="pdf-loader">불러오는 중…</div>
+      <div id="pdfScroll" class="relative flex-1 bg-slate-900 overflow-auto">
+        <div id="pdfLoader" class="absolute inset-0 flex items-center justify-center text-slate-300 text-sm">불러오는 중…</div>
         <div id="pdfViewerHost" class="w-full h-full"></div>
       </div>
     </div>
   </div>
 
+  <!-- Nav toggle + highlight + back-to-top + modal open -->
   <script>
-    // 현재 페이지 하이라이트
+    // 모바일 네비
+    document.getElementById('mBtn')?.addEventListener('click',()=>document.getElementById('mNav')?.classList.toggle('hidden'));
+    // 현재 페이지 표시
     (function(){
       const cur = (location.pathname.split('/').pop() || 'index.html');
-      document.querySelectorAll('header nav a, #drawerRoot a').forEach(a=>{
-        if(a.getAttribute('href')===cur){ a.classList.add('text-brand','underline','underline-offset-4'); a.setAttribute('aria-current','page'); }
+      document.querySelectorAll('header nav a, #mNav a').forEach(a=>{
+        if(a.getAttribute('href')===cur){ a.classList.add('text-slate-900','font-semibold'); a.setAttribute('aria-current','page'); }
       });
     })();
-
-    // 드로어
+    // Back-to-top
     (function(){
-      const btn=document.getElementById('drawerBtn'),
-            root=document.getElementById('drawerRoot'),
-            panel=document.getElementById('drawerPanel'),
-            overlay=document.getElementById('drawerOverlay'),
-            closeBtn=document.getElementById('drawerClose');
-      const open=()=>{ root.classList.remove('hidden'); requestAnimationFrame(()=>{ panel.classList.remove('translate-x-full'); overlay.classList.remove('opacity-0'); }); btn?.setAttribute('aria-expanded','true'); document.body.classList.add('overflow-hidden'); };
-      const close=()=>{ panel.classList.add('translate-x-full'); overlay.classList.add('opacity-0'); btn?.setAttribute('aria-expanded','false'); setTimeout(()=>root.classList.add('hidden'),300); document.body.classList.remove('overflow-hidden'); };
-      btn?.addEventListener('click',open); overlay?.addEventListener('click',close); closeBtn?.addEventListener('click',close);
-      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !root.classList.contains('hidden')) close(); });
-      root.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+      const b=document.getElementById('backTop');
+      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const onScroll=()=>{ if(window.scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
+      window.addEventListener('scroll',onScroll,{passive:true});
+      b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'}));
+      onScroll();
     })();
-
-    // 서비스 준비중 모달 (무료로 시작하기 버튼과 연결)
+    // '무료로 시작하기' & '앱 다운로드' 모달
     (function(){
       const modal=document.getElementById('downloadModal');
       const closeBtn=document.getElementById('closeDownload');
@@ -287,16 +223,6 @@
       closeBtn?.addEventListener('click', close);
       modal?.addEventListener('click', e=>{ if(e.target===modal) close(); });
       document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !modal.classList.contains('hidden')) close(); });
-    })();
-
-    // Back-to-top
-    (function(){
-      const b=document.getElementById('backTop');
-      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const onScroll=()=>{ if(window.scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
-      window.addEventListener('scroll',onScroll,{passive:true});
-      b.addEventListener('click',()=> reduce? window.scrollTo(0,0): window.scrollTo({top:0,behavior:'smooth'}));
-      onScroll();
     })();
   </script>
 
@@ -360,7 +286,6 @@
       const { ok, data, tried } = await resolveAndDownload();
       if(!ok){
         HOST.innerHTML = `<div class="pdf-empty">PDF 파일을 찾지 못했습니다(404/경로 오류).<div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\\n')}</div></div>`;
-
         LOADER.style.display='none'; return;
       }
       try{ const loadingTask = pdfjsLib.getDocument({ data, withCredentials: false }); pdf = await loadingTask.promise; }
@@ -392,29 +317,23 @@
     document.getElementById('zoomIn').addEventListener('click', ()=> zoom(1.2));
     document.getElementById('zoomOut').addEventListener('click', ()=> zoom(1/1.2));
 
-    // 미리보기 버튼 바인딩 (정상 동작으로 정리)
-function openPdfModal(){
-  if(!MODAL) return;
-  MODAL.classList.remove('hidden');
-  document.body.classList.add('overflow-hidden');
-  mountPdf().catch(showFallback);
-
-  const onBackdrop = (e)=>{ if(e.target===MODAL) close(); };
-  const onKey = (e)=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) close(); };
-  function close(){
-    MODAL.classList.add('hidden');
-    document.body.classList.remove('overflow-hidden');
-    MODAL.removeEventListener('click', onBackdrop);
-    document.removeEventListener('keydown', onKey);
-  }
-  document.getElementById('closePdf')?.addEventListener('click', close, { once:true });
-  MODAL.addEventListener('click', onBackdrop);
-  document.addEventListener('keydown', onKey);
-}
-['pdfPreviewBtn','pdfPreviewBtnCta'].forEach(id=>{
-  const el = document.getElementById(id);
-  el?.addEventListener('click', openPdfModal);
-});
-</script>
+    // 미리보기 버튼 바인딩
+    function openPdfModal(){
+      if(!MODAL) return;
+      MODAL.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+      mountPdf().catch(showFallback);
+      const onBackdrop = (e)=>{ if(e.target===MODAL) close(); };
+      const onKey = (e)=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) close(); };
+      function close(){
+        MODAL.classList.add('hidden'); document.body.classList.remove('overflow-hidden');
+        MODAL.removeEventListener('click', onBackdrop); document.removeEventListener('keydown', onKey);
+      }
+      CLOSE?.addEventListener('click', close, { once:true });
+      MODAL.addEventListener('click', onBackdrop);
+      document.addEventListener('keydown', onKey);
+    }
+    document.getElementById('pdfPreviewBtnCta')?.addEventListener('click', openPdfModal);
+  </script>
 </body>
 </html>
