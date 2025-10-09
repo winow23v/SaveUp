@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SaveUp | 403 접근 불가</title>
+
+  <!-- 아이콘/공통 CSS (있으면 유지) -->
+  <link rel="icon" type="image/svg+xml" href="assets/saveup-logo.svg">
+  <link rel="stylesheet" href="assets/site.css">
+
+  <!-- about 스타일과 동일한 테마 -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/static/pretendard.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:'#2563eb'}}}}}</script>
+  <style>
+    body{font-family:Pretendard,system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+    .btn-brand{background:#2563eb;color:#fff;transition:background .2s,box-shadow .2s}
+    .btn-brand:hover{background:#1e40af;box-shadow:0 10px 28px rgba(37,99,235,.35)}
+    @media (max-width:767px){ .site-footer .col{ text-align:left; } }
+    #backTop{ top:auto !important; bottom:20px !important; }
+    @media (max-width:767px){ #backTop{ bottom:84px !important; right:1rem !important; } }
+  </style>
+</head>
+<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header (about 스타일) -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
+    <div class="mx-auto max-w-screen-xl px-4">
+      <div class="flex h-16 items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2" aria-label="홈">
+          <img src="assets/saveup-logo.svg" alt="SaveUp 로고" class="h-7 w-auto">
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm text-slate-600">
+          <a href="about.html"   class="hover:text-slate-900">About</a>
+          <a href="service.html" class="hover:text-slate-900">Service</a>
+          <a href="notice.html"  class="hover:text-slate-900">Notice</a>
+        </nav>
+        <button id="mBtn" class="md:hidden p-2 rounded-2xl border border-slate-300" aria-label="메뉴">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+      <div id="mNav" class="md:hidden hidden pb-4">
+        <div class="grid gap-2 text-slate-700 text-sm">
+          <a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="index.html">Home</a>
+          <a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="about.html">About</a>
+          <a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="service.html">Service</a>
+          <a class="px-3 py-2 rounded-xl hover:bg-slate-50" href="notice.html">Notice</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="flex-1">
+    <section class="max-w-screen-xl mx-auto px-4 py-16 md:py-24">
+      <div class="mx-auto max-w-2xl text-center">
+        <div class="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-blue-50 text-blue-600 text-2xl mb-5">!</div>
+        <h1 class="text-3xl md:text-5xl font-extrabold">403 – 접근 권한이 없어요</h1>
+        <p class="mt-4 text-slate-600">
+          아직 열람 권한이 없거나, 준비 중인 페이지입니다.<br class="hidden sm:block">
+          필요한 경우 관리자에게 문의해 주세요.
+        </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="index.html" class="btn-brand px-5 py-3 rounded-lg font-semibold text-center">홈으로 이동</a>
+          <button id="startBtn" class="px-5 py-3 rounded-lg border font-semibold hover:bg-slate-50" type="button">지금 시작하기</button>
+        </div>
+
+        <!-- 참고 링크 -->
+        <div class="mt-6 text-sm text-slate-500">
+          문제가 지속되면 <a class="text-brand underline-offset-4 hover:underline" href="mailto:admin@saveup.com">admin@saveup.com</a> 으로 연락 주세요.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (index의 4열 형태 유지) -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="grid gap-8 md:grid-cols-4 text-sm text-slate-600">
+        <div class="space-y-3 col">
+          <div class="flex items-center gap-2">
+            <img src="assets/saveup-logo.svg" alt="SaveUp" class="h-7 w-auto"/>
+          </div>
+          <p class="text-slate-600">스마트한 카드 혜택 관리</p>
+        </div>
+        <div class="col">
+          <div class="font-semibold text-slate-900 mb-2">메뉴</div>
+          <ul class="space-y-2">
+            <li><a href="about.html" class="hover:text-slate-700">About</a></li>
+            <li><a href="service.html" class="hover:text-slate-700">Service</a></li>
+            <li><a href="notice.html" class="hover:text-slate-700">Notice</a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="font-semibold text-slate-900 mb-2">지원</div>
+          <ul class="space-y-2">
+            <li><a href="403.html" class="hover:text-slate-700">자주 묻는 질문</a></li>
+            <li><a href="403.html" class="hover:text-slate-700">고객 지원</a></li>
+            <li><a href="coming-soon.html" class="hover:text-slate-700">문의하기</a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <div class="font-semibold text-slate-900 mb-2">문의</div>
+          <div class="flex items-center gap-2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 4h16v16H4z" opacity=".08"/><path d="M4 8l8 5 8-5"/>
+            </svg>
+            <a href="mailto:admin@saveup.com" class="text-brand">admin@saveup.com</a>
+          </div>
+          <div class="mt-3 flex gap-2">
+            <a href="coming-soon.html" class="inline-flex h-9 w-9 items-center justify-center rounded-xl border hover:bg-slate-50">f</a>
+            <a href="coming-soon.html" class="inline-flex h-9 w-9 items-center justify-center rounded-xl border hover:bg-slate-50">t</a>
+            <a href="coming-soon.html" class="inline-flex h-9 w-9 items-center justify-center rounded-xl border hover:bg-slate-50">i</a>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 pt-6 border-t border-slate-200">
+        <div class="line">
+          <span>© <span id="year"></span> SaveUp. All Rights Reserved.</span>
+          <span class="sep">|</span><a href="privacy.html">개인정보처리방침</a>
+          <span class="sep">|</span><a href="coming-soon.html">이용약관</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+
+  <!-- Back-to-top -->
+  <button id="backTop" class="hidden fixed right-4 md:right-6 z-40 shadow-lg bg-brand text-white h-10 px-3 min-w-[3rem] rounded-full text-sm font-semibold items-center justify-center hover:bg-[#1e40af]" aria-label="맨위로" type="button">Top</button>
+
+  <!-- 공용 모달 (무료로 시작하기 = 다운로드 준비중 안내) -->
+  <div id="downloadModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3">
+    <div class="bg-white max-w-sm w-full p-6 rounded-xl shadow-lg text-center">
+      <h3 class="text-xl font-bold mb-3">서비스 준비중</h3>
+      <p class="text-slate-600 mb-6">앱 다운로드 서비스는 곧 제공될 예정입니다.</p>
+      <button id="closeDownload" class="w-full px-6 py-3 btn-brand rounded-lg" type="button">닫기</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // 모바일 네비 & 현재 메뉴 표시
+    document.getElementById('mBtn')?.addEventListener('click',()=>document.getElementById('mNav')?.classList.toggle('hidden'));
+    (function(){
+      const cur=(location.pathname.split('/').pop()||'403.html');
+      document.querySelectorAll('header nav a,#mNav a').forEach(a=>{
+        if(a.getAttribute('href')===cur){ a.classList.add('text-slate-900','font-semibold'); a.setAttribute('aria-current','page'); }
+      });
+    })();
+
+    // Back-to-top
+    (function(){
+      const b=document.getElementById('backTop');
+      const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const onScroll=()=>{ if(scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
+      addEventListener('scroll',onScroll,{passive:true});
+      b.addEventListener('click',()=> reduce? scrollTo(0,0): scrollTo({top:0,behavior:'smooth'}));
+      onScroll();
+    })();
+
+    // 무료로 시작하기 -> 다운로드 모달
+    (function(){
+      const m=document.getElementById('downloadModal');
+      const open=()=>{ m.classList.remove('hidden'); document.body.classList.add('overflow-hidden'); };
+      const close=()=>{ m.classList.add('hidden'); document.body.classList.remove('overflow-hidden'); };
+      document.getElementById('startBtn')?.addEventListener('click',open);
+      document.getElementById('closeDownload')?.addEventListener('click',close);
+      m?.addEventListener('click',e=>{ if(e.target===m) close(); });
+      document.addEventListener('keydown',e=>{ if(e.key==='Escape' && !m.classList.contains('hidden')) close(); });
+    })();
+  </script>
+</body>
+</html>
