@@ -51,7 +51,7 @@
     };
   </script>
 
-  <!-- Fonts (효율 설정) -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" href="assets/fonts.css">
 
@@ -59,15 +59,29 @@
   <link rel="stylesheet" href="assets/site.css">
 
   <style>
-    /* 기존 Pretendard 인라인 지정은 제거 (Tailwind의 font-sans로 전역 적용) */
     .gtext{background:linear-gradient(90deg,#0a46c7,#2563eb 45%,#7ea4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
     .btn-brand{background:#2563eb;color:#fff;transition:background .2s,box-shadow .2s}
     .btn-brand:hover{background:#1e40af;box-shadow:0 10px 28px rgba(37,99,235,.35)}
     .btn-ghost:hover{background:#f8fafc}
-    .shadow-soft{box-shadow:0 8px 30px rgba(2,6,23,.06)} /* 무테용 소프트 그림자 */
+    .shadow-soft{box-shadow:0 8px 30px rgba(2,6,23,.06)}
     @media (max-width:767px){ .site-footer .col{text-align:left} }
     #backTop{ top:auto!important; bottom:20px!important }
     @media (max-width:767px){ #backTop{ bottom:84px!important; right:1rem!important } }
+
+    /* ▼ 화살표 cue (작고 선명, 저전력 모드 고려) */
+    .arrow-cue{ width:56px; height:auto; }
+    @media (min-width:768px){ .arrow-cue{ width:64px; } }
+    .animate-bounce-slow{
+      animation:arrow-bounce 1.8s ease-in-out infinite;
+      will-change: transform;
+    }
+    @keyframes arrow-bounce{
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(8px); }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .animate-bounce-slow{ animation:none; }
+    }
   </style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col font-sans">
@@ -100,10 +114,21 @@
       </div>
     </div>
   </header>
+
   <!-- Main -->
   <main id="main" class="flex-1">
-     <!-- 배너 이미지 (무테 + 소프트 그림자) -->
-     <section class="px-5 md:px-6 mb-10 md:mb-14">
+    <!-- Hero -->
+    <section class="px-5 py-16 md:py-24 text-center">
+      <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
+        카드 혜택을 <span class="gtext">자동</span>으로, 소비는 <span class="gtext">똑똑</span>하게
+      </h1>
+      <p class="mt-4 max-w-2xl mx-auto text-slate-600">
+        소비 패턴 분석으로 월간 혜택·포인트 손실을 최소화하는 서비스.
+      </p>
+    </section>
+
+    <!-- 배너 이미지 -->
+    <section class="px-5 md:px-6 mb-10 md:mb-14">
       <figure class="relative max-w-6xl mx-auto mt-4 overflow-hidden rounded-2xl shadow-soft">
         <picture>
           <source srcset="assets/img/banner@1600.jpg" media="(min-width: 1024px)">
@@ -114,19 +139,10 @@
             class="w-full h-[46vw] max-h-[480px] object-cover"
             loading="lazy" decoding="async">
         </picture>
-        <!-- 하단 페이드로 섹션 접점 부드럽게 -->
         <div class="pointer-events-none absolute inset-x-0 bottom-0 h-28 md:h-32 bg-gradient-to-b from-transparent to-white"></div>
       </figure>
     </section>
-    <!-- Hero -->
-    <section class="px-5 py-16 md:py-24 text-center">
-      <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
-        카드 혜택을 <span class="gtext">자동</span>으로, 소비는 <span class="gtext">똑똑</span>하게
-      </h1>
-      <p class="mt-4 max-w-2xl mx-auto text-slate-600">
-        소비 패턴 분석으로 월간 혜택·포인트 손실을 최소화하는 서비스.
-      </p>
-    </section>
+
     <!-- Pain Points B: 공감형 문제 제시 -->
     <section id="pain-b" class="px-5 md:px-6 py-10 md:py-14 bg-gradient-to-b from-white to-slate-50/50">
       <div class="text-center mb-6 md:mb-8">
@@ -159,8 +175,52 @@
           </p>
         </div>
       </div>
-    </section>  
-    <!-- 핵심 기능 카드 (무테) -->
+    </section>
+
+    <!-- ▼ 새로 추가: 화살표 cue + 혜핏과 함께라면? -->
+    <section id="solution" class="px-5 md:px-6 pt-4 pb-10 md:pt-6 md:pb-14">
+      <div class="flex items-center justify-center mb-4 md:mb-6">
+        <img
+          src="assets/img/index_banner@1600.jpg"
+          alt="아래로 더 보기"
+          width="1600" height="900"
+          class="arrow-cue animate-bounce-slow select-none"
+          loading="lazy" decoding="async"
+        />
+      </div>
+
+      <div class="text-center mb-6 md:mb-8">
+        <p class="badge text-brand mb-1">혜핏과 함께라면?</p>
+        <h2 class="text-2xl md:text-4xl font-extrabold">복잡한 계산 없이, 필요한 순간만 정확히</h2>
+        <p class="mt-3 text-slate-600 max-w-3xl mx-auto">
+          내 소비 패턴을 학습해 <b>지금 가장 이득인 카드·사용법</b>을 제시하고,
+          <b>포인트 소멸·실적 부족·한도 도달</b>을 놓치지 않게 알려드려요.
+        </p>
+      </div>
+
+      <div class="max-w-6xl mx-auto grid gap-6 md:grid-cols-3">
+        <div class="rounded-2xl bg-white p-6 shadow-soft">
+          <div class="font-semibold text-slate-900">실시간 최적 혜택</div>
+          <p class="mt-2 text-sm text-slate-600 leading-6">결제 전후로 가장 이득인 조건을 제안합니다.</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-soft">
+          <div class="font-semibold text-slate-900">알림 피로 최소화</div>
+          <p class="mt-2 text-sm text-slate-600 leading-6">필요한 순간에만 정확히, 짧고 명확하게.</p>
+        </div>
+        <div class="rounded-2xl bg-white p-6 shadow-soft">
+          <div class="font-semibold text-slate-900">월간 절약 리포트</div>
+          <p class="mt-2 text-sm text-slate-600 leading-6">놓칠 뻔한 금액과 구간을 한눈에.</p>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <button id="startBtnCta2" class="btn-brand px-5 py-3 rounded-lg font-semibold" type="button">지금 시작하기</button>
+        <button id="pdfPreviewBtnCta2" class="btn-ghost px-5 py-3 rounded-lg border font-semibold" type="button">제안서 미리보기</button>
+      </div>
+    </section>
+    <!-- ▲ 새로 추가 끝 -->
+
+    <!-- 핵심 기능 카드 -->
     <section class="max-w-6xl mx-auto px-5 md:px-6 pb-14 md:pb-16">
       <div class="grid gap-6 md:grid-cols-3">
         <div class="rounded-2xl bg-white p-6 shadow-soft">
@@ -318,6 +378,7 @@
       const open=()=>{ modal.classList.remove('hidden'); document.body.classList.add('overflow-hidden'); };
       const close=()=>{ modal.classList.add('hidden'); document.body.classList.remove('overflow-hidden'); };
       document.getElementById('startBtnCta')?.addEventListener('click', open);
+      document.getElementById('startBtnCta2')?.addEventListener('click', open);   // ← 새 버튼 바인딩
       document.getElementById('downloadBtn')?.addEventListener('click', open);
       closeBtn?.addEventListener('click', close);
       modal?.addEventListener('click', e=>{ if(e.target===modal) close(); });
@@ -407,7 +468,7 @@
       LOADER.style.display='flex'; HOST.innerHTML=''; await renderAll(false); LOADER.style.display='none';
     });
 
-    document.getElementById('pdfPreviewBtnCta')?.addEventListener('click', ()=>{
+    const openModal = ()=>{
       if(!MODAL) return;
       MODAL.classList.remove('hidden');
       document.body.classList.add('overflow-hidden');
@@ -419,7 +480,10 @@
       CLOSE?.addEventListener('click', close, { once:true });
       MODAL.addEventListener('click', onBackdrop);
       document.addEventListener('keydown', onKey);
-    });
+    };
+
+    document.getElementById('pdfPreviewBtnCta')?.addEventListener('click', openModal);
+    document.getElementById('pdfPreviewBtnCta2')?.addEventListener('click', openModal); // ← 새 버튼 바인딩
   </script>
 </body>
 </html>
