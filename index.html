@@ -69,19 +69,11 @@
     @media (max-width:767px){ #backTop{ bottom:84px!important; right:1rem!important } }
 
     /* ▼ 화살표 cue (작고 선명, 저전력 모드 고려) */
-    .arrow-cue{ width:56px; height:auto; }
-    @media (min-width:768px){ .arrow-cue{ width:64px; } }
-    .animate-bounce-slow{
-      animation:arrow-bounce 1.8s ease-in-out infinite;
-      will-change: transform;
-    }
-    @keyframes arrow-bounce{
-      0%,100%{ transform: translateY(0); }
-      50%{ transform: translateY(8px); }
-    }
-    @media (prefers-reduced-motion: reduce){
-      .animate-bounce-slow{ animation:none; }
-    }
+    .arrow-cue{ width:72px; height:auto; display:block; }
+    @media (min-width:768px){ .arrow-cue{ width:96px; } }
+    .animate-bounce-slow{ animation:arrow-bounce 1.8s ease-in-out infinite; will-change:transform; }
+    @keyframes arrow-bounce{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+    @media (prefers-reduced-motion: reduce){ .animate-bounce-slow{ animation:none; } }
   </style>
 </head>
 <body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col font-sans">
@@ -143,13 +135,9 @@
       </figure>
           <!-- 작은 화살표 cue -->
       <div class="flex items-center justify-center mb-4 md:mb-5">
-        <img
-          src="assets/img/index_banner@1600.jpg"
-          alt="아래로 더 보기"
-          width="1600" height="900"
-          class="arrow-cue animate-bounce-slow select-none"
-          loading="lazy" decoding="async"
-        />
+        <svg class="arrow-cue animate-bounce-slow text-brand" viewBox="0 0 24 24" role="img" aria-label="아래로 더 보기">
+          <path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
     </section>
 
