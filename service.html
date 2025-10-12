@@ -35,14 +35,31 @@
   <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#0a46c7" />
   <link rel="manifest" href="assets/site.webmanifest" />
 
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: { DEFAULT: '#2563eb' } },
+          fontFamily: {
+            sans: ['Pretendard Variable','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic','system-ui','-apple-system','Segoe UI','Roboto','Helvetica Neue','Arial','sans-serif'],
+            mono: ['JetBrains Mono','ui-monospace','SFMono-Regular','Menlo','Consolas','monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Fonts (효율 설정) -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="assets/fonts.css">
+
+  <!-- 공통 CSS -->
   <link rel="stylesheet" href="assets/site.css">
 
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/static/pretendard.css" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config={theme:{extend:{colors:{brand:{DEFAULT:'#2563eb'}}}}}</script>
   <style>
-    body{font-family:Pretendard,system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+    /* 전역 폰트는 Tailwind의 font-sans/mono로 관리 (기존 body{font-family:...} 제거) */
     .gtext{background:linear-gradient(90deg,#0a46c7,#2563eb 45%,#7ea4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
     .btn-brand{background:#2563eb;color:#fff;transition:background .2s,box-shadow .2s}
     .btn-brand:hover{background:#1e40af;box-shadow:0 10px 28px rgba(37,99,235,.35)}
@@ -52,7 +69,7 @@
     @media (max-width:767px){ #backTop{ bottom:84px !important; right:1rem !important; } }
   </style>
 </head>
-<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col font-sans">
 
   <!-- Header -->
   <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
@@ -88,7 +105,7 @@
       <p class="mt-4 text-center text-slate-600 max-w-2xl mx-auto">오늘의 결제, 가장 유리한 한번의 선택으로.</p>
     </section>
 
-    <!-- ★ 서비스 배너 이미지 (추가) -->
+    <!-- 서비스 배너 이미지 -->
     <section class="section pt-0">
       <figure class="max-w-6xl mx-auto overflow-hidden rounded-2xl border border-slate-200 shadow-soft" style="aspect-ratio:16/9;">
         <img
@@ -99,12 +116,11 @@
           loading="lazy" decoding="async">
       </figure>
     </section>
-    <!-- ★ 서비스 배너 이미지 끝 -->
 
-        <!-- 서비스 기능(무테·가독성 강화 버전) -->
+    <!-- 서비스 기능 -->
     <section class="section" id="features">
       <div class="grid gap-6 md:grid-cols-2">
-        <!-- 카드 1: 혜택 비교 -->
+        <!-- 카드 1 -->
         <div class="rounded-2xl bg-white p-6 md:p-7 shadow-soft">
           <div class="flex items-center gap-3">
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">✓</span>
@@ -120,7 +136,7 @@
           </ul>
         </div>
 
-        <!-- 카드 2: 맞춤 추천 -->
+        <!-- 카드 2 -->
         <div class="rounded-2xl bg-white p-6 md:p-7 shadow-soft">
           <div class="flex items-center gap-3">
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">✓</span>
@@ -131,7 +147,7 @@
           </p>
         </div>
 
-        <!-- 카드 3: 알림 -->
+        <!-- 카드 3 -->
         <div class="rounded-2xl bg-white p-6 md:p-7 shadow-soft">
           <div class="flex items-center gap-3">
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">✓</span>
@@ -142,7 +158,7 @@
           </p>
         </div>
 
-        <!-- 카드 4: 통합 관리 -->
+        <!-- 카드 4 -->
         <div class="rounded-2xl bg-white p-6 md:p-7 shadow-soft">
           <div class="flex items-center gap-3">
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">✓</span>
@@ -154,7 +170,6 @@
         </div>
       </div>
     </section>
-
 
     <!-- Bottom CTA -->
     <section class="section border-top text-center">
@@ -189,7 +204,7 @@
   <!-- 공용 모달 -->
   <div id="downloadModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3">
     <div class="bg-white max-w-sm w-full p-6 rounded-xl shadow-lg text-center">
-      <h3 class="text-xl font-bold mb-3">서비스 준비중</h3>
+      <h3 class="text-xl font-bold">서비스 준비중</h3>
       <p class="text-slate-600 mb-6">앱 다운로드 서비스는 곧 제공될 예정입니다.</p>
       <button id="closeDownload" class="w-full px-6 py-3 btn-brand rounded-lg" type="button">닫기</button>
     </div>
@@ -220,15 +235,23 @@
     document.getElementById('mBtn')?.addEventListener('click',()=>document.getElementById('mNav')?.classList.toggle('hidden'));
     (function(){
       const cur=(location.pathname.split('/').pop()||'service.html');
-      document.querySelectorAll('header nav a,#mNav a').forEach(a=>{ if(a.getAttribute('href')===cur){ a.classList.add('text-slate-900','font-semibold'); a.setAttribute('aria-current','page'); }});
+      document.querySelectorAll('header nav a,#mNav a').forEach(a=>{
+        if(a.getAttribute('href')===cur){ a.classList.add('text-slate-900','font-semibold'); a.setAttribute('aria-current','page'); }
+      });
     })();
     // Back-to-top
-    (function(){ const b=document.getElementById('backTop'); const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    (function(){
+      const b=document.getElementById('backTop');
+      const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
       const onScroll=()=>{ if(scrollY>300) b.classList.remove('hidden'); else b.classList.add('hidden'); };
-      addEventListener('scroll',onScroll,{passive:true}); b.addEventListener('click',()=> reduce? scrollTo(0,0): scrollTo({top:0,behavior:'smooth'})); onScroll();
+      addEventListener('scroll',onScroll,{passive:true});
+      b.addEventListener('click',()=> reduce? scrollTo(0,0): scrollTo({top:0,behavior:'smooth'}));
+      onScroll();
     })();
     // 시작/다운로드 모달
-    (function(){ const m=document.getElementById('downloadModal'); const close=()=>{m.classList.add('hidden');document.body.classList.remove('overflow-hidden');};
+    (function(){
+      const m=document.getElementById('downloadModal');
+      const close=()=>{m.classList.add('hidden');document.body.classList.remove('overflow-hidden');};
       const open=()=>{m.classList.remove('hidden');document.body.classList.add('overflow-hidden');};
       document.getElementById('startBtnCta')?.addEventListener('click',open);
       document.getElementById('downloadBtn')?.addEventListener('click',open);
@@ -243,30 +266,93 @@
     const REPO='SaveUp', PDF_REL='assets/SaveUp_test.pdf';
     import * as pdfjsLib from 'https://unpkg.com/pdfjs-dist@4.6.82/build/pdf.mjs';
     pdfjsLib.GlobalWorkerOptions.workerSrc='https://unpkg.com/pdfjs-dist@4.6.82/build/pdf.worker.mjs';
-    const MODAL=document.getElementById('pdfModal'), CLOSE=document.getElementById('closePdf'), OPENNEW=document.getElementById('openInNew'), HOST=document.getElementById('pdfViewerHost'), LOADER=document.getElementById('pdfLoader'), SCROLL=document.getElementById('pdfScroll');
-    let pdf=null,pages=[],scale=1,baseScale=1; let renderAbort=new AbortController(); let blobUrl=null,resolvedHref=null;
-    OPENNEW.disabled=true; OPENNEW.classList.add('opacity-50','cursor-not-allowed');
 
-    function buildCandidates(rel){ const origin=location.origin; const dir=location.pathname.endsWith('/')?location.pathname:location.pathname.replace(/[^/]+$/,'/'); const repoAbs=new URL(`/${REPO}/${rel.replace(/^\/+/,'')}`,origin).href; const rel1=new URL(rel,origin+dir).href; const rel2=new URL('./'+rel,origin+dir).href; const rootAbs=new URL('/'+rel.replace(/^\/+/,''),origin).href; return [...new Set([repoAbs,rel1,rel2,rootAbs])];}
-    async function resolveAndDownload(){ const tried=[]; for(const href of buildCandidates(PDF_REL)){ tried.push(href); try{ const res=await fetch(href); if(!res.ok) continue; const blob=await res.blob(); const ab=await blob.arrayBuffer(); blobUrl=URL.createObjectURL(blob); resolvedHref=href; return {ok:true,data:ab,tried}; }catch(e){ tried.push('ERR:'+(e?.message||String(e))); } } return {ok:false,tried};}
-    function showFallback(err){ console.error(err); HOST.innerHTML=`<div class="pdf-empty">미리보기 오류가 발생했습니다.<br/><span class="text-xs opacity-80">detail: ${String(err)}</span></div>`; LOADER.style.display='none'; }
-    async function mountPdf(){ LOADER.style.display='flex'; HOST.innerHTML=""; const {ok,data,tried}=await resolveAndDownload(); if(!ok){ HOST.innerHTML=`<div class="pdf-empty">PDF 파일을 찾지 못했습니다(404/경로 오류).<div class="text-xs mt-2 whitespace-pre-wrap break-all">${tried.join('\\n')}</div></div>`; LOADER.style.display='none'; return;}
-      try{ const loadingTask=pdfjsLib.getDocument({data,withCredentials:false}); pdf=await loadingTask.promise; }catch(e){ OPENNEW.disabled=false; OPENNEW.classList.remove('opacity-50','cursor-not-allowed'); throw e; }
-      const frag=document.createDocumentFragment(); for(let i=1;i<=pdf.numPages;i++){ const c=document.createElement('canvas'); c.className='pdf-page'; c.dataset.page=i; frag.appendChild(c); pages.push(c); } HOST.appendChild(frag); await renderAll(true); LOADER.style.display='none'; OPENNEW.disabled=false; OPENNEW.classList.remove('opacity-50','cursor-not-allowed'); }
-    function containerWidth(){ const max=900; const w=Math.min(SCROLL.clientWidth-24,max); return Math.max(320,w); }
-    async function renderPage(idx,initial=false){ const page=await pdf.getPage(idx+1); const viewport0=page.getViewport({scale:1}); if(initial){ baseScale=containerWidth()/viewport0.width; scale=baseScale; } const viewport=page.getViewport({scale}); const canvas=pages[idx]; const ctx=canvas.getContext('2d',{alpha:false}); canvas.width=Math.floor(viewport.width); canvas.height=Math.floor(viewport.height); canvas.style.width=Math.floor(viewport.width)+'px'; canvas.style.height=Math.floor(viewport.height)+'px'; await page.render({canvasContext:ctx,viewport,signal:renderAbort.signal}).promise; }
-    async function renderAll(init=false){ for(let i=0;i<pages.length;i++){ await renderPage(i, init && i===0); } }
-    const clamp=(v,min,max)=>Math.max(min,Math.min(max,v)); async function zoom(delta){ const next=clamp(scale*delta,baseScale*0.6,baseScale*2.5); if(Math.abs(next-scale)<0.01) return; scale=next; LOADER.style.display='flex'; await renderAll(false); LOADER.style.display='none'; }
-    document.getElementById('zoomIn').addEventListener('click',()=>zoom(1.2));
-    document.getElementById('zoomOut').addEventListener('click',()=>zoom(1/1.2));
-    let rid=null; addEventListener('resize',()=>{ if(!pdf) return; clearTimeout(rid); rid=setTimeout(async ()=>{ baseScale=containerWidth()/(pages[0].width/scale); scale=baseScale; LOADER.style.display='flex'; await renderAll(false); LOADER.style.display='none'; },160); });
+    const MODAL=document.getElementById('pdfModal'),
+          CLOSE=document.getElementById('closePdf'),
+          OPENNEW=document.getElementById('openInNew'),
+          HOST=document.getElementById('pdfViewerHost'),
+          LOADER=document.getElementById('pdfLoader'),
+          SCROLL=document.getElementById('pdfScroll');
 
-    function openPdfModal(){ if(!MODAL) return; MODAL.classList.remove('hidden'); document.body.classList.add('overflow-hidden'); mountPdf().catch(showFallback);
-      const onBackdrop=e=>{ if(e.target===MODAL) close(); }; const onKey=e=>{ if(e.key==='Escape'&&!MODAL.classList.contains('hidden')) close(); };
-      function close(){ MODAL.classList.add('hidden'); document.body.classList.remove('overflow-hidden'); MODAL.removeEventListener('click',onBackdrop); document.removeEventListener('keydown',onKey); }
-      CLOSE?.addEventListener('click',close,{once:true}); MODAL.addEventListener('click',onBackdrop); document.addEventListener('keydown',onKey);
+    let pdf=null,pages=[],scale=1,baseScale=1;
+    let renderAbort=new AbortController();
+
+    OPENNEW.disabled=true;
+    OPENNEW.classList.add('opacity-50','cursor-not-allowed');
+
+    function buildCandidates(rel){
+      const origin=location.origin;
+      const dir=location.pathname.endsWith('/')?location.pathname:location.pathname.replace(/[^/]+$/,'/');
+      const repoAbs=new URL(`/${REPO}/${rel.replace(/^\/+/,'')}`,origin).href;
+      const rel1=new URL(rel,origin+dir).href;
+      const rel2=new URL('./'+rel,origin+dir).href;
+      const rootAbs=new URL('/'+rel.replace(/^\/+/,'') ,origin).href;
+      return [...new Set([repoAbs,rel1,rel2,rootAbs])];
     }
-    document.getElementById('pdfPreviewBtnCta')?.addEventListener('click',openPdfModal);
+
+    async function resolveAndDownload(){
+      for(const href of buildCandidates(PDF_REL)){
+        try{
+          const res=await fetch(href);
+          if(!res.ok) continue;
+          const blob=await res.blob();
+          const ab=await blob.arrayBuffer();
+          const loadingTask=pdfjsLib.getDocument({data:ab,withCredentials:false});
+          pdf=await loadingTask.promise;
+          OPENNEW.disabled=false; OPENNEW.classList.remove('opacity-50','cursor-not-allowed');
+          return true;
+        }catch(e){}
+      }
+      HOST.innerHTML=`<div class="pdf-empty">PDF 파일을 찾지 못했습니다(경로/배포 확인).</div>`;
+      LOADER.style.display='none';
+      return false;
+    }
+
+    async function renderAll(initial=false){
+      const maxW = Math.min(SCROLL.clientWidth - 24, 900);
+      for(let i=1;i<=pdf.numPages;i++){
+        const page=await pdf.getPage(i);
+        const vp0=page.getViewport({scale:1});
+        if(initial && i===1){ baseScale=maxW/vp0.width; scale=baseScale; }
+        const vp=page.getViewport({scale});
+        const canvas=document.createElement('canvas');
+        canvas.className='pdf-page';
+        canvas.width=Math.floor(vp.width); canvas.height=Math.floor(vp.height);
+        HOST.appendChild(canvas);
+        await page.render({canvasContext:canvas.getContext('2d',{alpha:false}),viewport:vp,signal:renderAbort.signal}).promise;
+      }
+    }
+
+    async function mountPdf(){
+      LOADER.style.display='flex'; HOST.innerHTML="";
+      const ok = await resolveAndDownload();
+      if(!ok) return;
+      await renderAll(true);
+      LOADER.style.display='none';
+    }
+
+    document.getElementById('zoomIn').addEventListener('click', async()=>{
+      scale = Math.min(scale*1.2, baseScale*2.5);
+      LOADER.style.display='flex'; HOST.innerHTML=''; await renderAll(false); LOADER.style.display='none';
+    });
+    document.getElementById('zoomOut').addEventListener('click', async()=>{
+      scale = Math.max(scale/1.2, baseScale*0.6);
+      LOADER.style.display='flex'; HOST.innerHTML=''; await renderAll(false); LOADER.style.display='none';
+    });
+
+    document.getElementById('pdfPreviewBtnCta')?.addEventListener('click', ()=>{
+      if(!MODAL) return;
+      MODAL.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+      mountPdf();
+      const onBackdrop=(e)=>{ if(e.target===MODAL) close(); };
+      const onKey=(e)=>{ if(e.key==='Escape' && !MODAL.classList.contains('hidden')) close(); };
+      function close(){ MODAL.classList.add('hidden'); document.body.classList.remove('overflow-hidden');
+        MODAL.removeEventListener('click', onBackdrop); document.removeEventListener('keydown', onKey); }
+      CLOSE?.addEventListener('click', close, { once:true });
+      MODAL.addEventListener('click', onBackdrop);
+      document.addEventListener('keydown', onKey);
+    });
   </script>
 </body>
 </html>
