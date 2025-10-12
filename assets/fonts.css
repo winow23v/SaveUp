@@ -1,0 +1,29 @@
+/* fonts.css — 프로젝트에 추가 후 <link rel="stylesheet" href="/assets/fonts.css"> */
+@font-face{
+    font-family:'Pretendard Variable';
+    src:url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/woff2/PretendardVariable.woff2')
+        format('woff2-variations');
+    font-weight:100 900;
+    font-style:normal;
+    font-display:swap;
+  }
+  
+  @font-face{
+    font-family:'JetBrains Mono';
+    src:url('https://cdn.jsdelivr.net/npm/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2')
+        format('woff2-variations');
+    font-weight:100 800;
+    font-style:normal;
+    font-display:swap;
+  }
+  
+  /* 폰트 변수 + 기본 라인하이트 */
+  :root{
+    --font-sans:'Pretendard Variable','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',
+                system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  
+  html{ font-family:var(--font-sans); line-height:1.65; text-rendering:optimizeLegibility; }
+  code,pre,kbd,samp{ font-family:var(--font-mono); }
+  

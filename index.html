@@ -5,50 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>혜핏 | 메인페이지</title>
 
-   <!-- Meta -->
-   <meta name="description" content="카드 혜택을 자동 비교·추천하고 포인트 소멸·실적 부족·한도 도달을 놓치지 않게 알려주는 스마트 소비 도우미." />
-   <meta name="theme-color" content="#0a46c7" />
-   <meta name="apple-mobile-web-app-title" content="혜핏" />
-   <meta name="apple-mobile-web-app-capable" content="yes" />
-   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
- 
-   <!-- Open Graph -->
-   <meta property="og:type" content="website" />
-   <meta property="og:site_name" content="혜핏" />
-   <meta property="og:title" content="혜핏 | 메인페이지" />
-   <meta property="og:description" content="카드 혜택 자동 비교·추천, 실시간 알림으로 혜택 손실을 최소화하세요." />
-   <meta property="og:url" content="https://winow23v.github.io/SaveUp/" />
-   <meta property="og:image" content="assets/og-image-1200x630.png" />
- 
-   <!-- Twitter Card -->
-   <meta name="twitter:card" content="summary_large_image" />
-   <meta name="twitter:title" content="혜핏 | 메인페이지" />
-   <meta name="twitter:description" content="카드 혜택 자동 비교·추천, 실시간 알림으로 혜택 손실을 최소화." />
-   <meta name="twitter:image" content="assets/og-image-1200x630.png" />
- 
-   <!-- Icons / Manifest -->
-   <link rel="icon" href="/favicon.ico" />
-   <link rel="icon" type="image/svg+xml" href="assets/saveup-logo.svg" />
-   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
-   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
-   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon-180.png" />
-   <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#0a46c7" />
-   <link rel="manifest" href="assets/site.webmanifest" />
- 
+  <!-- Meta -->
+  <meta name="description" content="카드 혜택을 자동 비교·추천하고 포인트 소멸·실적 부족·한도 도달을 놓치지 않게 알려주는 스마트 소비 도우미." />
+  <meta name="theme-color" content="#0a46c7" />
+  <meta name="apple-mobile-web-app-title" content="혜핏" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="혜핏" />
+  <meta property="og:title" content="혜핏 | 메인페이지" />
+  <meta property="og:description" content="카드 혜택 자동 비교·추천, 실시간 알림으로 혜택 손실을 최소화하세요." />
+  <meta property="og:url" content="https://winow23v.github.io/SaveUp/" />
+  <meta property="og:image" content="assets/og-image-1200x630.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="혜핏 | 메인페이지" />
+  <meta name="twitter:description" content="카드 혜택 자동 비교·추천, 실시간 알림으로 혜택 손실을 최소화." />
+  <meta name="twitter:image" content="assets/og-image-1200x630.png" />
+
+  <!-- Icons / Manifest -->
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="assets/saveup-logo.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon-180.png" />
+  <link rel="mask-icon" href="assets/safari-pinned-tab.svg" color="#0a46c7" />
+  <link rel="manifest" href="assets/site.webmanifest" />
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: { DEFAULT: '#2563eb' } },
+          fontFamily: {
+            sans: ['Pretendard Variable','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic','system-ui','-apple-system','Segoe UI','Roboto','Helvetica Neue','Arial','sans-serif'],
+            mono: ['JetBrains Mono','ui-monospace','SFMono-Regular','Menlo','Consolas','monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Fonts (효율 설정) -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="assets/fonts.css">
 
   <!-- 공통 CSS -->
   <link rel="stylesheet" href="assets/site.css">
 
-  <!-- Pretendard + Tailwind -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/static/pretendard.css" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { theme:{ extend:{ colors:{ brand:{ DEFAULT:'#2563eb' } } } } };
-  </script>
-
   <style>
-    body{font-family:Pretendard,system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+    /* 기존 Pretendard 인라인 지정은 제거 (Tailwind의 font-sans로 전역 적용) */
     .gtext{background:linear-gradient(90deg,#0a46c7,#2563eb 45%,#7ea4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
     .btn-brand{background:#2563eb;color:#fff;transition:background .2s,box-shadow .2s}
     .btn-brand:hover{background:#1e40af;box-shadow:0 10px 28px rgba(37,99,235,.35)}
@@ -59,7 +70,7 @@
     @media (max-width:767px){ #backTop{ bottom:84px!important; right:1rem!important } }
   </style>
 </head>
-<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="bg-white text-slate-800 antialiased min-h-screen flex flex-col font-sans">
 
   <!-- Header -->
   <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
