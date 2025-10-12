@@ -1,21 +1,14 @@
 {
-  "name": "SaveUp",
-  "short_name": "SaveUp",
-  "start_url": "/SaveUp/",
+  "id": "/SaveUp/",
+  "name": "혜핏",
+  "short_name": "혜핏",
+  "start_url": "/SaveUp/?source=pwa",
   "scope": "/SaveUp/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0a46c7",
   "icons": [
-    {
-      "src": "favicon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "favicon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+    { "src": "./favicon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./favicon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }
