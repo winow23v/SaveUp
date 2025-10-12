@@ -78,23 +78,24 @@
 
     <!-- 배너 이미지 (간격/페이드 보강) -->
     <section class="px-5 md:px-6 mb-10 md:mb-14">
-      <figure class="relative max-w-6xl mx-auto mt-4 overflow-hidden rounded-2xl border border-slate-200 shadow-soft">
-        <!-- 반응형 이미지 -->
-        <picture>
-          <source srcset="assets/img/banner@1600.jpg" media="(min-width: 1024px)">
-          <source srcset="assets/img/banner@1600.jpg" media="(min-width: 640px)">
-          <img
-            src="assets/img/banner@1600.jpg"
-            alt="서비스 배너"
-            class="w-full h-[46vw] max-h-[480px] object-cover"
-            loading="lazy" decoding="async">
-        </picture>
-        <!-- 흐림 + 밝기 -->
-        <div class="pointer-events-none absolute inset-0 md:backdrop-blur-[2px]"></div>
-        <div class="pointer-events-none absolute inset-0 bg-white/0 md:bg-white/0"></div>
-        <!-- 하단 페이드(높이 확대) -->
-        <div class="pointer-events-none absolute inset-x-0 bottom-0 h-28 md:h-32 bg-gradient-to-b from-transparent to-white"></div>
-      </figure>
+      <figure class="relative max-w-6xl mx-auto mt-4 overflow-hidden
+               rounded-2xl shadow-soft">
+      <picture>
+        <source srcset="assets/img/banner@1600.jpg" media="(min-width: 1024px)">
+        <source srcset="assets/img/banner@1600.jpg" media="(min-width: 640px)">
+        <img
+          src="assets/img/banner@1600.jpg"
+          alt="서비스 배너"
+          class="w-full h-[46vw] max-h-[480px] object-cover"
+          loading="lazy" decoding="async">
+      </picture>
+      <!-- 흐림 + 밝기 + 하단 페이드(그대로 유지) -->
+      <div class="pointer-events-none absolute inset-0 md:backdrop-blur-[2px]"></div>
+      <div class="pointer-events-none absolute inset-0 bg-white/0 md:bg-white/0"></div>
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-28 md:h-32
+                  bg-gradient-to-b from-transparent to-white"></div>
+    </figure>
+
     </section>
 
     <!-- 기능 카드 (상단/하단 여백 보강) -->
